@@ -1,5 +1,5 @@
-import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function HomeScreen() {
   return (
