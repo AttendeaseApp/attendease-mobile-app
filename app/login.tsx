@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { router } from "expo-router";
+import React, { useState } from "react";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -44,6 +44,14 @@ export default function LoginScreen() {
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Sign In</Text>
         </TouchableOpacity>
+
+        {/* 🔹 Sign Up under button */}
+        <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 15 }}>
+          <Text>Don't have an account? </Text>
+          <TouchableOpacity>
+            <Text style={{ color: "#0ea5e9" }}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -71,7 +79,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     marginBottom: 20,
     textAlign: "center",
-
   },
 
   // Login card
