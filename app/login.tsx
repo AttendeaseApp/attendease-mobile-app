@@ -17,7 +17,7 @@ export default function LoginScreen() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.container}>
         
-        {/* 🔹 Blue curved top header full width */}
+        {/*  Blue curved top header full width */}
         <View style={styles.headerBackground}>
           <View style={styles.logoRow}>
             <View style={styles.logoCircle}>
@@ -27,7 +27,7 @@ export default function LoginScreen() {
           </View>
         </View>
 
-        {/* 🔹 Login card */}
+        {/*  Login card */}
         <View style={styles.loginCard}>
           <Text style={styles.SignInText}>Sign In</Text>
           <Text style={styles.SignInToMyAccountText}>Sign in to my account</Text>
@@ -54,7 +54,7 @@ export default function LoginScreen() {
             <Text style={styles.buttonText}>Sign In</Text>
           </TouchableOpacity>
 
-          {/* 🔹 Sign Up under button */}
+          {/* Sign Up under button */}
           <View
             style={{
               flexDirection: "row",
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   SignInText: {
     fontSize: 28,
     fontWeight: "600",
-    marginBottom: 5, // closer to subtitle
+    marginBottom: 5, 
     color: "#000",
     textAlign: "center",
   },
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   SignInToMyAccountText: {
     fontSize: 12,
     textAlign: "center",
-    marginBottom: 40, // gives space before inputs
+    marginBottom: 40, 
     color: "#555",
   },
 
