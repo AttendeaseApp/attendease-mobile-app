@@ -16,10 +16,10 @@ const NavBar: React.FC<NavBarProps> = ({
   onNotifPress,
 }) => (
   <View style={styles.headerBackground}>
-    {/* Title always on top */}
+    {/* app name on top */}
     <Text style={styles.AppName}>ATTENDEASE</Text>
 
-    {/* Row with profile + name/section + notif */}
+    {/* Row with profile icon name/section + notif */}
     <View style={styles.rowContainer}>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <TouchableOpacity
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center", // ensures notif aligns with name/section vertically
+    alignItems: "center", 
   },
   profileIconButton: {
     backgroundColor: "#27548A",
