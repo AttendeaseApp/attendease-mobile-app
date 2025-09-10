@@ -16,7 +16,11 @@ const NavBar: React.FC<NavBarProps> = ({
   onNotifPress,
 }) => (
   <View style={styles.headerBackground}>
-    <View style={styles.headerContainer}>
+    {/* Title always on top */}
+    <Text style={styles.AppName}>ATTENDEASE</Text>
+
+    {/* Row with profile + name/section + notif */}
+    <View style={styles.rowContainer}>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <TouchableOpacity
           style={styles.profileIconButton}
@@ -29,17 +33,17 @@ const NavBar: React.FC<NavBarProps> = ({
           <Text style={styles.UserSection}>{section}</Text>
         </View>
       </View>
+
       <TouchableOpacity style={styles.NOTIFButton} onPress={onNotifPress}>
-        <MaterialIcons name="notifications" size={28} color="#060606ff" />
+        <MaterialIcons name="notifications" size={28} color="#27548A" />
       </TouchableOpacity>
     </View>
-    <Text style={styles.TODAYLabel}>TODAY</Text>
   </View>
 );
 
 const styles = StyleSheet.create({
   headerBackground: {
-    backgroundColor: "#27548A",
+    backgroundColor: "#ffffffff",
     borderBottomLeftRadius: 40,
     borderBottomRightRadius: 40,
     height: 200,
@@ -47,10 +51,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     overflow: "hidden",
   },
-  headerContainer: {
+  rowContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "center", // ensures notif aligns with name/section vertically
   },
   profileIconButton: {
     backgroundColor: "#27548A",
@@ -58,24 +62,27 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   NOTIFButton: {
-    backgroundColor: "#fff",
+    backgroundColor: "#ffffffff",
     borderRadius: 20,
+    borderColor: "#000000ff",
+    borderWidth: 2,
     padding: 4,
   },
   NameOfStudent: {
-    color: "#fff",
+    color: "#000000ff",
     fontWeight: "bold",
     fontSize: 18,
   },
   UserSection: {
-    color: "#fff",
+    color: "#000000ff",
     fontSize: 14,
   },
-  TODAYLabel: {
-    color: "#fff",
+  AppName: {
+    marginTop: 20,
+    color: "#27548A",
+    fontSize: 24,
     fontWeight: "bold",
-    fontSize: 16,
-    marginTop: 16,
+    marginBottom: 12,
   },
 });
 
