@@ -1,31 +1,111 @@
 import React from "react";
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Profile() {
   return (
     <View style={styles.container}>
-      <View style={styles.header}></View>
-      <Image
-        style={styles.avatar}
-        source={{ uri: "https://bootdey.com/img/Content/avatar/avatar6.png" }}
-      />
-      <View style={styles.body}>
-        <View style={styles.bodyContent}>
-          <Text style={styles.name}>John Doe</Text>
-          <Text style={styles.info}>UX Designer / Mobile developer</Text>
-          <Text style={styles.description}>
-            Lorem ipsum dolor sit amet, saepe sapientem eu nam. Qui ne assum
-            electram expetendis, omittam deseruisse consequuntur ius an,
-          </Text>
+      {/* Header */}
+      <View style={styles.header}>
+        {/* back button */}
+        <TouchableOpacity style={styles.backButton}>
+          <View style={styles.backCircle}>
+            <Ionicons name="chevron-back" size={24} color="#6E62FF" />
+          </View>
+        </TouchableOpacity>
 
-          <TouchableOpacity style={styles.buttonContainer}>
-            <Text style={styles.buttonText}>Option 1</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.buttonContainer}>
-            <Text style={styles.buttonText}>Option 2</Text>
-          </TouchableOpacity>
-        </View>
+        <Text style={styles.myProfileText}>My Profile</Text>
       </View>
+
+      {/* avatar */}
+      <View style={styles.avatarContainer}>
+        <Image
+          style={styles.avatar}
+          source={{ uri: "https://bootdey.com/img/Content/avatar/avatar6.png" }}
+        />
+      </View>
+
+      {/* Body */}
+      <ScrollView
+        style={styles.body}
+        contentContainerStyle={{ paddingBottom: 50 }}
+      >
+        {/* Settings Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>CONTACT</Text>
+
+          <View style={styles.sectionBody}>
+            {/* Language */}
+            <TouchableOpacity style={styles.row}>
+              <Text style={styles.rowLabel}>Language</Text>
+              <View style={styles.rowSpacer} />
+              <Text style={styles.rowValue}>English</Text>
+            </TouchableOpacity>
+
+            {/* Dark Mode */}
+            <TouchableOpacity style={styles.row}>
+              <Text style={styles.rowLabel}>Dark Mode</Text>
+              <View style={styles.rowSpacer} />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Notifications Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>ACCOUNT</Text>
+
+          <View style={styles.sectionBody}>
+            <TouchableOpacity style={styles.row}>
+              <Text style={styles.rowLabel}>Personal Data</Text>
+              <View style={styles.rowSpacer} />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.row}>
+              <Text style={styles.rowLabel}> Office Assets</Text>
+              <View style={styles.rowSpacer} />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.row}>
+              <Text style={styles.rowLabel}>SMS Notifications</Text>
+              <View style={styles.rowSpacer} />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* New Section with 4 blank pressables */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>More</Text>
+
+          <View style={styles.sectionBody}>
+            <TouchableOpacity style={styles.row}>
+              <Text style={styles.rowLabel}></Text>
+              <View style={styles.rowSpacer} />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.row}>
+              <Text style={styles.rowLabel}></Text>
+              <View style={styles.rowSpacer} />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.row}>
+              <Text style={styles.rowLabel}></Text>
+              <View style={styles.rowSpacer} />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.row}>
+              <Text style={styles.rowLabel}></Text>
+              <View style={styles.rowSpacer} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
 }
@@ -36,58 +116,99 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   header: {
-    backgroundColor: "#00BFFF",
+    backgroundColor: "#27548A",
     height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  backButton: {
+    position: "absolute",
+    top: 40,
+    left: 20,
+  },
+  backCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#FFFFFF",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  avatarContainer: {
+    alignItems: "center",
+    marginTop: -65,
   },
   avatar: {
     width: 130,
     height: 130,
-    borderRadius: 0,
+    borderRadius: 15,
     borderWidth: 4,
     borderColor: "white",
     marginBottom: 10,
-    alignSelf: "center",
-    position: "absolute",
-    marginTop: 130,
   },
   body: {
-    marginTop: 40,
+    marginTop: 20,
   },
-  bodyContent: {
-    flex: 1,
-    alignItems: "center",
-    padding: 30,
+  myProfileText: {
+    fontSize: 20,
+    color: "#ffffffff",
+    marginBottom: 50,
   },
-  name: {
-    fontSize: 28,
-    color: "#696969",
+  section: {
+    paddingTop: 12,
+  },
+  sectionTitle: {
+    marginVertical: 8,
+    marginHorizontal: 24,
+    fontSize: 14,
     fontWeight: "600",
+    color: "#a7a7a7",
+    textTransform: "uppercase",
+    letterSpacing: 1.2,
   },
-  info: {
-    fontSize: 16,
-    color: "#00BFFF",
-    marginTop: 10,
+  sectionBody: {
+    paddingLeft: 24,
+    backgroundColor: "#fff",
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: "#e3e3e3",
   },
-  description: {
-    fontSize: 16,
-    color: "#696969",
-    marginTop: 10,
-    textAlign: "center",
-  },
-  buttonContainer: {
-    marginTop: 10,
-    height: 45,
+  row: {
     flexDirection: "row",
-    justifyContent: "center",
     alignItems: "center",
-    marginBottom: 20,
-    width: 250,
-    borderRadius: 30,
-    backgroundColor: "#00BFFF",
+    justifyContent: "flex-start",
+    paddingRight: 16,
+    height: 50,
+    borderTopWidth: 1,
+    borderColor: "#e3e3e3",
   },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
+  rowIcon: {
+    width: 30,
+    height: 30,
+    borderRadius: 4,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+  rowLabel: {
+    fontSize: 17,
     fontWeight: "500",
+    color: "#000",
+  },
+  rowSpacer: {
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 0,
+  },
+  rowValue: {
+    fontSize: 17,
+    fontWeight: "500",
+    color: "#8B8B8B",
+    marginRight: 4,
   },
 });
