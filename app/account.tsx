@@ -1,19 +1,13 @@
-import React from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import React from "react";
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function Profile() {
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
+
         {/* back button */}
         <TouchableOpacity style={styles.backButton}>
           <View style={styles.backCircle}>
@@ -21,15 +15,17 @@ export default function Profile() {
           </View>
         </TouchableOpacity>
 
+        {/* My profile Text*/}
         <Text style={styles.myProfileText}>My Profile</Text>
       </View>
 
-      {/* avatar */}
+      {/* avatar/profile pic */}
       <View style={styles.avatarContainer}>
         <Image
           style={styles.avatar}
           source={{ uri: "https://bootdey.com/img/Content/avatar/avatar6.png" }}
         />
+        <Text style={styles.profileName}>John Doe</Text>
       </View>
 
       {/* Body */}
@@ -37,27 +33,23 @@ export default function Profile() {
         style={styles.body}
         contentContainerStyle={{ paddingBottom: 50 }}
       >
-        {/* Settings Section */}
+        {/* Contact Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>CONTACT</Text>
 
           <View style={styles.sectionBody}>
-            {/* Language */}
             <TouchableOpacity style={styles.row}>
-              <Text style={styles.rowLabel}>Language</Text>
-              <View style={styles.rowSpacer} />
-              <Text style={styles.rowValue}>English</Text>
+              <Text style={styles.rowLabel}>Email</Text>
             </TouchableOpacity>
 
-            {/* Dark Mode */}
             <TouchableOpacity style={styles.row}>
-              <Text style={styles.rowLabel}>Dark Mode</Text>
+              <Text style={styles.rowLabel}>wala pa</Text>
               <View style={styles.rowSpacer} />
             </TouchableOpacity>
           </View>
         </View>
 
-        {/* Notifications Section */}
+        {/* Account Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>ACCOUNT</Text>
 
@@ -79,28 +71,28 @@ export default function Profile() {
           </View>
         </View>
 
-        {/* New Section with 4 blank pressables */}
+        {/* Last Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>More</Text>
 
           <View style={styles.sectionBody}>
             <TouchableOpacity style={styles.row}>
-              <Text style={styles.rowLabel}></Text>
+              <Text style={styles.rowLabel}>wala pa</Text>
               <View style={styles.rowSpacer} />
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.row}>
-              <Text style={styles.rowLabel}></Text>
+              <Text style={styles.rowLabel}>wala pa</Text>
               <View style={styles.rowSpacer} />
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.row}>
-              <Text style={styles.rowLabel}></Text>
+              <Text style={styles.rowLabel}>wala pa</Text>
               <View style={styles.rowSpacer} />
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.row}>
-              <Text style={styles.rowLabel}></Text>
+              <Text style={styles.rowLabel}>Logout </Text>
               <View style={styles.rowSpacer} />
             </TouchableOpacity>
           </View>
@@ -121,6 +113,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+
+  //back button
   backButton: {
     position: "absolute",
     top: 40,
@@ -139,6 +133,8 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+
+  //profile pic
   avatarContainer: {
     alignItems: "center",
     marginTop: -65,
@@ -151,6 +147,13 @@ const styles = StyleSheet.create({
     borderColor: "white",
     marginBottom: 10,
   },
+
+  profileName:{
+   fontSize: 18,
+    fontWeight: "600",
+    color: "#000",
+  },
+
   body: {
     marginTop: 20,
   },
@@ -165,9 +168,9 @@ const styles = StyleSheet.create({
   sectionTitle: {
     marginVertical: 8,
     marginHorizontal: 24,
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: "600",
-    color: "#a7a7a7",
+    color: "#000000ff",
     textTransform: "uppercase",
     letterSpacing: 1.2,
   },
@@ -187,16 +190,10 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: "#e3e3e3",
   },
-  rowIcon: {
-    width: 30,
-    height: 30,
-    borderRadius: 4,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 12,
-  },
+
+  //button labels
   rowLabel: {
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: "500",
     color: "#000",
   },
@@ -204,11 +201,5 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: 0,
-  },
-  rowValue: {
-    fontSize: 17,
-    fontWeight: "500",
-    color: "#8B8B8B",
-    marginRight: 4,
   },
 });
