@@ -7,7 +7,7 @@ export default function Profile() {
     <View style={styles.container}>
       <View style={styles.header}>
         {/* back button */}
-        <TouchableOpacity style={styles.backButton}>
+        <TouchableOpacity style={styles.backButton}onPress={() => {}}>
           <View style={styles.backCircle}>
             <Ionicons name="chevron-back" size={24} color="#6E62FF" />
           </View>
