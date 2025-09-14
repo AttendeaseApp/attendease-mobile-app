@@ -1,13 +1,11 @@
-import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Profile() {
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
-
         {/* back button */}
         <TouchableOpacity style={styles.backButton}>
           <View style={styles.backCircle}>
@@ -15,89 +13,22 @@ export default function Profile() {
           </View>
         </TouchableOpacity>
 
-        {/* My profile Text*/}
         <Text style={styles.myProfileText}>My Profile</Text>
       </View>
 
-      {/* avatar/profile pic */}
+      {/* avatar wrapped in container */}
       <View style={styles.avatarContainer}>
         <Image
           style={styles.avatar}
           source={{ uri: "https://bootdey.com/img/Content/avatar/avatar6.png" }}
         />
-        <Text style={styles.profileName}>John Doe</Text>
       </View>
 
-      {/* Body */}
-      <ScrollView
-        style={styles.body}
-        contentContainerStyle={{ paddingBottom: 50 }}
-      >
-        {/* Contact Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>CONTACT</Text>
-
-          <View style={styles.sectionBody}>
-            <TouchableOpacity style={styles.row}>
-              <Text style={styles.rowLabel}>Email</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.row}>
-              <Text style={styles.rowLabel}>wala pa</Text>
-              <View style={styles.rowSpacer} />
-            </TouchableOpacity>
-          </View>
+      <View style={styles.body}>
+        <View style={styles.bodyContent}>
+          {/* you can add your profile details here */}
         </View>
-
-        {/* Account Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>ACCOUNT</Text>
-
-          <View style={styles.sectionBody}>
-            <TouchableOpacity style={styles.row}>
-              <Text style={styles.rowLabel}>Personal Data</Text>
-              <View style={styles.rowSpacer} />
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.row}>
-              <Text style={styles.rowLabel}> Office Assets</Text>
-              <View style={styles.rowSpacer} />
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.row}>
-              <Text style={styles.rowLabel}>SMS Notifications</Text>
-              <View style={styles.rowSpacer} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Last Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>More</Text>
-
-          <View style={styles.sectionBody}>
-            <TouchableOpacity style={styles.row}>
-              <Text style={styles.rowLabel}>wala pa</Text>
-              <View style={styles.rowSpacer} />
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.row}>
-              <Text style={styles.rowLabel}>wala pa</Text>
-              <View style={styles.rowSpacer} />
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.row}>
-              <Text style={styles.rowLabel}>wala pa</Text>
-              <View style={styles.rowSpacer} />
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.row}>
-              <Text style={styles.rowLabel}>Logout </Text>
-              <View style={styles.rowSpacer} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ScrollView>
+      </View>
     </View>
   );
 }
@@ -113,8 +44,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
-  //back button
   backButton: {
     position: "absolute",
     top: 40,
@@ -133,8 +62,6 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-
-  //profile pic
   avatarContainer: {
     alignItems: "center",
     marginTop: -65,
@@ -147,59 +74,17 @@ const styles = StyleSheet.create({
     borderColor: "white",
     marginBottom: 10,
   },
-
-  profileName:{
-   fontSize: 18,
-    fontWeight: "600",
-    color: "#000",
-  },
-
   body: {
     marginTop: 20,
+  },
+  bodyContent: {
+    flex: 1,
+    alignItems: "center",
+    padding: 30,
   },
   myProfileText: {
     fontSize: 20,
     color: "#ffffffff",
     marginBottom: 50,
-  },
-  section: {
-    paddingTop: 12,
-  },
-  sectionTitle: {
-    marginVertical: 8,
-    marginHorizontal: 24,
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#000000ff",
-    textTransform: "uppercase",
-    letterSpacing: 1.2,
-  },
-  sectionBody: {
-    paddingLeft: 24,
-    backgroundColor: "#fff",
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: "#e3e3e3",
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    paddingRight: 16,
-    height: 50,
-    borderTopWidth: 1,
-    borderColor: "#e3e3e3",
-  },
-
-  //button labels
-  rowLabel: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#000",
-  },
-  rowSpacer: {
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: 0,
   },
 });
