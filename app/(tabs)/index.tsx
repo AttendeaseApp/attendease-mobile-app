@@ -53,14 +53,6 @@ export default function HomeScreen() {
     );
   }
 
-  if (events.length === 0) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>No ongoing events found.</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={{ flex: 1 }}>
       <ParallaxScrollView
@@ -75,27 +67,31 @@ export default function HomeScreen() {
         }
       >
         <View style={styles.centerWrapper}>
-          <FlatList
-            data={events}
-            keyExtractor={(item, index) => item.eventId || `event-${index}`}
-            renderItem={({ item }) => (
-              <EventCard
-                eventName={item.eventName}
-                eventStatus={item.eventStatus}
-                startDate={item.startDate}
-                endDate={item.endDate}
-                locationId={item.locationId}
-                onAttend={() => {
-                  console.log("Check-in for event:", item.eventId);
-                }}
-              />
-            )}
-            contentContainerStyle={{
-              padding: 16,
-              alignItems: "center",
-            }}
-            showsVerticalScrollIndicator={false}
-          />
+          {events.length === 0 ? (
+            <Text>No ongoing events found.</Text>
+          ) : (
+            <FlatList
+              data={events}
+              keyExtractor={(item, index) => item.eventId || `event-${index}`}
+              renderItem={({ item }) => (
+                <EventCard
+                  eventName={item.eventName}
+                  eventStatus={item.eventStatus}
+                  startDate={item.startDate}
+                  endDate={item.endDate}
+                  locationId={item.locationId}
+                  onAttend={() => {
+                    console.log("Check-in for event:", item.eventId);
+                  }}
+                />
+              )}
+              contentContainerStyle={{
+                padding: 16,
+                alignItems: "center",
+              }}
+              showsVerticalScrollIndicator={false}
+            />
+          )}
         </View>
       </ParallaxScrollView>
     </View>
@@ -126,43 +122,7 @@ const styles = StyleSheet.create({
     minHeight: 0,
   },
 
-  //TOP PART (HEADER) WITH NAME AND SECTION AND NOTIF BUTTON
-  NameOfStudent: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  UserSection: {
-    color: "#fff",
-    fontSize: 14,
-    opacity: 0.8,
-    marginTop: 2,
-  },
-  NOTIFButton: {
-    padding: 8,
-    backgroundColor: "#fff9f9ff",
-    borderRadius: 20,
-  },
-
-  TODAYLabel: {
-    position: "absolute",
-    bottom: 15,
-    left: 20,
-    color: "#fff",
-    fontSize: 28,
-    fontWeight: "bold",
-  },
-
-  profileIconButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#00000030", // optional semi-transparent background
-  },
-
-  //MAIN EVENT CARD
+  // MAIN EVENT CARD
   card1: {
     width: "120%",
     height: 320,
@@ -178,54 +138,4 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingTop: 12,
   },
-
-  // // MAIN EVENT Card 1 button STYLE AND TEXT STYLES
-  // card1Button: {
-  //   width: "100%",
-  //   marginTop: 12,
-  //   paddingVertical: 10,
-  //   backgroundColor: "#27548A",
-  //   borderRadius: 30,
-  //   alignItems: "center",
-  // },
-  // card1ButtonText: {
-  //   color: "#fff",
-  //   fontWeight: "bold",
-  //   fontSize: 13,
-  // },
-  // imageBox: {
-  //   width: "90%",
-  //   height: 170,
-  //   backgroundColor: "#d9d9d9",
-  //   borderRadius: 12,
-  //   justifyContent: "center",
-  //   alignItems: "center",
-  // },
-  // card1TextContainer: {
-  //   width: "90%",
-  // },
-  // card2: {
-  //   backgroundColor: "#fff",
-  //   borderRadius: 20,
-  //   marginBottom: 20,
-  //   shadowColor: "#000",
-  //   shadowOffset: { width: 0, height: 2 },
-  //   shadowOpacity: 0.1,
-  //   shadowRadius: 8,
-  //   elevation: 3,
-  //   padding: 16,
-  //   width: "120%",
-  // },
-  // card3: {
-  //   backgroundColor: "#fff",
-  //   borderRadius: 20,
-  //   marginBottom: 20,
-  //   shadowColor: "#000",
-  //   shadowOffset: { width: 0, height: 2 },
-  //   shadowOpacity: 0.1,
-  //   shadowRadius: 8,
-  //   elevation: 3,
-  //   padding: 16,
-  //   width: "120%",
-  // },
 });
