@@ -1,5 +1,7 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Button } from "./Button";
+import { ThemedText } from "./ThemedText";
 
 interface EventCardProps {
   eventName: string;
@@ -7,7 +9,6 @@ interface EventCardProps {
   startDate: string;
   endDate: string;
   locationId?: string;
-  onAttend?: () => void;
 }
 
 function formatDate(dateStr: string) {
@@ -22,35 +23,37 @@ const EventCard: React.FC<EventCardProps> = ({
   startDate,
   endDate,
   locationId,
-  onAttend,
-}) => (
-  <TouchableOpacity style={styles.card1} activeOpacity={0.8}>
-    <View style={styles.card1TextContainer}>
-      <Text style={styles.card1Title}>{eventName}</Text>
-      <Text style={styles.card1Content}>Status: {eventStatus}</Text>
-      <Text style={styles.card1Content}>Start: {formatDate(startDate)}</Text>
-      <Text style={styles.card1Content}>End: {formatDate(endDate)}</Text>
-      {locationId ? (
-        <Text style={styles.card1Content}>Location: {locationId}</Text>
-      ) : null}
-      <TouchableOpacity style={styles.card1Button} onPress={onAttend}>
-        <Text style={styles.card1ButtonText}>Check In</Text>
-      </TouchableOpacity>
-    </View>
-  </TouchableOpacity>
-);
+}) => {
+  const onAttend = async () => {
+    console.log("Navigating to check-in for event:", eventName);
+  };
+
+  return (
+    <TouchableOpacity style={styles.card} activeOpacity={0.8}>
+      <View style={styles.cardInfoContainer}>
+        <ThemedText type="title">{eventName}</ThemedText>
+        <ThemedText type="default">Status: {eventStatus}</ThemedText>
+        <ThemedText type="default">Start: {formatDate(startDate)}</ThemedText>
+        <ThemedText type="default">End: {formatDate(endDate)}</ThemedText>
+        {locationId ? (
+          <ThemedText type="default">Location: {locationId}</ThemedText>
+        ) : null}
+
+        <Button title="CHECK IN" onPress={onAttend} />
+
+        <TouchableOpacity style={styles.card1Button} onPress={onAttend}>
+          <ThemedText type="default">CHECK IN</ThemedText>
+        </TouchableOpacity>
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
-  card1Title: {
-    fontWeight: "bold",
-    fontSize: 18,
-    marginBottom: 4,
-    color: "#27548A",
-  },
-  card1TextContainer: {
+  cardInfoContainer: {
     flex: 1,
   },
-  card1: {
+  card: {
     backgroundColor: "#fff",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },

@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 export default function Notifications() {
   return (
+    
     <View style={styles.container}>
       <View style={styles.header}>
         {/* Header text */}

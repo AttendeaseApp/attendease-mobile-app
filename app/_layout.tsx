@@ -1,26 +1,39 @@
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
 import { useFonts } from "expo-font";
+import { Slot } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import "react-native-reanimated";
+
+import { useColorScheme } from "@/hooks/useColorScheme";
+
+export const unstable_settings = {
+  initialRouteName: "index",
+};
+
+export const options = {
+  headerShown: false,
+};
 
 export default function RootLayout() {
+  const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    AfacadFlux: require("../assets/fonts/AfacadFlux-Medium.ttf"),
   });
 
   if (!loaded) {
+    // Async font loading only occurs in development.
     return null;
   }
 
   return (
-    <>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="login" options={{ headerShown: false }} />
-        <Stack.Screen name="account" options={{ headerShown: false }} />
-        <Stack.Screen name="notifications" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
+    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <Slot />
       <StatusBar style="auto" />
-    </>
+    </ThemeProvider>
   );
 }
