@@ -22,7 +22,8 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
-    AfacadFlux: require("../assets/fonts/AfacadFlux-Medium.ttf"),
+    AfacadFlux: require("../assets/fonts/AfacadFlux-Light.ttf"),
+    Newsreader: require("../assets/fonts/Newsreader_24pt-Medium.ttf"),
   });
 
   if (!loaded) {

@@ -12,7 +12,3 @@ export async function authFetch(url: string, options = {}) {
     },
   });
 }
-
-export async function logout() {
-  await AsyncStorage.removeItem("authToken");
-}

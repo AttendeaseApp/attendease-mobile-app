@@ -16,8 +16,8 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 25,
-    gap: 20,
+    padding: 30,
+    gap: 15,
     backgroundColor: "#fff",
   },
 });
