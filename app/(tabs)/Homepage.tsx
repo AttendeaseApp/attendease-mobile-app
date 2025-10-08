@@ -63,7 +63,7 @@ export default function HomeScreen() {
   return (
     <ScreenContainer>
       <NavBar title="HOME" />
-      <View style={{ marginBlock: 20 }}>
+      <View>
         <ThemedText type="subTitleSecondary" fontFamilyOverride="Newsreader">
           Welcome to Attendease,
         </ThemedText>
