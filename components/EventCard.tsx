@@ -1,17 +1,9 @@
+import { EventCardProps } from "@/types/event/EventCardProps";
 import { useRouter } from "expo-router";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Button } from "./Button";
 import { ThemedText } from "./ThemedText";
-
-interface EventCardProps {
-  eventName: string;
-  eventStatus: string;
-  startDateTime: string;
-  endDateTime: string;
-  locationId?: string;
-  eventId: string; // Add eventId for verification
-}
 
 function formatDate(dateStr: string) {
   if (!dateStr) return "";
@@ -20,28 +12,32 @@ function formatDate(dateStr: string) {
 }
 
 const EventCard: React.FC<EventCardProps> = ({
+  eventId,
   eventName,
   eventStatus,
   startDateTime,
   endDateTime,
-  locationId,
+  eventLocation,
 }) => {
   const router = useRouter();
 
   const onAttend = () => {
     router.push({
-      pathname: "../../(facial)/FacialVerificationScreen",
+      pathname: "../../(checkIn)/EventCheckInPage",
       params: {
+        eventId,
         eventName,
-        locationId: locationId || "",
+        eventStatus,
         startDateTime,
         endDateTime,
+        locationId: eventLocation.locationId,
       },
     });
   };
 
   return (
     <View style={styles.card}>
+      <ThemedText type="default">DEBUG Event ID: {eventId}</ThemedText>
       <ThemedText type="default">Event Status: {eventStatus}</ThemedText>
       <ThemedText type="titleSecondary" fontFamilyOverride="Newsreader">
         {eventName}
@@ -49,8 +45,11 @@ const EventCard: React.FC<EventCardProps> = ({
 
       <ThemedText type="default">Start: {formatDate(startDateTime)}</ThemedText>
       <ThemedText type="default">End: {formatDate(endDateTime)}</ThemedText>
-      {locationId ? (
-        <ThemedText type="default">Location: {locationId}</ThemedText>
+
+      {eventLocation ? (
+        <ThemedText type="default">
+          Location Name: {eventLocation.locationName}
+        </ThemedText>
       ) : null}
 
       <Button title="CHECK IN" onPress={onAttend} />

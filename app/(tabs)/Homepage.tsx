@@ -10,17 +10,7 @@ import {
   RETRIVE_USER_PROFILE,
 } from "../../constants/api";
 
-type Event = {
-  eventId: string;
-  eventName: string;
-  eventStatus: string;
-  startDateTime: string;
-  endDateTime: string;
-  eventLocationId?: string;
-  locationId?: string;
-  createdAt?: string;
-  updatedAt?: string;
-};
+import { Event } from "@/types/event/Event";
 
 export default function HomeScreen() {
   const [events, setEvents] = useState<Event[]>([]);
@@ -93,11 +83,13 @@ export default function HomeScreen() {
             keyExtractor={(item, index) => item.eventId || `event-${index}`}
             renderItem={({ item }) => (
               <EventCard
+                eventId={item.eventId}
                 eventName={item.eventName}
                 eventStatus={item.eventStatus}
                 startDateTime={item.startDateTime}
                 endDateTime={item.endDateTime}
                 locationId={item.locationId}
+                eventLocation={item.eventLocation}
               />
             )}
             showsVerticalScrollIndicator={false}
