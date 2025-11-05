@@ -37,8 +37,8 @@ const EventCard: React.FC<EventCardProps> = ({
 
   return (
     <View style={styles.card}>
-      <ThemedText type="default">Event Status: {eventStatus}</ThemedText>
-      <ThemedText type="titleSecondary" fontFamilyOverride="Newsreader">
+      <ThemedText type="default">{eventStatus}</ThemedText>
+      <ThemedText type="title" fontFamilyOverride="AfacadFlux">
         {eventName}
       </ThemedText>
 
@@ -47,7 +47,7 @@ const EventCard: React.FC<EventCardProps> = ({
 
       {eventLocation ? (
         <ThemedText type="default">
-          Location Name: {eventLocation.locationName}
+          Location: {eventLocation.locationName}
         </ThemedText>
       ) : null}
 

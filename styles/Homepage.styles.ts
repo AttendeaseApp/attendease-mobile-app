@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
     width: "100%",
   },
   welcomeMessage: {
-    fontSize: 45,
+    fontSize: 40,
     lineHeight: 45,
   },
 });
