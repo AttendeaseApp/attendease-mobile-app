@@ -24,6 +24,7 @@ export default function RootLayout() {
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     AfacadFlux: require("../assets/fonts/AfacadFlux-Light.ttf"),
     Newsreader: require("../assets/fonts/Newsreader_24pt-Medium.ttf"),
+    StackSansHeadline: require("../assets/fonts/StackSansHeadline-VariableFont_wght.ttf"),
   });
 
   if (!loaded) {

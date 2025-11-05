@@ -1,5 +1,5 @@
 import { authFetch } from "@/services/auth-fetch";
-import { RETRIVE_USER_PROFILE } from "../constants/api";
+import { RETRIEVE_USER_PROFILE } from "../constants/api";
 
 /**
  * Fetches profile page data.
@@ -13,7 +13,7 @@ export async function fetchProfilePageData(
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ) {
   try {
-    const response = await authFetch(RETRIVE_USER_PROFILE);
+    const response = await authFetch(RETRIEVE_USER_PROFILE);
     if (!response.ok) throw new Error("Failed to fetch events");
     const data = await response.json();
     setProfile(data);

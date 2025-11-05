@@ -6,14 +6,6 @@ Styles for the Event Registration Page
 export const styles = StyleSheet.create({
   infoSection: {
     marginBottom: 16,
-    backgroundColor: "#fff",
-    padding: 12,
-    borderRadius: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
   },
   label: {
     fontSize: 12,

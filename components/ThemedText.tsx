@@ -10,19 +10,32 @@ export type ThemedTextProps = TextProps & {
     | "titleSecondary"
     | "subTitleSecondary";
   colorVariant?: "black" | "white";
-  fontFamilyOverride?: string; // NEW optional prop
+  fontFamilyOverride?: string;
+  fontWeightOverride?:
+    | "normal"
+    | "bold"
+    | "100"
+    | "200"
+    | "300"
+    | "400"
+    | "500"
+    | "600"
+    | "700"
+    | "800"
+    | "900";
 };
 
 export function ThemedText({
   style,
   type = "default",
   colorVariant = "black",
-  fontFamilyOverride, // destructure new prop
+  fontFamilyOverride,
+  fontWeightOverride,
   ...rest
 }: ThemedTextProps) {
   const textColor = colorVariant === "white" ? "#fff" : "#000";
   const defaultFontFamily =
-    type === "titleSecondary" && "subTitleSecondary"
+    type === "titleSecondary" || type === "subTitleSecondary"
       ? "Newsreader"
       : "AfacadFlux";
 
@@ -32,6 +45,7 @@ export function ThemedText({
         {
           color: textColor,
           fontFamily: fontFamilyOverride ?? defaultFontFamily,
+          fontWeight: fontWeightOverride ?? "400",
         },
         type === "default" ? styles.default : undefined,
         type === "title" ? styles.title : undefined,
@@ -55,7 +69,7 @@ const styles = StyleSheet.create({
   defaultSemiBold: {
     fontSize: 16,
     lineHeight: 24,
-    fontWeight: "600",
+    fontWeight: "400",
   },
   title: {
     fontSize: 25,

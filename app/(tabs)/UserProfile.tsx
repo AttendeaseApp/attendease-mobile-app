@@ -68,6 +68,11 @@ export default function UserProfile() {
             Student No: {student?.studentNumber || "N/A"}
           </ThemedText>
         </View>
+
+        <View style={{ marginBottom: 20 }}>
+          <ThemedText type="default">Change Password</ThemedText>
+          <ThemedText type="default">(ToDo feature)</ThemedText>
+        </View>
         <Button title="LOG OUT" onPress={handleLogout} />
       </View>
     </ScreenContainer>

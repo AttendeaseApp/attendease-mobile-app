@@ -30,7 +30,7 @@ export const Button = ({
       disabled={disabled || loading}
     >
       {loading ? (
-        <ActivityIndicator color="#fff" />
+        <ActivityIndicator color="#000000ff" />
       ) : (
         <ThemedText type="default" colorVariant="black">
           {title}
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingVertical: 8,
     paddingHorizontal: 32,
-    borderRadius: 0,
+    borderRadius: 6,
     alignItems: "center",
     width: "100%",
   },

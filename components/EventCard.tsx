@@ -23,7 +23,7 @@ const EventCard: React.FC<EventCardProps> = ({
 
   const onAttend = () => {
     router.push({
-      pathname: "../../(checkIn)/EventCheckInPage",
+      pathname: "../../(checkIn)/EventRegistrationPage",
       params: {
         eventId,
         eventName,
