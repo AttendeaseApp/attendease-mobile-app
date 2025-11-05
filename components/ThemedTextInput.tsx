@@ -1,14 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
+  StyleProp,
   StyleSheet,
   TextInput,
   TextInputProps,
   TouchableOpacity,
   View,
+  ViewStyle,
 } from "react-native";
-
-import { StyleProp, ViewStyle } from "react-native";
 
 export type ThemedTextInputProps = TextInputProps & {
   variant?: "default" | "outlined" | "filled";
