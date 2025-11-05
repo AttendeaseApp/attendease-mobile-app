@@ -97,7 +97,7 @@ export default function EventCheckInPage() {
         <View style={styles.infoSection}>
           <ThemedText type="default">Attendance Tracking Status</ThemedText>
           <ThemedText type="default">
-            INACTIVE. Press 'REGISTER' to begin.
+            INACTIVE. Press REGISTER to begin.
           </ThemedText>
         </View>
       )}

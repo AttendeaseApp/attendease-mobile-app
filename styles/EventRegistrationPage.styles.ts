@@ -49,3 +49,5 @@ export const styles = StyleSheet.create({
     right: 12,
   },
 });
+
+export default styles;
