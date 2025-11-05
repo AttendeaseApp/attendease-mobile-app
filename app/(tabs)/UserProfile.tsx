@@ -1,14 +1,23 @@
-import { Button } from "@/components/Button";
-import { ThemedText } from "@/components/ThemedText";
-import { logout } from "@/services/auth";
-import { fetchProfilePageData } from "@/services/fetch-profile-page-data";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
+// styles
+import { styles } from "@/styles/UserProfile.styles";
+// ui
+import { Button } from "@/components/Button";
+import { ThemedText } from "@/components/ThemedText";
 import { ScreenContainer } from "../../components/CustomScreenContainer";
 import NavBar from "../../components/NavBar";
+// services
+import { logout } from "@/services/auth";
+import { fetchProfilePageData } from "@/services/fetch-profile-page-data";
 
-export default function Profile() {
+/**
+ * This is the User Profile Page where users can view their profile information and log out of the application.
+ *
+ * @returns JSX.Element representing the User Profile Page.
+ */
+export default function UserProfile() {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -64,10 +73,3 @@ export default function Profile() {
     </ScreenContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  centerWrapper: {
-    flex: 1,
-    width: "100%",
-  },
-});

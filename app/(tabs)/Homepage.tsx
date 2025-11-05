@@ -1,13 +1,28 @@
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, FlatList, View } from "react-native";
+
+// interfaces
+import { Event } from "@/types/event-sessions/Event";
+// styles
+import { styles } from "@/styles/Homepage.styles";
+// services
+import { fetchHomePageData } from "@/services/fetch-home-page-data";
+// ui
 import EventCard from "@/components/EventCard";
 import { ThemedText } from "@/components/ThemedText";
-import { fetchHomePageData } from "@/services/fetch-home-page-data";
-import React, { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 import { ScreenContainer } from "../../components/CustomScreenContainer";
 import NavBar from "../../components/NavBar";
 
-import { Event } from "@/types/event-sessions/Event";
+/* 
+  
+*/
 
+/**
+ * This is the Home Screen where users can view a list of available events
+ * and access the overview of their profile.
+ *
+ * @returns JSX.Element representing the Home Screen.
+ */
 export default function HomeScreen() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
@@ -77,14 +92,3 @@ export default function HomeScreen() {
     </ScreenContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  cardContainer: {
-    flex: 1,
-    width: "100%",
-  },
-  welcomeMessage: {
-    fontSize: 45,
-    lineHeight: 45,
-  },
-});

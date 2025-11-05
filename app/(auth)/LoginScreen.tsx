@@ -4,8 +4,13 @@ import { login } from "@/services/auth";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Alert, TextInput, View } from "react-native";
-import styles from "./LoginScreen.styles";
+import styles from "../../styles/LoginScreen.styles";
 
+/**
+ * Login Screen component that allows users to log in with their student number and password.
+ *
+ * @returns JSX.Element representing the Login Screen.
+ */
 const LoginScreen = () => {
   const [studentNumber, setStudentNumber] = useState("");
   const [password, setPassword] = useState("");

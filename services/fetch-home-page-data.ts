@@ -5,6 +5,15 @@ import {
   RETRIVE_USER_PROFILE,
 } from "../constants/api";
 
+/**
+ *  Fetches home page data including ongoing events and user profile.
+ *  It updates the provided state setters with the fetched data and loading state.
+ *
+ *  @param setEvents - State setter for the list of events.
+ *  @param setUser - State setter for the user profile information.
+ *  @param setLoading - State setter for the loading state.
+ */
+
 export async function fetchHomePageData(
   setEvents: React.Dispatch<React.SetStateAction<Event[]>>,
   setUser: React.Dispatch<

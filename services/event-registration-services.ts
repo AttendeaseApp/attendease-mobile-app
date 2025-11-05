@@ -13,10 +13,12 @@ import {
 // services
 import { pingAttendance } from "@/services/ping-attendance-logs";
 
-/* 
-    this function fetches the user's current location using Expo's Location API.
-    It updates the provided state setters with the latitude and longitude values.
-*/
+/**
+ * this function fetches the user's current location using Expo's Location API.
+ * It updates the provided state setters with the latitude and longitude values.
+ *
+ * @param param0 Object containing state setters for location loading, latitude, and longitude.
+ */
 export async function fetchLocation(
   setLocationLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setLatitude: React.Dispatch<React.SetStateAction<number | null>>,
@@ -47,10 +49,12 @@ export async function fetchLocation(
   }
 }
 
-/* 
-    this function handles the user check-in process by verifying their location and event details.
-    It provides feedback via alerts and manages loading state.
-*/
+/**
+ * this function handles the user check-in process by verifying their location and event details.
+ * It provides feedback via alerts and manages loading state.
+ *
+ * @param param0 CheckInParams object containing eventId, locationId, latitude, longitude, setLoading, and onSuccess callback.
+ */
 export async function handleCheckIn({
   eventId,
   locationId,
@@ -86,10 +90,12 @@ export async function handleCheckIn({
   }
 }
 
-/* 
-  this function starts periodic pinging to log attendance.
-  It sets up an interval to fetch the user's location and send pings every minute.
-*/
+/**
+ * this function starts periodic pinging to log attendance.
+ * It sets up an interval to fetch the user's location and send pings every minute.
+ *
+ * @param param0 PingingParams object containing eventId, locationId, state setters for pinging status, latitude, longitude, and last ping time.
+ */
 export function startPingingAttendanceLogs({
   eventId,
   locationId,
@@ -120,10 +126,12 @@ export function startPingingAttendanceLogs({
   return interval;
 }
 
-/* 
-  this function stops the periodic pinging for attendance logging.
-  It updates the pinging state and notifies the user.
-*/
+/**
+ * this function stops the periodic pinging for attendance logging.
+ * It updates the pinging state and notifies the user.
+ *
+ * @param param0 StopPingingParams object containing state setter for pinging status.
+ */
 export function stopPingingAttendanceLogs({ setIsPinging }: StopPingingParams) {
   setIsPinging(false);
   Alert.alert("Tracking Stopped", "Attendance tracking has been stopped.");

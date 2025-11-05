@@ -1,6 +1,13 @@
 import { authFetch } from "@/services/auth-fetch";
 import { RETRIVE_USER_PROFILE } from "../constants/api";
 
+/**
+ * Fetches profile page data.
+ * It updates the provided state setters with the fetched data and loading state.
+ *
+ * @param setProfile
+ * @param setLoading
+ */
 export async function fetchProfilePageData(
   setProfile: React.Dispatch<React.SetStateAction<Event[]>>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>

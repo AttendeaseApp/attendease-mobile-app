@@ -1,6 +1,15 @@
 import { REGISTER_STUDENT_ON_EVENT_ENDPOINT } from "@/constants/api";
 import { authFetch } from "./auth-fetch";
 
+/**
+ * Verifies a student's check-in for an event by sending their location and event details to the server.
+ *
+ * @param eventId
+ * @param locationId
+ * @param latitude
+ * @param longitude
+ * @returns
+ */
 export async function verifyCheckIn(
   eventId: string,
   locationId: string,
