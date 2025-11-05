@@ -1,5 +1,5 @@
 import { REGISTER_STUDENT_ON_EVENT_ENDPOINT } from "@/constants/api";
-import { authFetch } from "./authFetch";
+import { authFetch } from "./auth-fetch";
 
 export async function verifyCheckIn(
   eventId: string,

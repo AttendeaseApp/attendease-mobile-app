@@ -1,4 +1,4 @@
-import { EventCardProps } from "@/types/event/EventCardProps";
+import { EventCardProps } from "@/types/event-sessions/EventCardProps";
 import { useRouter } from "expo-router";
 import React from "react";
 import { StyleSheet, View } from "react-native";

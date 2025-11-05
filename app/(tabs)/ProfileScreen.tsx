@@ -1,13 +1,12 @@
 import { Button } from "@/components/Button";
 import { ThemedText } from "@/components/ThemedText";
 import { logout } from "@/services/auth";
-import { authFetch } from "@/services/authFetch";
+import { fetchProfilePageData } from "@/services/fetch-profile-page-data";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { ScreenContainer } from "../../components/CustomScreenContainer";
 import NavBar from "../../components/NavBar";
-import { RETRIVE_USER_PROFILE } from "../../constants/api";
 
 export default function Profile() {
   const [profile, setProfile] = useState<any>(null);
@@ -15,20 +14,7 @@ export default function Profile() {
   const router = useRouter();
 
   useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        const response = await authFetch(RETRIVE_USER_PROFILE);
-        if (!response.ok) throw new Error("Failed to fetch events");
-        const data = await response.json();
-        setProfile(data);
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProfile();
+    fetchProfilePageData(setProfile, setLoading);
   }, []);
 
   const handleLogout = async () => {
