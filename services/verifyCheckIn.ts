@@ -1,4 +1,4 @@
-import { CHECK_IN } from "@/constants/api";
+import { REGISTER_STUDENT_ON_EVENT_ENDPOINT } from "@/constants/api";
 import { authFetch } from "./authFetch";
 
 export async function verifyCheckIn(
@@ -8,7 +8,7 @@ export async function verifyCheckIn(
   longitude: number
 ) {
   try {
-    const response = await authFetch(CHECK_IN, {
+    const response = await authFetch(REGISTER_STUDENT_ON_EVENT_ENDPOINT, {
       method: "POST",
       body: JSON.stringify({
         eventId,

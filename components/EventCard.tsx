@@ -37,7 +37,6 @@ const EventCard: React.FC<EventCardProps> = ({
 
   return (
     <View style={styles.card}>
-      <ThemedText type="default">DEBUG Event ID: {eventId}</ThemedText>
       <ThemedText type="default">Event Status: {eventStatus}</ThemedText>
       <ThemedText type="titleSecondary" fontFamilyOverride="Newsreader">
         {eventName}

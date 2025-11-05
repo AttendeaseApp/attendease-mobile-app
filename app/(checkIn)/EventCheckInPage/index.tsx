@@ -1,8 +1,9 @@
 import { ThemedText } from "@/components/ThemedText";
+import { pingAttendance } from "@/services/pingAttendanceLogs";
 import { verifyCheckIn } from "@/services/verifyCheckIn";
 import * as Location from "expo-location";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -11,6 +12,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { ScreenContainer } from "../../../components/CustomScreenContainer";
 
 export default function EventCheckInPage() {
   const router = useRouter();
@@ -21,31 +23,27 @@ export default function EventCheckInPage() {
     eventName: string;
   }>();
 
-  const [eventIdState, setEventIdState] = useState("");
-  const [eventStatusState, setEventStatusState] = useState("");
-  const [eventNameState, setEventNameState] = useState("");
-  const [locationIdState, setLocationIdState] = useState("");
-  const [latitudeState, setLatitudeState] = useState<number | null>(null);
-  const [longitudeState, setLongitudeState] = useState<number | null>(null);
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [locationLoading, setLocationLoading] = useState(true);
+  const pingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  useEffect(() => {
-    if (eventId) setEventIdState(Array.isArray(eventId) ? eventId[0] : eventId);
-    if (eventStatus)
-      setEventStatusState(
-        Array.isArray(eventStatus) ? eventStatus[0] : eventStatus
-      );
-    if (eventName)
-      setEventNameState(Array.isArray(eventName) ? eventName[0] : eventName);
-    if (locationId)
-      setLocationIdState(
-        Array.isArray(locationId) ? locationId[0] : locationId
-      );
-  }, [eventId, eventStatus, eventName, locationId]);
+  const parsedEventId = Array.isArray(eventId) ? eventId[0] : eventId;
+  const parsedLocationId = Array.isArray(locationId)
+    ? locationId[0]
+    : locationId;
+  const parsedEventStatus = Array.isArray(eventStatus)
+    ? eventStatus[0]
+    : eventStatus;
+  const parsedEventName = Array.isArray(eventName) ? eventName[0] : eventName;
+
+  const [isPinging, setIsPinging] = useState(false);
+  const [lastPingTime, setLastPingTime] = useState<string | null>(null);
 
   useEffect(() => {
     fetchLocation();
+    return () => stopPinging();
   }, []);
 
   const fetchLocation = async () => {
@@ -57,7 +55,6 @@ export default function EventCheckInPage() {
           "Permission Denied",
           "Location permission is required for check-in."
         );
-        setLocationLoading(false);
         return;
       }
 
@@ -65,12 +62,9 @@ export default function EventCheckInPage() {
         accuracy: Location.Accuracy.High,
       });
 
-      setLatitudeState(location.coords.latitude);
-      setLongitudeState(location.coords.longitude);
-      console.log("Location fetched:", {
-        lat: location.coords.latitude,
-        lon: location.coords.longitude,
-      });
+      setLatitude(location.coords.latitude);
+      setLongitude(location.coords.longitude);
+      console.log("Location fetched:", location.coords);
     } catch (error) {
       console.error("Failed to get location", error);
       Alert.alert("Location Error", "Failed to fetch your location.");
@@ -81,154 +75,151 @@ export default function EventCheckInPage() {
 
   const handleCheckIn = async () => {
     if (
-      !eventIdState ||
-      !locationIdState ||
-      latitudeState === null ||
-      longitudeState === null
+      !parsedEventId ||
+      !parsedLocationId ||
+      latitude === null ||
+      longitude === null
     ) {
-      Alert.alert(
-        "Missing Data",
-        "Cannot proceed with check-in. Missing required information."
-      );
+      Alert.alert("Missing Data", "Cannot proceed with check-in.");
       return;
     }
 
     setLoading(true);
-
     try {
       const result = await verifyCheckIn(
-        eventIdState,
-        locationIdState,
-        latitudeState,
-        longitudeState
+        parsedEventId,
+        parsedLocationId,
+        latitude,
+        longitude
       );
 
       if (result.success) {
         Alert.alert(
           "Check-In Successful",
-          result.message || "Checked in successfully!",
-          [
-            {
-              text: "OK",
-              onPress: () => router.back(),
-            },
-          ]
+          "Checked in successfully. Tracking attendance.",
+          [{ text: "OK", onPress: startPinging }]
         );
       } else {
-        Alert.alert(
-          "Check-In Failed",
-          result.message || "Check-in failed. Please try again.",
-          [{ text: "OK" }]
-        );
+        Alert.alert("Check-In Failed", result.message || "Please try again.");
       }
     } catch (error: any) {
       console.error("Check-in error:", error);
-      Alert.alert(
-        "Error",
-        error.message ||
-          "Something went wrong during check-in. Please try again."
-      );
+      Alert.alert("Error", error.message || "Something went wrong.");
     } finally {
       setLoading(false);
     }
   };
 
+  const startPinging = () => {
+    stopPinging();
+    setIsPinging(true);
+    const PING_INTERVAL_MS = 60000;
+
+    pingIntervalRef.current = setInterval(async () => {
+      try {
+        const location = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.BestForNavigation,
+        });
+
+        setLatitude(location.coords.latitude);
+        setLongitude(location.coords.longitude);
+
+        console.log("Sending attendance ping:", location.coords);
+
+        await pingAttendance(
+          parsedEventId!,
+          parsedLocationId!,
+          location.coords.latitude,
+          location.coords.longitude
+        );
+      } catch (err) {
+        console.warn("Ping failed:", err);
+      }
+    }, PING_INTERVAL_MS);
+  };
+
+  const stopPinging = () => {
+    if (pingIntervalRef.current) {
+      clearInterval(pingIntervalRef.current);
+      pingIntervalRef.current = null;
+      setIsPinging(false);
+      Alert.alert("Tracking Stopped", "Attendance tracking has been stopped.");
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      <View style={styles.contentContainer}>
-        <Text style={styles.title}>Event Check-In</Text>
-
-        <View style={styles.infoSection}>
-          <Text style={styles.label}>Event Name</Text>
-          <ThemedText type="default" style={styles.value}>
-            {eventNameState || "N/A"}
-          </ThemedText>
+    <ScreenContainer>
+      {[
+        { label: "Event Name", value: parsedEventName },
+        { label: "Status", value: parsedEventStatus },
+      ].map(({ label, value }) => (
+        <View key={label} style={styles.infoSection}>
+          <Text style={styles.label}>{label}</Text>
+          <ThemedText style={styles.value}>{value || "N/A"}</ThemedText>
         </View>
+      ))}
 
-        <View style={styles.infoSection}>
-          <Text style={styles.label}>Event ID</Text>
-          <ThemedText type="default" style={styles.value}>
-            {eventIdState}
-          </ThemedText>
+      {locationLoading ? (
+        <View style={styles.locationLoadingContainer}>
+          <ActivityIndicator size="small" color="#007AFF" />
+          <Text style={styles.locationLoadingText}>
+            Fetching your location...
+          </Text>
         </View>
-
-        <View style={styles.infoSection}>
-          <Text style={styles.label}>Status</Text>
-          <ThemedText type="default" style={styles.value}>
-            {eventStatusState}
-          </ThemedText>
-        </View>
-
-        <View style={styles.infoSection}>
-          <Text style={styles.label}>Location ID</Text>
-          <ThemedText type="default" style={styles.value}>
-            {locationIdState}
-          </ThemedText>
-        </View>
-
-        {locationLoading ? (
-          <View style={styles.locationLoadingContainer}>
-            <ActivityIndicator size="small" color="#0000ff" />
-            <Text style={styles.locationLoadingText}>
-              Fetching your location...
-            </Text>
+      ) : (
+        <>
+          <View style={styles.infoSection}>
+            <Text style={styles.label}>Latitude</Text>
+            <ThemedText style={styles.value}>
+              {latitude?.toFixed(6) || "N/A"}
+            </ThemedText>
           </View>
+          <View style={styles.infoSection}>
+            <Text style={styles.label}>Longitude</Text>
+            <ThemedText style={styles.value}>
+              {longitude?.toFixed(6) || "N/A"}
+            </ThemedText>
+          </View>
+        </>
+      )}
+
+      {isPinging ? (
+        <View style={styles.pingStatusContainer}>
+          <ActivityIndicator size="small" color="#4CAF50" />
+          <Text style={styles.pingStatusText}>
+            Attendance Tracking **ACTIVE** (pinging every 1 min)
+          </Text>
+          <Text style={styles.lastPingText}>Last successful ping:</Text>
+        </View>
+      ) : (
+        <View style={styles.infoSection}>
+          <Text style={styles.label}>Attendance Tracking</Text>
+          <ThemedText style={styles.value}>
+            **INACTIVE**. Press 'Check In' to begin.
+          </ThemedText>
+        </View>
+      )}
+
+      <View style={styles.buttonWrapper}>
+        {isPinging ? (
+          <Button title="Stop Tracking" onPress={stopPinging} color="#FF6347" />
         ) : (
-          <>
-            <View style={styles.infoSection}>
-              <Text style={styles.label}>📍 Your Latitude</Text>
-              <ThemedText type="default" style={styles.value}>
-                {latitudeState?.toFixed(6) || "N/A"}
-              </ThemedText>
-            </View>
-
-            <View style={styles.infoSection}>
-              <Text style={styles.label}>📍 Your Longitude</Text>
-              <ThemedText type="default" style={styles.value}>
-                {longitudeState?.toFixed(6) || "N/A"}
-              </ThemedText>
-            </View>
-          </>
-        )}
-
-        <View style={styles.buttonWrapper}>
           <Button
             title={loading ? "Checking In..." : "Check In"}
             onPress={handleCheckIn}
-            disabled={
-              loading ||
-              locationLoading ||
-              !eventIdState ||
-              !locationIdState ||
-              latitudeState === null ||
-              longitudeState === null
-            }
+            disabled={loading || locationLoading || !latitude || !longitude}
             color="#007AFF"
           />
-        </View>
+        )}
       </View>
-    </View>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f5f5f5",
-  },
-  contentContainer: {
-    flex: 1,
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-  },
   infoSection: {
     marginBottom: 16,
-    backgroundColor: "white",
+    backgroundColor: "#fff",
     padding: 12,
     borderRadius: 8,
     shadowColor: "#000",
@@ -243,20 +234,39 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     textTransform: "uppercase",
   },
-  value: {
-    fontSize: 16,
-  },
+  value: { fontSize: 16 },
   locationLoadingContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     padding: 16,
   },
-  locationLoadingText: {
-    marginLeft: 8,
-    color: "#666",
+  locationLoadingText: { marginLeft: 8, color: "#666" },
+  buttonWrapper: { marginTop: 24 },
+
+  pingStatusContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#E8F5E9",
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+    borderLeftWidth: 5,
+    borderLeftColor: "#4CAF50",
   },
-  buttonWrapper: {
-    marginTop: 24,
+  pingStatusText: {
+    marginLeft: 10,
+    flex: 1,
+    color: "#388E3C",
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  lastPingText: {
+    fontSize: 12,
+    marginTop: 4,
+    color: "#66BB6A",
+    position: "absolute",
+    bottom: -16,
+    right: 12,
   },
 });
