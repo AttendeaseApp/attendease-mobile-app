@@ -1,9 +1,12 @@
 import { StyleSheet } from "react-native";
 
-const styles = StyleSheet.create({
+/* 
+Styles for the Login Screen
+*/
+export const styles = StyleSheet.create({
   header: {
-    alignItems: "center",
     marginBottom: 24,
+    gap: 3,
   },
   background: {
     flex: 1,
@@ -15,8 +18,7 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     justifyContent: "center",
-    alignItems: "center",
-    paddingInline: 24,
+    paddingInline: 20,
     paddingBlock: 42,
     maxWidth: 400,
     backgroundColor: "rgba(255, 255, 255, 1)",

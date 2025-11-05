@@ -1,34 +1,29 @@
-import { Button } from "@/components/Button";
-import { ThemedText } from "@/components/ThemedText";
-import { logout } from "@/services/auth";
-import { authFetch } from "@/services/authFetch";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
+// styles
+import { styles } from "@/styles/UserProfile.styles";
+// ui
+import { Button } from "@/components/Button";
+import { ThemedText } from "@/components/ThemedText";
 import { ScreenContainer } from "../../components/CustomScreenContainer";
 import NavBar from "../../components/NavBar";
-import { RETRIVE_USER_PROFILE } from "../../constants/api";
+// services
+import { logout } from "@/services/auth";
+import { fetchProfilePageData } from "@/services/fetch-profile-page-data";
 
-export default function Profile() {
+/**
+ * This is the User Profile Page where users can view their profile information and log out of the application.
+ *
+ * @returns JSX.Element representing the User Profile Page.
+ */
+export default function UserProfile() {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        const response = await authFetch(RETRIVE_USER_PROFILE);
-        if (!response.ok) throw new Error("Failed to fetch events");
-        const data = await response.json();
-        setProfile(data);
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProfile();
+    fetchProfilePageData(setProfile, setLoading);
   }, []);
 
   const handleLogout = async () => {
@@ -73,15 +68,13 @@ export default function Profile() {
             Student No: {student?.studentNumber || "N/A"}
           </ThemedText>
         </View>
+
+        <View style={{ marginBottom: 20 }}>
+          <ThemedText type="default">Change Password</ThemedText>
+          <ThemedText type="default">(ToDo feature)</ThemedText>
+        </View>
         <Button title="LOG OUT" onPress={handleLogout} />
       </View>
     </ScreenContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  centerWrapper: {
-    flex: 1,
-    width: "100%",
-  },
-});

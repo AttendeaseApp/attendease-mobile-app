@@ -1,17 +1,28 @@
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, FlatList, View } from "react-native";
+
+// interfaces
+import { Event } from "@/types/event-sessions/Event";
+// styles
+import { styles } from "@/styles/Homepage.styles";
+// services
+import { fetchHomePageData } from "@/services/fetch-home-page-data";
+// ui
 import EventCard from "@/components/EventCard";
 import { ThemedText } from "@/components/ThemedText";
-import { authFetch } from "@/services/authFetch";
-import React, { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 import { ScreenContainer } from "../../components/CustomScreenContainer";
 import NavBar from "../../components/NavBar";
-import {
-  RETRIEVE_ONGOING_EVENTS,
-  RETRIVE_USER_PROFILE,
-} from "../../constants/api";
 
-import { Event } from "@/types/event/Event";
+/* 
+  
+*/
 
+/**
+ * This is the Home Screen where users can view a list of available events
+ * and access the overview of their profile.
+ *
+ * @returns JSX.Element representing the Home Screen.
+ */
 export default function HomeScreen() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
@@ -21,25 +32,7 @@ export default function HomeScreen() {
   } | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const eventsResponse = await authFetch(RETRIEVE_ONGOING_EVENTS);
-        if (!eventsResponse.ok) throw new Error("Failed to fetch events");
-        const eventsData = await eventsResponse.json();
-        setEvents(eventsData);
-
-        const profileResponse = await authFetch(RETRIVE_USER_PROFILE);
-        if (!profileResponse.ok) throw new Error("Failed to fetch profile");
-        const profileData = await profileResponse.json();
-        setUser(profileData.user);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    fetchHomePageData(setEvents, setUser, setLoading);
   }, []);
 
   if (loading) {
@@ -99,14 +92,3 @@ export default function HomeScreen() {
     </ScreenContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  cardContainer: {
-    flex: 1,
-    width: "100%",
-  },
-  welcomeMessage: {
-    fontSize: 45,
-    lineHeight: 45,
-  },
-});

@@ -1,5 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+/**
+ * A wrapper around fetch that includes the auth token from AsyncStorage
+ * in the Authorization header for authenticated requests.
+ *
+ * @param url The URL to fetch
+ * @param options Fetch options (method, headers, body, etc.)
+ * @returns The fetch Response object
+ */
 export async function authFetch(url: string, options: any = {}) {
   try {
     const token = await AsyncStorage.getItem("authToken");
