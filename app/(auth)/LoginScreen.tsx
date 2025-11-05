@@ -5,11 +5,7 @@ import { login } from "@/services/auth";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Alert, View } from "react-native";
-<<<<<<< HEAD
 import { styles } from "../../styles/LoginScreen.styles";
-=======
-import styles from "../../styles/LoginScreen.styles";
->>>>>>> d417bb5cc657deb5c96e4d0e6589c00dba309182
 
 /**
  * Login Screen Component
