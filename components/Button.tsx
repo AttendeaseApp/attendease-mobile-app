@@ -32,7 +32,7 @@ export const Button = ({
       {loading ? (
         <ActivityIndicator color="#fff" />
       ) : (
-        <ThemedText type="default" colorVariant="white">
+        <ThemedText type="default" colorVariant="black">
           {title}
         </ThemedText>
       )}
@@ -42,10 +42,12 @@ export const Button = ({
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "#066C3D",
-    paddingVertical: 12,
+    backgroundColor: "#ffffffff",
+    borderColor: "#000",
+    borderWidth: 1,
+    paddingVertical: 8,
     paddingHorizontal: 32,
-    borderRadius: 8,
+    borderRadius: 0,
     alignItems: "center",
     width: "100%",
   },

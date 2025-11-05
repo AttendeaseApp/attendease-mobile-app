@@ -2,23 +2,20 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { ThemedText } from "./ThemedText";
 
-interface NavBarProps {}
+interface NavBarProps {
+  title?: string;
+}
 
-const NavBar: React.FC<NavBarProps> = () => (
+const NavBar: React.FC<NavBarProps> = ({ title = "ATTENDEASE" }) => (
   <View style={styles.headerBackground}>
-    {/* app name on top */}
-    <ThemedText type="title">ATTENDEASE</ThemedText>
+    <ThemedText type="title">{title}</ThemedText>
   </View>
 );
 
 const styles = StyleSheet.create({
   headerBackground: {
-    paddingBlock: 10,
-    overflow: "hidden",
-  },
-  rowContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    paddingVertical: 20,
+    justifyContent: "center",
     alignItems: "center",
   },
 });

@@ -3,11 +3,11 @@ import { StyleSheet, View } from "react-native";
 import { ScreenContainer } from "../../components/CustomScreenContainer";
 import NavBar from "../../components/NavBar";
 
-export default function Notifications() {
+export default function About() {
   return (
     <ScreenContainer>
       <View>
-        <NavBar title="NOTIFICATIONS" />
+        <NavBar title="About" />
       </View>
     </ScreenContainer>
   );

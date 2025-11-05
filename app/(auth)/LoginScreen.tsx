@@ -13,6 +13,7 @@ const LoginScreen = () => {
 
   const handleLogin = async () => {
     const result = await login(studentNumber, password);
+
     if (result.success) {
       router.replace("/(tabs)/Homepage");
     } else {
@@ -21,10 +22,14 @@ const LoginScreen = () => {
   };
 
   return (
+    // <ImageBackground
+    //   source={require("../../assets/images/login-background.png")}
+    //   resizeMode="cover"
+    // >
     <View style={styles.background}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <ThemedText type="title">ATTENDEASE</ThemedText>
+          <ThemedText type="titleSecondary">ATTENDEASE</ThemedText>
           <ThemedText type="default">LOG IN</ThemedText>
         </View>
         <TextInput
@@ -44,6 +49,7 @@ const LoginScreen = () => {
         <Button title="LOG IN" onPress={handleLogin} />
       </View>
     </View>
+    // </ImageBackground>
   );
 };
 

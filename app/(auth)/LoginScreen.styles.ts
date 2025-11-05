@@ -26,10 +26,10 @@ const styles = StyleSheet.create({
   },
   input: {
     width: "100%",
-    height: 40,
+    height: 50,
     borderColor: "#ccc",
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 1,
     marginBottom: 16,
     paddingHorizontal: 8,
   },

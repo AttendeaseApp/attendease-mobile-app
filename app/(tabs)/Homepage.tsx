@@ -1,43 +1,45 @@
 import EventCard from "@/components/EventCard";
-import NavBar from "@/components/NavBar";
 import { ThemedText } from "@/components/ThemedText";
 import { authFetch } from "@/services/authFetch";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 import { ScreenContainer } from "../../components/CustomScreenContainer";
-import { RETRIEVE_ONGOING_EVENTS } from "../../constants/api";
+import NavBar from "../../components/NavBar";
+import {
+  RETRIEVE_ONGOING_EVENTS,
+  RETRIVE_USER_PROFILE,
+} from "../../constants/api";
 
-type Event = {
-  eventId: string;
-  eventName: string;
-  eventStatus: string;
-  startDate: string;
-  endDate: string;
-  eventLocationId?: string;
-  locationId?: string;
-  createdAt?: string;
-  updatedAt?: string;
-};
+import { Event } from "@/types/event/Event";
 
 export default function HomeScreen() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<{
+    firstName: string;
+    lastName: string;
+  } | null>(null);
 
   useEffect(() => {
-    const fetchOngoingEvents = async () => {
+    const fetchData = async () => {
       try {
-        const response = await authFetch(RETRIEVE_ONGOING_EVENTS);
-        if (!response.ok) throw new Error("Failed to fetch events");
-        const data = await response.json();
-        setEvents(data);
+        const eventsResponse = await authFetch(RETRIEVE_ONGOING_EVENTS);
+        if (!eventsResponse.ok) throw new Error("Failed to fetch events");
+        const eventsData = await eventsResponse.json();
+        setEvents(eventsData);
+
+        const profileResponse = await authFetch(RETRIVE_USER_PROFILE);
+        if (!profileResponse.ok) throw new Error("Failed to fetch profile");
+        const profileData = await profileResponse.json();
+        setUser(profileData.user);
       } catch (error) {
-        console.error("Error fetching events:", error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchOngoingEvents();
+    fetchData();
   }, []);
 
   if (loading) {
@@ -50,8 +52,27 @@ export default function HomeScreen() {
 
   return (
     <ScreenContainer>
-      <NavBar />
-      <View style={styles.centerWrapper}>
+      <NavBar title="HOME" />
+      <View>
+        <ThemedText type="subTitleSecondary" fontFamilyOverride="Newsreader">
+          Welcome to Attendease,
+        </ThemedText>
+        {user && (
+          <ThemedText
+            type="titleSecondary"
+            fontFamilyOverride="Newsreader"
+            style={styles.welcomeMessage}
+          >
+            {user.firstName} {user.lastName}!
+          </ThemedText>
+        )}
+      </View>
+
+      <ThemedText type="default">
+        Browse available events below for you to check in to.
+      </ThemedText>
+
+      <View style={styles.cardContainer}>
         {events.length === 0 ? (
           <ThemedText type="default" style={{ marginTop: 20 }}>
             No ongoing events at the moment.
@@ -62,17 +83,15 @@ export default function HomeScreen() {
             keyExtractor={(item, index) => item.eventId || `event-${index}`}
             renderItem={({ item }) => (
               <EventCard
+                eventId={item.eventId}
                 eventName={item.eventName}
                 eventStatus={item.eventStatus}
-                startDate={item.startDate}
-                endDate={item.endDate}
+                startDateTime={item.startDateTime}
+                endDateTime={item.endDateTime}
                 locationId={item.locationId}
+                eventLocation={item.eventLocation}
               />
             )}
-            contentContainerStyle={{
-              padding: 16,
-              alignItems: "center",
-            }}
             showsVerticalScrollIndicator={false}
           />
         )}
@@ -82,10 +101,12 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  centerWrapper: {
+  cardContainer: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
     width: "100%",
+  },
+  welcomeMessage: {
+    fontSize: 45,
+    lineHeight: 45,
   },
 });

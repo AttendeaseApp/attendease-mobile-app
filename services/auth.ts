@@ -4,7 +4,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export async function login(
   studentNumber: string,
   password: string
-): Promise<{ success: boolean; message?: string }> {
+): Promise<{
+  success: boolean;
+  message?: string;
+  requiresFacialRegistration?: boolean;
+  studentNumber?: string;
+  token?: string;
+}> {
   try {
     const response = await fetch(LOGIN_ENDPOINT, {
       method: "POST",
@@ -16,11 +22,27 @@ export async function login(
 
     if (response.ok && data.token) {
       await AsyncStorage.setItem("authToken", data.token);
-      return { success: true };
+      return {
+        success: true,
+        requiresFacialRegistration: data.requiresFacialRegistration,
+        studentNumber: data.studentNumber,
+        token: data.token,
+      };
     } else {
-      return { success: false, message: data.message || "Invalid credentials" };
+      return {
+        success: false,
+        message: data.message || "Invalid credentials",
+      };
     }
   } catch (error) {
-    return { success: false, message: "Network error. Please try again." };
+    return {
+      success: false,
+      message: "Network error. Please try again.",
+    };
   }
+}
+
+
+export async function logout() {
+  await AsyncStorage.removeItem("authToken");
 }
