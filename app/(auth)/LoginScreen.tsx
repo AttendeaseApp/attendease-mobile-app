@@ -5,7 +5,7 @@ import { login } from "@/services/auth";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Alert, View } from "react-native";
-import styles from "../../styles/LoginScreen.styles";
+import { styles } from "../../styles/LoginScreen.styles";
 
 /**
  * Login Screen Component
@@ -29,7 +29,7 @@ const LoginScreen = () => {
         Alert.alert("Login failed", result.message || "Invalid credentials");
       }
     } catch (error) {
-      Alert.alert("Error", "Something went wrong. Please try again.");
+      Alert.alert("Error", "Something went wrong. Please try again." + error);
     } finally {
       setLoading(false);
     }
