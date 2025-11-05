@@ -28,7 +28,7 @@ export default function About() {
           </ThemedText>
 
           <ThemedText type="default" style={{ marginTop: 10, fontSize: 13 }}>
-            2025 Rogationist College Computer Society - RCians Attendease
+            2025 Rogationist Computer Society - RCians Attendease
           </ThemedText>
         </View>
       </View>

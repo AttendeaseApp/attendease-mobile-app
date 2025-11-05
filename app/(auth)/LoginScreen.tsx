@@ -81,7 +81,7 @@ const LoginScreen = () => {
       </View>
 
       <ThemedText type="default" style={{ fontSize: 13 }}>
-        2025 Rogationist College Computer Society - RCians Attendease
+        2025 Rogationist Computer Society - RCians Attendease
       </ThemedText>
     </View>
   );
