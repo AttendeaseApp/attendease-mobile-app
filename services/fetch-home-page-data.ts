@@ -1,5 +1,5 @@
 import { authFetch } from "@/services/auth-fetch";
-import { Event } from "@/types/event-sessions/Event";
+import { Event } from "@/interface/event-sessions/Event";
 import {
   RETRIEVE_ONGOING_EVENTS,
   RETRIEVE_USER_PROFILE,

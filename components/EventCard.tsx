@@ -1,4 +1,6 @@
-import { EventCardProps } from "@/types/event-sessions/EventCardProps";
+import { EventStatus } from "@/interface/event-sessions/Event";
+import { EventCardProps } from "@/interface/event-sessions/EventCardProps";
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
 import { StyleSheet, View } from "react-native";
@@ -6,65 +8,89 @@ import { Button } from "./Button";
 import { ThemedText } from "./ThemedText";
 
 function formatDate(dateStr: string) {
-  if (!dateStr) return "";
-  const date = new Date(dateStr);
-  return date.toLocaleString();
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    return date.toLocaleString();
 }
 
-const EventCard: React.FC<EventCardProps> = ({
-  eventId,
-  eventName,
-  eventStatus,
-  startDateTime,
-  endDateTime,
-  eventLocation,
-}) => {
-  const router = useRouter();
+const getStatusStyle = (status: EventStatus) => {
+    switch (status) {
+        case EventStatus.ONGOING:
+            return { color: "#1da750ff", icon: "sparkles-outline" }; // green
+        case EventStatus.REGISTRATION:
+            return { color: "#A16207", icon: "alert-outline" }; // yellow
+        case EventStatus.UPCOMING:
+            return { color: "#1D4ED8", icon: "pin-outline" }; // blue
+        case EventStatus.CANCELLED:
+            return { color: "#B91C1C", icon: "sad-outline" }; // red
+        case EventStatus.CONCLUDED:
+        case EventStatus.FINALIZED:
+            return { color: "#374151", icon: "check-circle" }; // gray
+        default:
+            return { color: "#111827", icon: "help-outline" };
+    }
+};
 
-  const onAttend = () => {
-    router.push({
-      pathname: "../../(checkIn)/EventRegistrationPage",
-      params: {
-        eventId,
-        eventName,
-        eventStatus,
-        startDateTime,
-        endDateTime,
-        locationId: eventLocation.locationId,
-      },
-    });
-  };
+const EventCard: React.FC<EventCardProps> = ({ eventId, eventName, eventStatus, timeInRegistrationStartDateTime, startDateTime, endDateTime, eventLocation }) => {
+    const router = useRouter();
 
-  return (
-    <View style={styles.card}>
-      <ThemedText type="default">{eventStatus}</ThemedText>
-      <ThemedText type="title" fontFamilyOverride="AfacadFlux">
-        {eventName}
-      </ThemedText>
+    const onAttend = () => {
+        router.push({
+            pathname: "../../(registration)",
+            params: {
+                eventId,
+                eventName,
+                timeInRegistrationStartDateTime,
+                eventStatus,
+                startDateTime,
+                endDateTime,
+                locationId: eventLocation?.locationId,
+            },
+        });
+    };
 
-      <ThemedText type="default">Start: {formatDate(startDateTime)}</ThemedText>
-      <ThemedText type="default">End: {formatDate(endDateTime)}</ThemedText>
+    const statusStyle = getStatusStyle(eventStatus);
 
-      {eventLocation ? (
-        <ThemedText type="default">
-          Location: {eventLocation.locationName}
-        </ThemedText>
-      ) : null}
+    return (
+        <View style={styles.card}>
+            <View style={styles.statusRow}>
+                <Ionicons name={statusStyle.icon as any} size={20} color={statusStyle.color} />
+                <ThemedText type="default" style={[styles.statusText, { color: statusStyle.color }]}>
+                    {eventStatus}
+                </ThemedText>
+            </View>
 
-      <Button title="CHECK IN" onPress={onAttend} />
-    </View>
-  );
+            <ThemedText type="title" fontFamilyOverride="AfacadFlux">
+                {eventName}
+            </ThemedText>
+
+            <ThemedText type="default">Registration: {formatDate(timeInRegistrationStartDateTime)}</ThemedText>
+            <ThemedText type="default">Start: {formatDate(startDateTime)}</ThemedText>
+            <ThemedText type="default">End: {formatDate(endDateTime)}</ThemedText>
+
+            {eventLocation ? <ThemedText type="default">Location: {eventLocation.locationName}</ThemedText> : null}
+
+            <Button title="CHECK IN" onPress={onAttend} />
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    marginBottom: 16,
-    width: "100%",
-    gap: 10,
-    paddingBlock: 20,
-  },
+    card: {
+        borderRadius: 8,
+        marginBottom: 16,
+        width: "100%",
+        gap: 10,
+    },
+    statusRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 8,
+    },
+    statusText: {
+        fontSize: 15,
+        textTransform: "capitalize",
+    },
 });
 
 export default EventCard;

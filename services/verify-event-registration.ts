@@ -1,4 +1,4 @@
-import { REGISTER_STUDENT_ON_EVENT_ENDPOINT } from "@/constants/api";
+import { REGISTER_STUDENT_ON_EVENT_ENDPOINT, CHECK_CURRENT_LOCATION } from "@/constants/api";
 import { authFetch } from "./auth-fetch";
 
 /**
@@ -10,42 +10,66 @@ import { authFetch } from "./auth-fetch";
  * @param longitude
  * @returns
  */
-export async function verifyCheckIn(
-  eventId: string,
-  locationId: string,
-  latitude: number,
-  longitude: number
-) {
-  try {
-    const response = await authFetch(REGISTER_STUDENT_ON_EVENT_ENDPOINT, {
-      method: "POST",
-      body: JSON.stringify({
-        eventId,
-        locationId,
-        latitude,
-        longitude,
-      }),
-    });
+export async function verifyCheckIn(eventId: string, locationId: string, latitude: number, longitude: number) {
+    try {
+        const response = await authFetch(REGISTER_STUDENT_ON_EVENT_ENDPOINT, {
+            method: "POST",
+            body: JSON.stringify({
+                eventId,
+                locationId,
+                latitude,
+                longitude,
+            }),
+        });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      return {
-        success: false,
-        message: errorData.message || "Check-in failed",
-      };
+        if (!response.ok) {
+            const errorData = await response.json();
+            return {
+                success: false,
+                message: errorData.message || "Check-in failed",
+            };
+        }
+
+        const data = await response.json();
+        return {
+            success: true,
+            message: "Check-in successful!",
+            data,
+        };
+    } catch (error: any) {
+        console.error("verifyCheckIn error:", error);
+        return {
+            success: false,
+            message: error.message || "Network error occurred",
+        };
     }
+}
 
-    const data = await response.json();
-    return {
-      success: true,
-      message: "Check-in successful!",
-      data,
-    };
-  } catch (error: any) {
-    console.error("verifyCheckIn error:", error);
-    return {
-      success: false,
-      message: error.message || "Network error occurred",
-    };
-  }
+export async function checkLocation(locationId: string, latitude: number, longitude: number) {
+    try {
+        const response = await authFetch(CHECK_CURRENT_LOCATION, {
+            method: "POST",
+            body: JSON.stringify({ locationId, latitude, longitude }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            return {
+                success: false,
+                message: errorData.message || "Location check failed",
+            };
+        }
+
+        const data = await response.json();
+        return {
+            success: true,
+            data, // { isInside: boolean, message: string }
+        };
+    } catch (error: any) {
+        console.error("checkLocation error:", error);
+        return {
+            success: false,
+            message: error.message || "Network error occurred",
+        };
+    }
 }

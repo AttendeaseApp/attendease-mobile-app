@@ -53,5 +53,6 @@ const styles = StyleSheet.create({
   },
   disabled: {
     backgroundColor: "#999",
+    borderColor: "transparent",
   },
 });

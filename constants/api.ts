@@ -18,3 +18,5 @@ export const REGISTER_FACE = `${API_BASE_URL}/api/auth/biometrics/register-face-
 export const REGISTER_STUDENT_ON_EVENT_ENDPOINT = `${API_BASE_URL}/api/registration`;
 
 export const PING_ATTENDANCE_ENDPOINT = `${API_BASE_URL}/api/registration/ping`;
+
+export const CHECK_CURRENT_LOCATION = `${API_BASE_URL}/api/registration/check-location`;
