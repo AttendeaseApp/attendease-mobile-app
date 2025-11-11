@@ -20,3 +20,5 @@ export const REGISTER_STUDENT_ON_EVENT_ENDPOINT = `${API_BASE_URL}/api/registrat
 export const PING_ATTENDANCE_ENDPOINT = `${API_BASE_URL}/api/registration/ping`;
 
 export const CHECK_CURRENT_LOCATION = `${API_BASE_URL}/api/registration/check-location`;
+
+export const GET_EVENT_BY_ID = (id: string) => `${API_BASE_URL}/api/registration/events/${id}`;

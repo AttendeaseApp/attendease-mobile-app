@@ -1,17 +1,11 @@
 import { EventStatus } from "@/interface/event-sessions/Event";
 import { EventCardProps } from "@/interface/event-sessions/EventCardProps";
-import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Button } from "./Button";
 import { ThemedText } from "./ThemedText";
-
-function formatDate(dateStr: string) {
-    if (!dateStr) return "";
-    const date = new Date(dateStr);
-    return date.toLocaleString();
-}
+import { formatDateTime } from "@/utils/formatDateTime";
 
 const getStatusStyle = (status: EventStatus) => {
     switch (status) {
@@ -39,11 +33,6 @@ const EventCard: React.FC<EventCardProps> = ({ eventId, eventName, eventStatus, 
             pathname: "../../(registration)",
             params: {
                 eventId,
-                eventName,
-                timeInRegistrationStartDateTime,
-                eventStatus,
-                startDateTime,
-                endDateTime,
                 locationId: eventLocation?.locationId,
             },
         });
@@ -54,7 +43,6 @@ const EventCard: React.FC<EventCardProps> = ({ eventId, eventName, eventStatus, 
     return (
         <View style={styles.card}>
             <View style={styles.statusRow}>
-                <Ionicons name={statusStyle.icon as any} size={20} color={statusStyle.color} />
                 <ThemedText type="default" style={[styles.statusText, { color: statusStyle.color }]}>
                     {eventStatus}
                 </ThemedText>
@@ -64,9 +52,11 @@ const EventCard: React.FC<EventCardProps> = ({ eventId, eventName, eventStatus, 
                 {eventName}
             </ThemedText>
 
-            <ThemedText type="default">Registration: {formatDate(timeInRegistrationStartDateTime)}</ThemedText>
-            <ThemedText type="default">Start: {formatDate(startDateTime)}</ThemedText>
-            <ThemedText type="default">End: {formatDate(endDateTime)}</ThemedText>
+            <View>
+                <ThemedText type="default">Registration: {formatDateTime(timeInRegistrationStartDateTime)}</ThemedText>
+                <ThemedText type="default">Start: {formatDateTime(startDateTime)}</ThemedText>
+                <ThemedText type="default">End: {formatDateTime(endDateTime)}</ThemedText>
+            </View>
 
             {eventLocation ? <ThemedText type="default">Location: {eventLocation.locationName}</ThemedText> : null}
 
@@ -81,6 +71,7 @@ const styles = StyleSheet.create({
         marginBottom: 16,
         width: "100%",
         gap: 10,
+        marginBlock: 20,
     },
     statusRow: {
         flexDirection: "row",

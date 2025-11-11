@@ -28,7 +28,7 @@ export default function UserProfile() {
 
     const handleLogout = async () => {
         await logout();
-        router.replace("/(auth)/LoginScreen");
+        router.replace("/(auth)");
     };
 
     if (loading) {
