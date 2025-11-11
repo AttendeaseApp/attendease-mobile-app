@@ -8,7 +8,9 @@ interface NavBarProps {
 
 const NavBar: React.FC<NavBarProps> = ({ title = "ATTENDEASE" }) => (
   <View style={styles.headerBackground}>
-    <ThemedText type="title">{title}</ThemedText>
+    <ThemedText type="title" style={styles.title}>
+      {title.toUpperCase()}
+    </ThemedText>
   </View>
 );
 
@@ -17,6 +19,9 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     justifyContent: "center",
     alignItems: "center",
+  },
+  title: {
+    textTransform: "uppercase",
   },
 });
 

@@ -21,7 +21,6 @@ export const styles = StyleSheet.create({
     paddingInline: 20,
     paddingBlock: 42,
     maxWidth: 400,
-    backgroundColor: "rgba(255, 255, 255, 1)",
     borderRadius: 11,
     marginVertical: 48,
     gap: 12,
