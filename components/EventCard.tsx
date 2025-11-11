@@ -5,12 +5,7 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Button } from "./Button";
 import { ThemedText } from "./ThemedText";
-
-function formatDate(dateStr: string) {
-    if (!dateStr) return "";
-    const date = new Date(dateStr);
-    return date.toLocaleString();
-}
+import { formatDateTime } from "@/utils/formatDateTime";
 
 const getStatusStyle = (status: EventStatus) => {
     switch (status) {
@@ -57,9 +52,11 @@ const EventCard: React.FC<EventCardProps> = ({ eventId, eventName, eventStatus, 
                 {eventName}
             </ThemedText>
 
-            <ThemedText type="default">Registration: {formatDate(timeInRegistrationStartDateTime)}</ThemedText>
-            <ThemedText type="default">Start: {formatDate(startDateTime)}</ThemedText>
-            <ThemedText type="default">End: {formatDate(endDateTime)}</ThemedText>
+            <View>
+                <ThemedText type="default">Registration: {formatDateTime(timeInRegistrationStartDateTime)}</ThemedText>
+                <ThemedText type="default">Start: {formatDateTime(startDateTime)}</ThemedText>
+                <ThemedText type="default">End: {formatDateTime(endDateTime)}</ThemedText>
+            </View>
 
             {eventLocation ? <ThemedText type="default">Location: {eventLocation.locationName}</ThemedText> : null}
 
