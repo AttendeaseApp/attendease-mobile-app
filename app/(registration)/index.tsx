@@ -157,7 +157,7 @@ export default function EventDetailsRegistrationPage() {
                     <ThemedText type="default">Event Venue</ThemedText>
                     {eventData?.eventLocation ? (
                         <ThemedText type="defaultSemiBold">
-                            {eventData.eventLocation.locationName || 'N/A'} |{' '}
+                            {eventData.eventLocation.locationName || 'N/A'} |
                             {eventData.eventLocation.locationType || 'N/A'}
                         </ThemedText>
                     ) : (
@@ -208,7 +208,7 @@ export default function EventDetailsRegistrationPage() {
                                 type="defaultSemiBold"
                                 style={styles.lastPingText}
                             >
-                                Last successful ping:{' '}
+                                Last successful ping:
                                 {lastPingTime || 'just now'}
                             </ThemedText>
                         </View>
