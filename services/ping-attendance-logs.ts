@@ -1,5 +1,5 @@
-import { PING_ATTENDANCE_ENDPOINT } from "@/constants/api";
-import { authFetch } from "@/services/auth-fetch";
+import { PING_ATTENDANCE_ENDPOINT } from '@/constants/api'
+import { authFetch } from '@/services/auth-fetch'
 
 /**
  * Sends a location ping to the backend for attendance tracking.
@@ -10,36 +10,36 @@ import { authFetch } from "@/services/auth-fetch";
  * @param longitude Current longitude
  */
 export async function pingAttendance(
-  eventId: string,
-  locationId: string,
-  latitude: number,
-  longitude: number
+    eventId: string,
+    locationId: string,
+    latitude: number,
+    longitude: number,
 ) {
-  try {
-    const payload = {
-      eventId,
-      locationId,
-      latitude,
-      longitude,
-      timestamp: Date.now(),
-    };
+    try {
+        const payload = {
+            eventId,
+            locationId,
+            latitude,
+            longitude,
+            timestamp: Date.now(),
+        }
 
-    const response = await authFetch(PING_ATTENDANCE_ENDPOINT, {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
+        const response = await authFetch(PING_ATTENDANCE_ENDPOINT, {
+            method: 'POST',
+            body: JSON.stringify(payload),
+        })
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      console.error("Ping failed:", errorData);
-      throw new Error(errorData?.message || "Ping request failed");
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}))
+            console.error('Ping failed:', errorData)
+            throw new Error(errorData?.message || 'Ping request failed')
+        }
+
+        const data = await response.text()
+        console.log('Ping success:', data)
+        return data
+    } catch (error: any) {
+        console.error('Ping error:', error.message || error)
+        throw error
     }
-
-    const data = await response.text();
-    console.log("Ping success:", data);
-    return data;
-  } catch (error: any) {
-    console.error("Ping error:", error.message || error);
-    throw error;
-  }
 }

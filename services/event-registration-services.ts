@@ -1,14 +1,17 @@
-import { verifyCheckIn } from "@/services/verify-event-registration";
-import * as Location from "expo-location";
-import React from "react";
-import { Alert } from "react-native";
+import { verifyCheckIn } from '@/services/verify-event-registration'
+import * as Location from 'expo-location'
+import React from 'react'
+import { Alert } from 'react-native'
 
 // interfaces
-import { CheckInParams, PingingParams, StopPingingParams } from "../interface/event-registration/event-registration-interface";
+import {
+    CheckInParams,
+    PingingParams,
+    StopPingingParams,
+} from '../interface/event-registration/event-registration-interface'
 
 // services
-import { pingAttendance } from "@/services/ping-attendance-logs";
-import { authFetch } from "./auth-fetch";
+import { pingAttendance } from '@/services/ping-attendance-logs'
 
 /**
  * this function fetches the user's current location using Expo's Location API.
@@ -22,24 +25,27 @@ export async function fetchLocation(
     setLongitude: React.Dispatch<React.SetStateAction<number | null>>,
 ) {
     try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-            Alert.alert("Permission Denied", "Location permission is required for check-in.");
-            return;
+        const { status } = await Location.requestForegroundPermissionsAsync()
+        if (status !== 'granted') {
+            Alert.alert(
+                'Permission Denied',
+                'Location permission is required for check-in.',
+            )
+            return
         }
 
         const location = await Location.getCurrentPositionAsync({
-            accuracy: Location.Accuracy.High,
-        });
+            accuracy: Location.Accuracy.BestForNavigation,
+        })
 
-        setLatitude(location.coords.latitude);
-        setLongitude(location.coords.longitude);
-        console.log("Location fetched:", location.coords);
+        setLatitude(location.coords.latitude)
+        setLongitude(location.coords.longitude)
+        console.log('Location fetched:', location.coords)
     } catch (error) {
-        console.error("Failed to get location", error);
-        Alert.alert("Location Error", "Failed to fetch your location.");
+        console.error('Failed to get location', error)
+        Alert.alert('Location Error', 'Failed to fetch your location.')
     } finally {
-        setLocationLoading(false);
+        setLocationLoading(false)
     }
 }
 
@@ -49,24 +55,51 @@ export async function fetchLocation(
  *
  * @param param0 CheckInParams object containing eventId, locationId, latitude, longitude, setLoading, and onSuccess callback.
  */
-export async function handleCheckIn({ eventId, locationId, latitude, longitude, setLoading, onSuccess }: CheckInParams) {
-    if (!eventId || !locationId || latitude === null || longitude === null) {
-        Alert.alert("Missing Data", "Cannot proceed with check-in.");
-        return;
+export async function handleCheckIn({
+    eventId,
+    locationId,
+    latitude,
+    longitude,
+    faceImageBase64,
+    setLoading,
+    onSuccess,
+}: CheckInParams) {
+    if (
+        !eventId ||
+        !locationId ||
+        !faceImageBase64 ||
+        latitude === null ||
+        longitude === null
+    ) {
+        Alert.alert('Missing Data', 'Cannot proceed with check-in.')
+        return
     }
-
-    setLoading(true);
+    setLoading(true)
     try {
-        const result = await verifyCheckIn(eventId, locationId, latitude, longitude);
+        const result = await verifyCheckIn(
+            eventId,
+            locationId,
+            latitude,
+            longitude,
+            faceImageBase64,
+        )
         if (result.success) {
-            Alert.alert("Check-In Successful", "Tracking started.", [{ text: "OK", onPress: onSuccess }]);
+            Alert.alert(
+                'Check-In Successful',
+                result.message ||
+                    'Facial verification passed! Tracking started.',
+                [{ text: 'OK', onPress: onSuccess }],
+            )
         } else {
-            Alert.alert("Check-In Failed", result.message || "Please try again.");
+            Alert.alert(
+                'Check-In Failed',
+                result.message || 'Please try again.',
+            )
         }
     } catch (error: any) {
-        Alert.alert("Error", error.message || "Something went wrong.");
+        Alert.alert('Error', error.message || 'Something went wrong.')
     } finally {
-        setLoading(false);
+        setLoading(false)
     }
 }
 
@@ -76,27 +109,34 @@ export async function handleCheckIn({ eventId, locationId, latitude, longitude, 
  *
  * @param param0 PingingParams object containing eventId, locationId, state setters for pinging status, latitude, longitude, and last ping time.
  */
-export function startPingingAttendanceLogs({ eventId, locationId, setIsPinging, setLatitude, setLongitude, setLastPingTime }: PingingParams) {
-    const PING_INTERVAL_MS = 60000;
-    setIsPinging(true);
+export function startPingingAttendanceLogs({
+    eventId,
+    locationId,
+    setIsPinging,
+    setLatitude,
+    setLongitude,
+    setLastPingTime,
+}: PingingParams) {
+    const PING_INTERVAL_MS = 60000
+    setIsPinging(true)
 
     const interval = setInterval(async () => {
         try {
             const location = await Location.getCurrentPositionAsync({
                 accuracy: Location.Accuracy.BestForNavigation,
-            });
+            })
 
-            const { latitude, longitude } = location.coords;
-            setLatitude(latitude);
-            setLongitude(longitude);
+            const { latitude, longitude } = location.coords
+            setLatitude(latitude)
+            setLongitude(longitude)
 
-            await pingAttendance(eventId, locationId, latitude, longitude);
-            setLastPingTime?.(new Date().toLocaleTimeString());
+            await pingAttendance(eventId, locationId, latitude, longitude)
+            setLastPingTime?.(new Date().toLocaleTimeString())
         } catch (err) {
-            console.warn("Ping failed:", err);
+            console.warn('Ping failed:', err)
         }
-    }, PING_INTERVAL_MS);
-    return interval;
+    }, PING_INTERVAL_MS)
+    return interval
 }
 
 /**
@@ -106,6 +146,6 @@ export function startPingingAttendanceLogs({ eventId, locationId, setIsPinging, 
  * @param param0 StopPingingParams object containing state setter for pinging status.
  */
 export function stopPingingAttendanceLogs({ setIsPinging }: StopPingingParams) {
-    setIsPinging(false);
-    Alert.alert("Tracking Stopped", "Attendance tracking has been stopped.");
+    setIsPinging(false)
+    Alert.alert('Tracking Stopped', 'Attendance tracking has been stopped.')
 }
