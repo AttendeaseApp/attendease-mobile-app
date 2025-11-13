@@ -13,10 +13,18 @@ export default function FaceVerificationScreen() {
         eventId: string
         locationId: string
     }>()
-    const { checkIn } = useEventCheckIn(eventId, locationId)
+    const { checkIn, latitude, longitude, locationLoading } = useEventCheckIn(
+        eventId,
+        locationId,
+    )
     const router = useRouter()
 
     const captureAndVerify = async () => {
+        if (locationLoading || latitude === null || longitude === null) {
+            Alert.alert('Please wait', 'Fetching your location...')
+            return
+        }
+
         if (!cameraRef.current) {
             Alert.alert('Camera not ready')
             return
@@ -28,13 +36,15 @@ export default function FaceVerificationScreen() {
                 quality: 0.8,
                 base64: true,
             })
-            checkIn(photo.base64!)
+
+            if (!photo.base64) {
+                throw new Error('Failed to capture image.')
+            }
+
+            checkIn(photo.base64)
             router.back()
         } catch (error: any) {
-            Alert.alert(
-                'Capture Error',
-                error.message || 'Failed to capture image. Try again.',
-            )
+            Alert.alert('Capture Error', error.message)
             console.error(error)
         } finally {
             setLoading(false)
@@ -45,9 +55,7 @@ export default function FaceVerificationScreen() {
         return (
             <View style={styles.container}>
                 <ActivityIndicator size="large" color="#0000ff" />
-                <Text style={styles.loadingText}>
-                    Requesting camera permission...
-                </Text>
+                <Text>Requesting camera permission...</Text>
             </View>
         )
     }
@@ -55,7 +63,7 @@ export default function FaceVerificationScreen() {
     if (!permission.granted) {
         return (
             <View style={styles.container}>
-                <Text style={styles.permissionText}>
+                <Text>
                     We need your permission to access the camera for face
                     verification.
                 </Text>
@@ -73,7 +81,7 @@ export default function FaceVerificationScreen() {
                     register.
                 </Text>
                 <View style={styles.buttonContainer}>
-                    {loading ? (
+                    {loading || locationLoading ? (
                         <ActivityIndicator size="large" color="#0000ff" />
                     ) : (
                         <Button title="Verify me" onPress={captureAndVerify} />
