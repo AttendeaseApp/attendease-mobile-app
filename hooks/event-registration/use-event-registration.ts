@@ -1,9 +1,4 @@
-import {
-    fetchLocation,
-    handleCheckIn,
-    startPingingAttendanceLogs,
-    stopPingingAttendanceLogs,
-} from '@/services/event-registration-services'
+import { fetchLocation, handleCheckIn, startPingingAttendanceLogs, stopPingingAttendanceLogs } from '@/services/event-registration-services'
 import { useEffect, useRef, useState } from 'react'
 
 export function useEventCheckIn(eventId: string, locationId: string) {
@@ -41,12 +36,13 @@ export function useEventCheckIn(eventId: string, locationId: string) {
         stopPingingAttendanceLogs({ setIsPinging })
     }
 
-    const checkIn = () => {
+    const checkIn = (faceImageBase64: string) => {
         handleCheckIn({
             eventId,
             locationId,
             latitude,
             longitude,
+            faceImageBase64,
             setLoading,
             onSuccess: startPinging,
         })
@@ -60,6 +56,7 @@ export function useEventCheckIn(eventId: string, locationId: string) {
         isPinging,
         lastPingTime,
         checkIn,
+        startPinging,
         stopPinging,
     }
 }

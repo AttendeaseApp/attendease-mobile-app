@@ -2,7 +2,7 @@ import { REGISTER_STUDENT_ON_EVENT_ENDPOINT, CHECK_CURRENT_LOCATION, GET_EVENT_B
 import { authFetch } from './auth-fetch'
 
 /**
- * Verifies a student's check-in for an event by sending their location and event details to the server.
+ * Verifies a student's check-in for an event by sending their location, event details, and optional face image to the server.
  *
  * @param eventId
  * @param locationId
@@ -10,7 +10,7 @@ import { authFetch } from './auth-fetch'
  * @param longitude
  * @returns
  */
-export async function verifyCheckIn(eventId: string, locationId: string, latitude: number, longitude: number) {
+export async function verifyCheckIn(eventId: string, locationId: string, latitude: number, longitude: number, faceImageBase64: string) {
     try {
         const response = await authFetch(REGISTER_STUDENT_ON_EVENT_ENDPOINT, {
             method: 'POST',
@@ -19,6 +19,7 @@ export async function verifyCheckIn(eventId: string, locationId: string, latitud
                 locationId,
                 latitude,
                 longitude,
+                faceImageBase64,
             }),
         })
 

@@ -4,6 +4,7 @@ import { CameraView, useCameraPermissions } from 'expo-camera'
 import { useRouter } from 'expo-router'
 import React, { useEffect, useRef, useState } from 'react'
 import styles from '@/styles/biometrics/registration.styles'
+import { ThemedText } from '@/components/ThemedText'
 import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from 'react-native'
 
 const REQUIRED_IMAGES = 5
@@ -27,7 +28,9 @@ export default function FacialRegistration() {
     const getInstructionText = () => {
         if (currentStep === 0) return 'Face forward - Look directly at camera'
         if (currentStep === 1) return 'Turn slightly left'
-        if (currentStep === 2) return 'Turn slightly right'
+        if (currentStep === 2) return 'Again, turn slightly left'
+        if (currentStep === 3) return 'Turn slightly right'
+        if (currentStep === 4) return 'Again, turn slightly right'
         return 'Capture complete'
     }
 
@@ -52,16 +55,13 @@ export default function FacialRegistration() {
                 return
             }
 
-            // Add captured image to array
             const newImages = [...capturedImages, photo.uri]
             setCapturedImages(newImages)
             setCurrentStep(currentStep + 1)
 
-            // If we have enough images, send them
             if (newImages.length >= REQUIRED_IMAGES) {
                 await sendImagesToServer(newImages)
             } else {
-                // Provide feedback and prepare for next capture
                 Alert.alert('Image Captured', `${newImages.length}/${REQUIRED_IMAGES} images captured. ${getInstructionText()}`, [{ text: 'OK' }])
             }
         } catch (error: any) {
@@ -132,7 +132,7 @@ export default function FacialRegistration() {
     if (!permission.granted) {
         return (
             <View style={styles.center}>
-                <Text style={styles.permissionText}>Camera access is required to register your face</Text>
+                <ThemedText type="default">Camera access is required to register your face</ThemedText>
                 <TouchableOpacity style={styles.button} onPress={requestPermission}>
                     <Text style={styles.buttonText}>Grant Permission</Text>
                 </TouchableOpacity>
@@ -145,10 +145,10 @@ export default function FacialRegistration() {
             <CameraView style={styles.camera} facing="front" ref={cameraRef}>
                 <View style={styles.overlay}>
                     <View style={styles.instructionBox}>
-                        <Text style={styles.instructionText}>{getInstructionText()}</Text>
-                        <Text style={styles.progressText}>
+                        <ThemedText type="default">{getInstructionText()}</ThemedText>
+                        <ThemedText type="defaultSemiBold">
                             {capturedImages.length}/{REQUIRED_IMAGES} images captured
-                        </Text>
+                        </ThemedText>
                     </View>
 
                     {/* Face frame guide */}
@@ -182,13 +182,13 @@ export default function FacialRegistration() {
                     )}
                 </TouchableOpacity>
 
-                <Text style={styles.helpText}>
+                <ThemedText type="default">
                     {capturedImages.length === 0
                         ? "You'll need to capture 5 images from different angles"
                         : capturedImages.length < REQUIRED_IMAGES
                           ? 'Follow the instructions for each capture'
                           : 'Processing your images...'}
-                </Text>
+                </ThemedText>
             </View>
         </View>
     )

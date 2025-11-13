@@ -30,7 +30,7 @@ const LoginScreen = () => {
             if (result.success) {
                 if (result.requiresFacialRegistration) {
                     router.replace({
-                        pathname: './(biometrics)',
+                        pathname: './(biometrics)/registration',
                         params: {
                             studentNumber: result.studentNumber,
                             token: result.token,
