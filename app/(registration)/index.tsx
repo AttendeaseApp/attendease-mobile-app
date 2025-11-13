@@ -31,6 +31,7 @@ export default function EventDetailsRegistrationPage() {
         : locationId
     const [eventData, setEventData] = useState<Event | null>(null)
     const [loadingEvent, setLoadingEvent] = useState(true)
+
     const {
         latitude,
         longitude,
@@ -38,7 +39,9 @@ export default function EventDetailsRegistrationPage() {
         locationLoading,
         isPinging,
         lastPingTime,
+        performCheckIn,
     } = useEventCheckIn(parsedEventId!, parsedLocationId!)
+
     const [locationStatus, setLocationStatus] = useState<{
         isInside: boolean
         message: string
@@ -89,9 +92,7 @@ export default function EventDetailsRegistrationPage() {
     }, [fetchEvent, fetchLocationStatus])
 
     const handleRegisterPress = () => {
-        if (!latitude || !longitude) {
-            return
-        }
+        if (!latitude || !longitude) return
         router.push({
             pathname: '/(biometrics)/verification',
             params: {
@@ -102,6 +103,7 @@ export default function EventDetailsRegistrationPage() {
             },
         })
     }
+
 
     if (loadingEvent) {
         return (

@@ -4,7 +4,7 @@ import {
     startPingingAttendanceLogs,
     stopPingingAttendanceLogs,
 } from '@/services/event-registration-services'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 
 export function useEventCheckIn(eventId: string, locationId: string) {
     const [latitude, setLatitude] = useState<number | null>(null)
@@ -22,7 +22,8 @@ export function useEventCheckIn(eventId: string, locationId: string) {
         }
     }, [])
 
-    const startPinging = () => {
+    const startPinging = useCallback(() => {
+        if (pingIntervalRef.current) return
         pingIntervalRef.current = startPingingAttendanceLogs({
             eventId,
             locationId,
@@ -31,27 +32,33 @@ export function useEventCheckIn(eventId: string, locationId: string) {
             setLongitude,
             setLastPingTime,
         })
-    }
+    }, [eventId, locationId])
 
-    const stopPinging = () => {
+    const stopPinging = useCallback(() => {
         if (pingIntervalRef.current) {
             clearInterval(pingIntervalRef.current)
             pingIntervalRef.current = null
         }
         stopPingingAttendanceLogs({ setIsPinging })
-    }
+    }, [])
 
-    const checkIn = (faceImageBase64: string) => {
-        handleCheckIn({
-            eventId,
-            locationId,
-            latitude,
-            longitude,
-            faceImageBase64,
-            setLoading,
-            onSuccess: startPinging,
-        })
-    }
+    const performCheckIn = useCallback(
+        async (faceImageBase64: string) => {
+            if (!latitude || !longitude) return
+            await handleCheckIn({
+                eventId,
+                locationId,
+                latitude,
+                longitude,
+                faceImageBase64,
+                setLoading,
+                onSuccess: () => {
+                    startPinging()
+                },
+            })
+        },
+        [latitude, longitude, eventId, locationId, startPinging],
+    )
 
     return {
         latitude,
@@ -60,8 +67,7 @@ export function useEventCheckIn(eventId: string, locationId: string) {
         locationLoading,
         isPinging,
         lastPingTime,
-        checkIn,
-        startPinging,
+        performCheckIn,
         stopPinging,
     }
 }
