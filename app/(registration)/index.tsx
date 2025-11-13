@@ -140,17 +140,9 @@ export default function EventDetailsRegistrationPage() {
                     </ThemedText>
                 </View>
                 <View style={styles.infoSection}>
+                    <ThemedText type="defaultSemiBold">Registration starts at exactly {formatDateTime(eventData?.timeInRegistrationStartDateTime)}.</ThemedText>
                     <ThemedText type="defaultSemiBold">
-                        Registration starts at exactly{' '}
-                        {formatDateTime(
-                            eventData?.timeInRegistrationStartDateTime,
-                        )}
-                        .
-                    </ThemedText>
-                    <ThemedText type="defaultSemiBold">
-                        The event will then proceed to start on{' '}
-                        {formatDateTime(eventData?.startDateTime)} and will end
-                        on {formatDateTime(eventData?.endDateTime)}.
+                        The event will then proceed to start on {formatDateTime(eventData?.startDateTime)} and will end on {formatDateTime(eventData?.endDateTime)}.
                     </ThemedText>
                 </View>
                 <View style={styles.infoSection}>
