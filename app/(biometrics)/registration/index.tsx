@@ -5,12 +5,18 @@ import { useRouter } from 'expo-router'
 import React, { useEffect, useRef, useState } from 'react'
 import styles from '@/styles/biometrics/registration.styles'
 import { ThemedText } from '@/components/ThemedText'
-import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from 'react-native'
+import {
+    ActivityIndicator,
+    Alert,
+    Text,
+    TouchableOpacity,
+    View,
+} from 'react-native'
 
 const REQUIRED_IMAGES = 5
-const router = useRouter()
 
 export default function FacialRegistration() {
+    const router = useRouter()
     const cameraRef = useRef<CameraView | null>(null)
     const [permission, requestPermission] = useCameraPermissions()
     const [isProcessing, setIsProcessing] = useState<boolean>(false)
@@ -38,7 +44,10 @@ export default function FacialRegistration() {
         if (!cameraRef.current || isProcessing) return
 
         if (!isLoggedIn) {
-            Alert.alert('Authentication required', 'Please login to register your face.')
+            Alert.alert(
+                'Authentication required',
+                'Please login to register your face.',
+            )
             return
         }
 
@@ -62,7 +71,11 @@ export default function FacialRegistration() {
             if (newImages.length >= REQUIRED_IMAGES) {
                 await sendImagesToServer(newImages)
             } else {
-                Alert.alert('Image Captured', `${newImages.length}/${REQUIRED_IMAGES} images captured. ${getInstructionText()}`, [{ text: 'OK' }])
+                Alert.alert(
+                    'Image Captured',
+                    `${newImages.length}/${REQUIRED_IMAGES} images captured. ${getInstructionText()}`,
+                    [{ text: 'OK' }],
+                )
             }
         } catch (error: any) {
             console.error('Face capture error:', error)
@@ -78,19 +91,44 @@ export default function FacialRegistration() {
             const result = await registerFaceEncoding(images)
 
             if (result.success) {
-                Alert.alert('Success', result.message ?? 'Face registered successfully!', [
-                    {
-                        text: 'OK',
-                        onPress: () => {
-                            router.replace('/(tabs)/Homepage')
+                Alert.alert(
+                    'Success',
+                    result.message ?? 'Face registered successfully!',
+                    [
+                        {
+                            text: 'OK',
+                            onPress: () => {
+                                router.replace('/(tabs)/Homepage')
 
-                            setCapturedImages([])
-                            setCurrentStep(0)
+                                setCapturedImages([])
+                                setCurrentStep(0)
+                            },
                         },
-                    },
-                ])
+                    ],
+                )
             } else {
-                Alert.alert('Registration Failed', result.message ?? 'Face registration failed. Please try again.', [
+                Alert.alert(
+                    'Registration Failed',
+                    result.message ??
+                        'Face registration failed. Please try again.',
+                    [
+                        {
+                            text: 'Retry',
+                            onPress: () => {
+                                setCapturedImages([])
+                                setCurrentStep(0)
+                            },
+                        },
+                    ],
+                )
+            }
+        } catch (error: any) {
+            console.error('Face registration error:', error)
+            Alert.alert(
+                'Error',
+                error.message ||
+                    'Something went wrong during face registration.',
+                [
                     {
                         text: 'Retry',
                         onPress: () => {
@@ -98,19 +136,8 @@ export default function FacialRegistration() {
                             setCurrentStep(0)
                         },
                     },
-                ])
-            }
-        } catch (error: any) {
-            console.error('Face registration error:', error)
-            Alert.alert('Error', error.message || 'Something went wrong during face registration.', [
-                {
-                    text: 'Retry',
-                    onPress: () => {
-                        setCapturedImages([])
-                        setCurrentStep(0)
-                    },
-                },
-            ])
+                ],
+            )
         } finally {
             setIsProcessing(false)
         }
@@ -132,8 +159,13 @@ export default function FacialRegistration() {
     if (!permission.granted) {
         return (
             <View style={styles.center}>
-                <ThemedText type="default">Camera access is required to register your face</ThemedText>
-                <TouchableOpacity style={styles.button} onPress={requestPermission}>
+                <ThemedText type="default">
+                    Camera access is required to register your face
+                </ThemedText>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={requestPermission}
+                >
                     <Text style={styles.buttonText}>Grant Permission</Text>
                 </TouchableOpacity>
             </View>
@@ -145,9 +177,12 @@ export default function FacialRegistration() {
             <CameraView style={styles.camera} facing="front" ref={cameraRef}>
                 <View style={styles.overlay}>
                     <View style={styles.instructionBox}>
-                        <ThemedText type="default">{getInstructionText()}</ThemedText>
+                        <ThemedText type="default">
+                            {getInstructionText()}
+                        </ThemedText>
                         <ThemedText type="defaultSemiBold">
-                            {capturedImages.length}/{REQUIRED_IMAGES} images captured
+                            {capturedImages.length}/{REQUIRED_IMAGES} images
+                            captured
                         </ThemedText>
                     </View>
 
@@ -157,28 +192,51 @@ export default function FacialRegistration() {
                     {/* Progress indicators */}
                     <View style={styles.progressIndicators}>
                         {[...Array(REQUIRED_IMAGES)].map((_, index) => (
-                            <View key={index} style={[styles.progressDot, index < capturedImages.length && styles.progressDotActive]} />
+                            <View
+                                key={index}
+                                style={[
+                                    styles.progressDot,
+                                    index < capturedImages.length &&
+                                        styles.progressDotActive,
+                                ]}
+                            />
                         ))}
                     </View>
                 </View>
             </CameraView>
 
             <View style={styles.controls}>
-                {capturedImages.length > 0 && capturedImages.length < REQUIRED_IMAGES && (
-                    <TouchableOpacity style={[styles.button, styles.buttonSecondary]} onPress={resetCapture} disabled={isProcessing}>
-                        <Text style={styles.buttonText}>Reset</Text>
-                    </TouchableOpacity>
-                )}
+                {capturedImages.length > 0 &&
+                    capturedImages.length < REQUIRED_IMAGES && (
+                        <TouchableOpacity
+                            style={[styles.button, styles.buttonSecondary]}
+                            onPress={resetCapture}
+                            disabled={isProcessing}
+                        >
+                            <Text style={styles.buttonText}>Reset</Text>
+                        </TouchableOpacity>
+                    )}
 
                 <TouchableOpacity
-                    style={[styles.button, (isProcessing || capturedImages.length >= REQUIRED_IMAGES) && styles.buttonDisabled]}
+                    style={[
+                        styles.button,
+                        (isProcessing ||
+                            capturedImages.length >= REQUIRED_IMAGES) &&
+                            styles.buttonDisabled,
+                    ]}
                     onPress={captureImage}
-                    disabled={isProcessing || capturedImages.length >= REQUIRED_IMAGES}
+                    disabled={
+                        isProcessing || capturedImages.length >= REQUIRED_IMAGES
+                    }
                 >
                     {isProcessing ? (
                         <ActivityIndicator color="#fff" />
                     ) : (
-                        <Text style={styles.buttonText}>{capturedImages.length === 0 ? 'Start Registration' : `Capture Image ${capturedImages.length + 1}`}</Text>
+                        <Text style={styles.buttonText}>
+                            {capturedImages.length === 0
+                                ? 'Start Registration'
+                                : `Capture Image ${capturedImages.length + 1}`}
+                        </Text>
                     )}
                 </TouchableOpacity>
 

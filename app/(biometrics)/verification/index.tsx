@@ -31,7 +31,10 @@ export default function FaceVerificationScreen() {
             checkIn(photo.base64!)
             router.back()
         } catch (error: any) {
-            Alert.alert('Capture Error', error.message || 'Failed to capture image. Try again.')
+            Alert.alert(
+                'Capture Error',
+                error.message || 'Failed to capture image. Try again.',
+            )
             console.error(error)
         } finally {
             setLoading(false)
@@ -42,7 +45,9 @@ export default function FaceVerificationScreen() {
         return (
             <View style={styles.container}>
                 <ActivityIndicator size="large" color="#0000ff" />
-                <Text style={styles.loadingText}>Requesting camera permission...</Text>
+                <Text style={styles.loadingText}>
+                    Requesting camera permission...
+                </Text>
             </View>
         )
     }
@@ -50,7 +55,10 @@ export default function FaceVerificationScreen() {
     if (!permission.granted) {
         return (
             <View style={styles.container}>
-                <Text style={styles.permissionText}>We need your permission to access the camera for face verification.</Text>
+                <Text style={styles.permissionText}>
+                    We need your permission to access the camera for face
+                    verification.
+                </Text>
                 <Button onPress={requestPermission} title="Grant Permission" />
             </View>
         )
@@ -60,8 +68,17 @@ export default function FaceVerificationScreen() {
         <View style={styles.container}>
             <CameraView ref={cameraRef} style={styles.camera} facing="front" />
             <View style={styles.overlay}>
-                <Text style={styles.instructionText}>Position your face in the frame and tap Verify me to register.</Text>
-                <View style={styles.buttonContainer}>{loading ? <ActivityIndicator size="large" color="#0000ff" /> : <Button title="Verify me" onPress={captureAndVerify} />}</View>
+                <Text style={styles.instructionText}>
+                    Position your face in the frame and tap Verify me to
+                    register.
+                </Text>
+                <View style={styles.buttonContainer}>
+                    {loading ? (
+                        <ActivityIndicator size="large" color="#0000ff" />
+                    ) : (
+                        <Button title="Verify me" onPress={captureAndVerify} />
+                    )}
+                </View>
             </View>
         </View>
     )

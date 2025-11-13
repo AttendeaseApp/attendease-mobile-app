@@ -1,4 +1,9 @@
-import { fetchLocation, handleCheckIn, startPingingAttendanceLogs, stopPingingAttendanceLogs } from '@/services/event-registration-services'
+import {
+    fetchLocation,
+    handleCheckIn,
+    startPingingAttendanceLogs,
+    stopPingingAttendanceLogs,
+} from '@/services/event-registration-services'
 import { useEffect, useRef, useState } from 'react'
 
 export function useEventCheckIn(eventId: string, locationId: string) {

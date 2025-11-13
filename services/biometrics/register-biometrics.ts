@@ -7,7 +7,9 @@ interface RegisterFaceResponse {
     message?: string
 }
 
-export async function registerFaceEncoding(imageUris: string[]): Promise<RegisterFaceResponse> {
+export async function registerFaceEncoding(
+    imageUris: string[],
+): Promise<RegisterFaceResponse> {
     try {
         if (imageUris.length < 5) {
             return {
@@ -38,7 +40,9 @@ export async function registerFaceEncoding(imageUris: string[]): Promise<Registe
             } as any)
         }
 
-        console.log(`Uploading ${imageUris.length} images for face registration`)
+        console.log(
+            `Uploading ${imageUris.length} images for face registration`,
+        )
 
         const uploadResponse = await authFetch(REGISTER_FACE, {
             method: 'POST',

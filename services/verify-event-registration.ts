@@ -1,4 +1,8 @@
-import { REGISTER_STUDENT_ON_EVENT_ENDPOINT, CHECK_CURRENT_LOCATION, GET_EVENT_BY_ID } from '@/constants/api'
+import {
+    REGISTER_STUDENT_ON_EVENT_ENDPOINT,
+    CHECK_CURRENT_LOCATION,
+    GET_EVENT_BY_ID,
+} from '@/constants/api'
 import { authFetch } from './auth-fetch'
 
 /**
@@ -10,7 +14,13 @@ import { authFetch } from './auth-fetch'
  * @param longitude
  * @returns
  */
-export async function verifyCheckIn(eventId: string, locationId: string, latitude: number, longitude: number, faceImageBase64: string) {
+export async function verifyCheckIn(
+    eventId: string,
+    locationId: string,
+    latitude: number,
+    longitude: number,
+    faceImageBase64: string,
+) {
     try {
         const response = await authFetch(REGISTER_STUDENT_ON_EVENT_ENDPOINT, {
             method: 'POST',
@@ -46,7 +56,11 @@ export async function verifyCheckIn(eventId: string, locationId: string, latitud
     }
 }
 
-export async function checkLocation(locationId: string, latitude: number, longitude: number) {
+export async function checkLocation(
+    locationId: string,
+    latitude: number,
+    longitude: number,
+) {
     try {
         const response = await authFetch(CHECK_CURRENT_LOCATION, {
             method: 'POST',
@@ -94,7 +108,11 @@ export async function fetchEventById(eventId: string) {
         })
 
         if (!response.ok) {
-            console.error('Failed to fetch event:', response.status, response.statusText)
+            console.error(
+                'Failed to fetch event:',
+                response.status,
+                response.statusText,
+            )
             return null
         }
 

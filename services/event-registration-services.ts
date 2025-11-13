@@ -4,7 +4,11 @@ import React from 'react'
 import { Alert } from 'react-native'
 
 // interfaces
-import { CheckInParams, PingingParams, StopPingingParams } from '../interface/event-registration/event-registration-interface'
+import {
+    CheckInParams,
+    PingingParams,
+    StopPingingParams,
+} from '../interface/event-registration/event-registration-interface'
 
 // services
 import { pingAttendance } from '@/services/ping-attendance-logs'
@@ -23,7 +27,10 @@ export async function fetchLocation(
     try {
         const { status } = await Location.requestForegroundPermissionsAsync()
         if (status !== 'granted') {
-            Alert.alert('Permission Denied', 'Location permission is required for check-in.')
+            Alert.alert(
+                'Permission Denied',
+                'Location permission is required for check-in.',
+            )
             return
         }
 
@@ -48,18 +55,46 @@ export async function fetchLocation(
  *
  * @param param0 CheckInParams object containing eventId, locationId, latitude, longitude, setLoading, and onSuccess callback.
  */
-export async function handleCheckIn({ eventId, locationId, latitude, longitude, faceImageBase64, setLoading, onSuccess }: CheckInParams) {
-    if (!eventId || !locationId || !faceImageBase64 || latitude === null || longitude === null) {
+export async function handleCheckIn({
+    eventId,
+    locationId,
+    latitude,
+    longitude,
+    faceImageBase64,
+    setLoading,
+    onSuccess,
+}: CheckInParams) {
+    if (
+        !eventId ||
+        !locationId ||
+        !faceImageBase64 ||
+        latitude === null ||
+        longitude === null
+    ) {
         Alert.alert('Missing Data', 'Cannot proceed with check-in.')
         return
     }
     setLoading(true)
     try {
-        const result = await verifyCheckIn(eventId, locationId, latitude, longitude, faceImageBase64)
+        const result = await verifyCheckIn(
+            eventId,
+            locationId,
+            latitude,
+            longitude,
+            faceImageBase64,
+        )
         if (result.success) {
-            Alert.alert('Check-In Successful', result.message || 'Facial verification passed! Tracking started.', [{ text: 'OK', onPress: onSuccess }])
+            Alert.alert(
+                'Check-In Successful',
+                result.message ||
+                    'Facial verification passed! Tracking started.',
+                [{ text: 'OK', onPress: onSuccess }],
+            )
         } else {
-            Alert.alert('Check-In Failed', result.message || 'Please try again.')
+            Alert.alert(
+                'Check-In Failed',
+                result.message || 'Please try again.',
+            )
         }
     } catch (error: any) {
         Alert.alert('Error', error.message || 'Something went wrong.')
@@ -74,7 +109,14 @@ export async function handleCheckIn({ eventId, locationId, latitude, longitude, 
  *
  * @param param0 PingingParams object containing eventId, locationId, state setters for pinging status, latitude, longitude, and last ping time.
  */
-export function startPingingAttendanceLogs({ eventId, locationId, setIsPinging, setLatitude, setLongitude, setLastPingTime }: PingingParams) {
+export function startPingingAttendanceLogs({
+    eventId,
+    locationId,
+    setIsPinging,
+    setLatitude,
+    setLongitude,
+    setLastPingTime,
+}: PingingParams) {
     const PING_INTERVAL_MS = 60000
     setIsPinging(true)
 

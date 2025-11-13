@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-export const styles = StyleSheet.create({
+export default StyleSheet.create({
     container: { flex: 1, backgroundColor: '#000' },
     camera: { flex: 1 },
     overlay: {
@@ -96,5 +96,3 @@ export const styles = StyleSheet.create({
         color: '#374151',
     },
 })
-
-export default styles

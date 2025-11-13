@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native'
 /*
 Styles for the Event Registration Page
 */
-export const styles = StyleSheet.create({
+export default StyleSheet.create({
     infoSection: {
         marginBottom: 16,
     },
@@ -62,5 +62,3 @@ export const styles = StyleSheet.create({
         right: 12,
     },
 })
-
-export default styles
