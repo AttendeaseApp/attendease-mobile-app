@@ -1,4 +1,4 @@
 export interface LoginRequest {
-  studentNumber: string;
-  password: string;
+    studentNumber: string
+    password: string
 }

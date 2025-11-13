@@ -1,65 +1,65 @@
 import {
-  fetchLocation,
-  handleCheckIn,
-  startPingingAttendanceLogs,
-  stopPingingAttendanceLogs,
-} from "@/services/event-registration-services";
-import { useEffect, useRef, useState } from "react";
+    fetchLocation,
+    handleCheckIn,
+    startPingingAttendanceLogs,
+    stopPingingAttendanceLogs,
+} from '@/services/event-registration-services'
+import { useEffect, useRef, useState } from 'react'
 
 export function useEventCheckIn(eventId: string, locationId: string) {
-  const [latitude, setLatitude] = useState<number | null>(null);
-  const [longitude, setLongitude] = useState<number | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [locationLoading, setLocationLoading] = useState(true);
-  const [isPinging, setIsPinging] = useState(false);
-  const [lastPingTime, setLastPingTime] = useState<string | null>(null);
-  const pingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const [latitude, setLatitude] = useState<number | null>(null)
+    const [longitude, setLongitude] = useState<number | null>(null)
+    const [loading, setLoading] = useState(false)
+    const [locationLoading, setLocationLoading] = useState(true)
+    const [isPinging, setIsPinging] = useState(false)
+    const [lastPingTime, setLastPingTime] = useState<string | null>(null)
+    const pingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  useEffect(() => {
-    fetchLocation(setLocationLoading, setLatitude, setLongitude);
-    return () => {
-      if (pingIntervalRef.current) clearInterval(pingIntervalRef.current);
-    };
-  }, []);
+    useEffect(() => {
+        fetchLocation(setLocationLoading, setLatitude, setLongitude)
+        return () => {
+            if (pingIntervalRef.current) clearInterval(pingIntervalRef.current)
+        }
+    }, [])
 
-  const startPinging = () => {
-    pingIntervalRef.current = startPingingAttendanceLogs({
-      eventId,
-      locationId,
-      setIsPinging,
-      setLatitude,
-      setLongitude,
-      setLastPingTime,
-    });
-  };
-
-  const stopPinging = () => {
-    if (pingIntervalRef.current) {
-      clearInterval(pingIntervalRef.current);
-      pingIntervalRef.current = null;
+    const startPinging = () => {
+        pingIntervalRef.current = startPingingAttendanceLogs({
+            eventId,
+            locationId,
+            setIsPinging,
+            setLatitude,
+            setLongitude,
+            setLastPingTime,
+        })
     }
-    stopPingingAttendanceLogs({ setIsPinging });
-  };
 
-  const checkIn = () => {
-    handleCheckIn({
-      eventId,
-      locationId,
-      latitude,
-      longitude,
-      setLoading,
-      onSuccess: startPinging,
-    });
-  };
+    const stopPinging = () => {
+        if (pingIntervalRef.current) {
+            clearInterval(pingIntervalRef.current)
+            pingIntervalRef.current = null
+        }
+        stopPingingAttendanceLogs({ setIsPinging })
+    }
 
-  return {
-    latitude,
-    longitude,
-    loading,
-    locationLoading,
-    isPinging,
-    lastPingTime,
-    checkIn,
-    stopPinging,
-  };
+    const checkIn = () => {
+        handleCheckIn({
+            eventId,
+            locationId,
+            latitude,
+            longitude,
+            setLoading,
+            onSuccess: startPinging,
+        })
+    }
+
+    return {
+        latitude,
+        longitude,
+        loading,
+        locationLoading,
+        isPinging,
+        lastPingTime,
+        checkIn,
+        stopPinging,
+    }
 }
