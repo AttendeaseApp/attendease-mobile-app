@@ -28,12 +28,19 @@ const LoginScreen = () => {
             const result = await login(studentNumber, password)
 
             if (result.success) {
-                router.replace('/(tabs)/Homepage')
+                if (result.requiresFacialRegistration) {
+                    router.replace({
+                        pathname: './(biometrics)',
+                        params: {
+                            studentNumber: result.studentNumber,
+                            token: result.token,
+                        },
+                    })
+                } else {
+                    router.replace('/(tabs)/Homepage')
+                }
             } else {
-                Alert.alert(
-                    'Login failed',
-                    result.message || 'Invalid credentials',
-                )
+                Alert.alert('Login failed', result.message || 'Invalid credentials')
             }
         } catch (error) {
             Alert.alert('Error', 'Something went wrong. Please try again.')
@@ -44,28 +51,17 @@ const LoginScreen = () => {
     }
 
     return (
-        <KeyboardAvoidingView
-            style={styles.background}
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        >
+        <KeyboardAvoidingView style={styles.background} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
             <View style={styles.container}>
                 <View style={styles.header}>
-                    <ThemedText
-                        type="titleSecondary"
-                        fontFamilyOverride="StackSansHeadline"
-                    >
+                    <ThemedText type="titleSecondary" fontFamilyOverride="StackSansHeadline">
                         RCians Attendease
                     </ThemedText>
-                    <ThemedText type="default">
-                        Discover events, check in seamlessly, and stay connected
-                        with your community.
-                    </ThemedText>
+                    <ThemedText type="default">Discover events, check in seamlessly, and stay connected with your community.</ThemedText>
                 </View>
 
                 <View>
-                    <ThemedText type="default">
-                        Log into your Attendease account.
-                    </ThemedText>
+                    <ThemedText type="default">Log into your Attendease account.</ThemedText>
                 </View>
 
                 <ThemedTextInput
@@ -88,17 +84,10 @@ const LoginScreen = () => {
                     backgroundColorOverride="transparent"
                 />
 
-                <Button
-                    title="LOG IN"
-                    onPress={handleLogin}
-                    loading={loading}
-                />
+                <Button title="LOG IN" onPress={handleLogin} loading={loading} />
             </View>
 
-            <ThemedText
-                type="default"
-                style={{ fontSize: 13, textAlign: 'center' }}
-            >
+            <ThemedText type="default" style={{ fontSize: 13, textAlign: 'center' }}>
                 2025 Rogationist College - College Department
             </ThemedText>
         </KeyboardAvoidingView>
