@@ -13,10 +13,8 @@ export default function FaceVerificationScreen() {
         eventId: string
         locationId: string
     }>()
-    const { checkIn, latitude, longitude, locationLoading } = useEventCheckIn(
-        eventId,
-        locationId,
-    )
+    const { performCheckIn, latitude, longitude, locationLoading } =
+        useEventCheckIn(eventId, locationId)
     const router = useRouter()
 
     const captureAndVerify = async () => {
@@ -41,7 +39,7 @@ export default function FaceVerificationScreen() {
                 throw new Error('Failed to capture image.')
             }
 
-            checkIn(photo.base64)
+            await performCheckIn(photo.base64)
             router.back()
         } catch (error: any) {
             Alert.alert('Capture Error', error.message)

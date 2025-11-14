@@ -37,7 +37,7 @@ export async function fetchLocation(
         }
 
         const location = await Location.getCurrentPositionAsync({
-            accuracy: Location.Accuracy.BestForNavigation,
+            accuracy: Location.Accuracy.Highest,
         })
 
         setLatitude(location.coords.latitude)
