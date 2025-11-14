@@ -19,7 +19,6 @@ export async function verifyCheckIn(
     locationId: string,
     latitude: number,
     longitude: number,
-    faceImageBase64: string,
 ) {
     try {
         const response = await authFetch(REGISTER_STUDENT_ON_EVENT_ENDPOINT, {
@@ -29,7 +28,6 @@ export async function verifyCheckIn(
                 locationId,
                 latitude,
                 longitude,
-                faceImageBase64,
             }),
         })
 

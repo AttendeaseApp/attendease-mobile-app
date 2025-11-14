@@ -1,10 +1,10 @@
 import {
-    fetchLocation, // gets phone GPS
+    fetchLocation,
     handleCheckIn,
     startPingingAttendanceLogs,
     stopPingingAttendanceLogs,
 } from '@/services/event-registration-services'
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export function useEventCheckIn(eventId: string, locationId: string) {
     const [latitude, setLatitude] = useState<number | null>(null)
@@ -13,7 +13,6 @@ export function useEventCheckIn(eventId: string, locationId: string) {
     const [locationLoading, setLocationLoading] = useState(true)
     const [isPinging, setIsPinging] = useState(false)
     const [lastPingTime, setLastPingTime] = useState<string | null>(null)
-    const [checkedIn, setCheckedIn] = useState(false)
     const pingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
     useEffect(() => {
@@ -23,8 +22,7 @@ export function useEventCheckIn(eventId: string, locationId: string) {
         }
     }, [])
 
-    const startPinging = useCallback(() => {
-        if (pingIntervalRef.current) return
+    const startPinging = () => {
         pingIntervalRef.current = startPingingAttendanceLogs({
             eventId,
             locationId,
@@ -33,33 +31,26 @@ export function useEventCheckIn(eventId: string, locationId: string) {
             setLongitude,
             setLastPingTime,
         })
-    }, [eventId, locationId])
+    }
 
-    const stopPinging = useCallback(() => {
+    const stopPinging = () => {
         if (pingIntervalRef.current) {
             clearInterval(pingIntervalRef.current)
             pingIntervalRef.current = null
         }
         stopPingingAttendanceLogs({ setIsPinging })
-    }, [])
+    }
 
-    const performCheckIn = useCallback(
-        async (faceImageBase64: string) => {
-            if (!latitude || !longitude) return
-            await handleCheckIn({
-                eventId,
-                locationId,
-                latitude,
-                longitude,
-                faceImageBase64,
-                setLoading,
-                onSuccess: () => {
-                    startPinging()
-                },
-            })
-        },
-        [latitude, longitude, eventId, locationId, startPinging],
-    )
+    const checkIn = () => {
+        handleCheckIn({
+            eventId,
+            locationId,
+            latitude,
+            longitude,
+            setLoading,
+            onSuccess: startPinging,
+        })
+    }
 
     return {
         latitude,
@@ -68,7 +59,7 @@ export function useEventCheckIn(eventId: string, locationId: string) {
         locationLoading,
         isPinging,
         lastPingTime,
-        performCheckIn,
+        checkIn,
         stopPinging,
     }
 }
