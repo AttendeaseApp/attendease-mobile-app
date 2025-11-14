@@ -39,7 +39,7 @@ export default function FaceVerificationScreen() {
                 throw new Error('Failed to capture image.')
             }
 
-            performCheckIn(photo.base64)
+            await performCheckIn(photo.base64)
             router.back()
         } catch (error: any) {
             Alert.alert('Capture Error', error.message)
