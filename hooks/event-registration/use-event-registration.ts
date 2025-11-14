@@ -1,5 +1,5 @@
 import {
-    fetchLocation,
+    fetchLocation, // gets phone GPS
     handleCheckIn,
     startPingingAttendanceLogs,
     stopPingingAttendanceLogs,
@@ -13,6 +13,7 @@ export function useEventCheckIn(eventId: string, locationId: string) {
     const [locationLoading, setLocationLoading] = useState(true)
     const [isPinging, setIsPinging] = useState(false)
     const [lastPingTime, setLastPingTime] = useState<string | null>(null)
+    const [checkedIn, setCheckedIn] = useState(false)
     const pingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
     useEffect(() => {
