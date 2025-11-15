@@ -1,4 +1,4 @@
-import { verifyCheckIn } from '@/services/verify-event-registration'
+import { verifyCheckIn } from '@/services/api/event/registration/verify-event-registration'
 import * as Location from 'expo-location'
 import React from 'react'
 import { Alert } from 'react-native'
@@ -11,7 +11,7 @@ import {
 } from '../interface/event-registration/event-registration-interface'
 
 // services
-import { pingAttendance } from '@/services/ping-attendance-logs'
+import { pingAttendance } from '@/services/api/attendance/ping-attendance-logs'
 
 let isCheckingInRef = false
 

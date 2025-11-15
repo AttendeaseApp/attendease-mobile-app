@@ -1,5 +1,5 @@
 import { REGISTER_FACE } from '@/constants/api'
-import { authFetch } from '../auth-fetch'
+import { authFetch } from '../../auth-fetch'
 
 // TODO: make separate interface fo this sheet
 interface RegisterFaceResponse {

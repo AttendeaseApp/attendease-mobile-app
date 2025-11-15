@@ -1,5 +1,5 @@
-import { authFetch } from '@/services/auth-fetch'
-import { RETRIEVE_USER_PROFILE } from '../constants/api'
+import { authFetch } from '@/services/api/auth-fetch'
+import { RETRIEVE_USER_PROFILE } from '../../../constants/api'
 
 /**
  * Fetches profile page data.

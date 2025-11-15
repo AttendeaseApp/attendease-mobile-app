@@ -6,7 +6,7 @@ import { Event } from '../../../interface/event-sessions/Event'
 // styles
 import { styles } from '../../../styles/Homepage.styles'
 // services
-import { fetchHomePageData } from '../../../services/fetch-home-page-data'
+import { fetchHomePageData } from '../../../services/api/home/fetch-home-page-data'
 // ui
 import EventCard from '../../../components/EventCard'
 import { ThemedText } from '../../../components/ThemedText'

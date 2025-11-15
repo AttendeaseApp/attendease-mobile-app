@@ -1,5 +1,5 @@
 import { PING_ATTENDANCE_ENDPOINT } from '@/constants/api'
-import { authFetch } from '@/services/auth-fetch'
+import { authFetch } from '@/services/api/auth-fetch'
 
 /**
  * Sends a location ping to the backend for attendance tracking.

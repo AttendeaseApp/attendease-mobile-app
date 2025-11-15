@@ -9,8 +9,8 @@ import { ThemedText } from '../../../components/ThemedText'
 import { ScreenContainer } from '../../../components/layouts/CustomScreenContainer'
 import NavBar from '../../../components/NavBar'
 // services
-import { logout } from '../../../services/auth'
-import { fetchProfilePageData } from '../../../services/fetch-profile-page-data'
+import { logout } from '../../../services/api/auth/auth'
+import { fetchProfilePageData } from '../../../services/api/profile/fetch-profile-page-data'
 
 /**
  * This is the User Profile Page where users can view their profile information and log out of the application.

@@ -1,10 +1,10 @@
-import { registerFaceEncoding } from '@/services/biometrics/register-biometrics'
+import { registerFaceEncoding } from '../../../services/api/auth/biometrics/register-biometrics'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { CameraView, useCameraPermissions } from 'expo-camera'
 import { useRouter } from 'expo-router'
 import React, { useEffect, useRef, useState } from 'react'
-import styles from '@/styles/biometrics/registration.styles'
-import { ThemedText } from '@/components/ThemedText'
+import styles from '../../../styles/biometrics/registration.styles'
+import { ThemedText } from '../../../components/ThemedText'
 import {
     ActivityIndicator,
     Alert,

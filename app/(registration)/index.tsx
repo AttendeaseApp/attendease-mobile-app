@@ -13,7 +13,7 @@ import { useEventCheckIn } from '../../hooks/event-registration/use-event-regist
 import {
     checkLocation,
     fetchEventById,
-} from '../../services/verify-event-registration'
+} from '../../services/api/event/registration/verify-event-registration'
 import { Button } from '../../components/Button'
 import { ThemedText } from '../../components/ThemedText'
 import type { Event } from '../../interface/event-sessions/Event'
@@ -103,7 +103,6 @@ export default function EventDetailsRegistrationPage() {
             },
         })
     }
-
 
     if (loadingEvent) {
         return (

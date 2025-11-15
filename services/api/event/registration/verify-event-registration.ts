@@ -3,7 +3,7 @@ import {
     CHECK_CURRENT_LOCATION,
     GET_EVENT_BY_ID,
 } from '@/constants/api'
-import { authFetch } from './auth-fetch'
+import { authFetch } from '../../auth-fetch'
 
 /**
  * Verifies a student's check-in for an event by sending their location, event details, and optional face image to the server.

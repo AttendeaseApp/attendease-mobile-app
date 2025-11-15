@@ -1,7 +1,7 @@
 import { Button } from '../../components/Button'
 import { ThemedText } from '../../components/ThemedText'
 import { ThemedTextInput } from '../../components/ThemedTextInput'
-import { login } from '../../services/auth'
+import { login } from '../../services/api/auth/auth'
 import { useRouter } from 'expo-router'
 import React, { useState } from 'react'
 import { Alert, KeyboardAvoidingView, Platform, View } from 'react-native'
