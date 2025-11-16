@@ -1,9 +1,9 @@
 import { CameraView, useCameraPermissions } from 'expo-camera'
 import { useRouter, useLocalSearchParams } from 'expo-router'
-import { useEventCheckIn } from '@/hooks/event-registration/use-event-registration'
+import { useEventCheckIn } from '../../../hooks/event-registration/use-event-registration'
 import React, { useRef, useState } from 'react'
 import { ActivityIndicator, Alert, Button, Text, View } from 'react-native'
-import styles from '@/styles/biometrics/verification.styles'
+import styles from '../../../styles/biometrics/verification.styles'
 
 export default function FaceVerificationScreen() {
     const cameraRef = useRef<CameraView>(null)

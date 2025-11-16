@@ -39,7 +39,6 @@ export default function EventDetailsRegistrationPage() {
         locationLoading,
         isPinging,
         lastPingTime,
-        performCheckIn,
     } = useEventCheckIn(parsedEventId!, parsedLocationId!)
 
     const [locationStatus, setLocationStatus] = useState<{

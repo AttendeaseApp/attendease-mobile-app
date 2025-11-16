@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { ActivityIndicator, FlatList, RefreshControl, View } from 'react-native'
+import { ActivityIndicator, FlatList, View } from 'react-native'
 
 // interfaces
 import { Event } from '../../../interface/event-sessions/Event'
@@ -12,6 +12,7 @@ import EventCard from '../../../components/EventCard'
 import { ThemedText } from '../../../components/ThemedText'
 import { ScreenContainer } from '../../../components/layouts/CustomScreenContainer'
 import NavBar from '../../../components/NavBar'
+import CustomRefreshControl from '../../../components/RefreshControl'
 
 /**
  * This is the Home Screen where users can view a list of available events
@@ -26,12 +27,10 @@ export default function HomeScreen() {
         lastName: string
     } | null>(null)
 
-    // Load initial data
     useEffect(() => {
         fetchHomePageData(setEvents, setUser, setLoading)
     }, [])
 
-    // Pull-to-refresh logic
     const onRefresh = useCallback(async () => {
         setRefreshing(true)
         await fetchHomePageData(setEvents, setUser, setLoading)
@@ -79,41 +78,41 @@ export default function HomeScreen() {
             </ThemedText>
 
             <View style={styles.cardContainer}>
-                {events.length === 0 ? (
-                    <ThemedText type="default" style={{ marginTop: 20 }}>
-                        No ongoing events at the moment.
-                    </ThemedText>
-                ) : (
-                    <FlatList
-                        data={events}
-                        keyExtractor={(item, index) =>
-                            item.eventId || `event-${index}`
-                        }
-                        renderItem={({ item }) => (
-                            <EventCard
-                                eventId={item.eventId}
-                                eventName={item.eventName}
-                                eventStatus={item.eventStatus}
-                                timeInRegistrationStartDateTime={
-                                    item.timeInRegistrationStartDateTime
-                                }
-                                startDateTime={item.startDateTime}
-                                endDateTime={item.endDateTime}
-                                locationId={item.locationId}
-                                eventLocation={item.eventLocation}
-                            />
-                        )}
-                        showsVerticalScrollIndicator={false}
-                        refreshControl={
-                            <RefreshControl
-                                refreshing={refreshing}
-                                onRefresh={onRefresh}
-                                colors={['#27548A']}
-                                tintColor="#27548A"
-                            />
-                        }
-                    />
-                )}
+                <FlatList
+                    data={events}
+                    keyExtractor={(item, index) =>
+                        item.eventId || `event-${index}`
+                    }
+                    renderItem={({ item }) => (
+                        <EventCard
+                            eventId={item.eventId}
+                            eventName={item.eventName}
+                            eventStatus={item.eventStatus}
+                            timeInRegistrationStartDateTime={
+                                item.timeInRegistrationStartDateTime
+                            }
+                            startDateTime={item.startDateTime}
+                            endDateTime={item.endDateTime}
+                            locationId={item.locationId}
+                            eventLocation={item.eventLocation}
+                        />
+                    )}
+                    ListEmptyComponent={
+                        <ThemedText
+                            type="default"
+                            style={{ marginTop: 20, textAlign: 'center' }}
+                        >
+                            No ongoing events at the moment.
+                        </ThemedText>
+                    }
+                    showsVerticalScrollIndicator={false}
+                    refreshControl={
+                        <CustomRefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                        />
+                    }
+                />{' '}
             </View>
         </ScreenContainer>
     )

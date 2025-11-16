@@ -5,13 +5,8 @@ import { useRouter } from 'expo-router'
 import React, { useEffect, useRef, useState } from 'react'
 import styles from '../../../styles/biometrics/registration.styles'
 import { ThemedText } from '../../../components/ThemedText'
-import {
-    ActivityIndicator,
-    Alert,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native'
+import { Button } from '../../../components/Button'
+import { Alert, Text, View } from 'react-native'
 
 const REQUIRED_IMAGES = 5
 
@@ -162,12 +157,7 @@ export default function FacialRegistration() {
                 <ThemedText type="default">
                     Camera access is required to register your face
                 </ThemedText>
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={requestPermission}
-                >
-                    <Text style={styles.buttonText}>Grant Permission</Text>
-                </TouchableOpacity>
+                <Button title="Grant Permission" onPress={requestPermission} />
             </View>
         )
     }
@@ -208,37 +198,25 @@ export default function FacialRegistration() {
             <View style={styles.controls}>
                 {capturedImages.length > 0 &&
                     capturedImages.length < REQUIRED_IMAGES && (
-                        <TouchableOpacity
-                            style={[styles.button, styles.buttonSecondary]}
+                        <Button
+                            title="Reset"
                             onPress={resetCapture}
                             disabled={isProcessing}
-                        >
-                            <Text style={styles.buttonText}>Reset</Text>
-                        </TouchableOpacity>
+                        />
                     )}
 
-                <TouchableOpacity
-                    style={[
-                        styles.button,
-                        (isProcessing ||
-                            capturedImages.length >= REQUIRED_IMAGES) &&
-                            styles.buttonDisabled,
-                    ]}
+                <Button
+                    title={
+                        capturedImages.length === 0
+                            ? 'Start Registration'
+                            : `Capture Image ${capturedImages.length + 1}`
+                    }
                     onPress={captureImage}
+                    loading={isProcessing}
                     disabled={
                         isProcessing || capturedImages.length >= REQUIRED_IMAGES
                     }
-                >
-                    {isProcessing ? (
-                        <ActivityIndicator color="#fff" />
-                    ) : (
-                        <Text style={styles.buttonText}>
-                            {capturedImages.length === 0
-                                ? 'Start Registration'
-                                : `Capture Image ${capturedImages.length + 1}`}
-                        </Text>
-                    )}
-                </TouchableOpacity>
+                />
 
                 <ThemedText type="default">
                     {capturedImages.length === 0

@@ -58,25 +58,6 @@ export default StyleSheet.create({
         paddingHorizontal: 20,
         gap: 12,
     },
-    button: {
-        backgroundColor: '#3b82f6',
-        paddingVertical: 15,
-        borderRadius: 10,
-        alignItems: 'center',
-        marginTop: 20,
-    },
-    buttonSecondary: {
-        backgroundColor: '#6b7280',
-        marginTop: 10,
-    },
-    buttonDisabled: {
-        backgroundColor: '#94a3b8',
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
     helpText: {
         color: '#9ca3af',
         fontSize: 14,
