@@ -8,7 +8,6 @@ export interface CheckInParams {
     locationId: string
     latitude: number | null
     longitude: number | null
-    faceImageBase64: string
     setLoading: React.Dispatch<React.SetStateAction<boolean>>
     onSuccess?: () => void
 }

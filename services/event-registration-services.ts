@@ -62,25 +62,14 @@ export async function handleCheckIn({
     locationId,
     latitude,
     longitude,
-    faceImageBase64,
     setLoading,
     onSuccess,
 }: CheckInParams) {
-    if (isCheckingInRef) {
-        console.log('Check-in already in progress, skipping duplicate request.')
-        return
-    }
-    if (
-        !eventId ||
-        !locationId ||
-        !faceImageBase64 ||
-        latitude === null ||
-        longitude === null
-    ) {
+    if (!eventId || !locationId || latitude === null || longitude === null) {
         Alert.alert('Missing Data', 'Cannot proceed with check-in.')
         return
     }
-    isCheckingInRef = true
+
     setLoading(true)
     try {
         const result = await verifyCheckIn(
@@ -88,15 +77,11 @@ export async function handleCheckIn({
             locationId,
             latitude,
             longitude,
-            faceImageBase64,
         )
         if (result.success) {
-            Alert.alert(
-                'Check-In Successful',
-                result.message ||
-                    'Facial verification passed! Tracking started.',
-                [{ text: 'OK', onPress: onSuccess }],
-            )
+            Alert.alert('Check-In Successful', 'Tracking started.', [
+                { text: 'OK', onPress: onSuccess },
+            ])
         } else {
             Alert.alert(
                 'Check-In Failed',
@@ -106,7 +91,6 @@ export async function handleCheckIn({
     } catch (error: any) {
         Alert.alert('Error', error.message || 'Something went wrong.')
     } finally {
-        isCheckingInRef = false
         setLoading(false)
     }
 }

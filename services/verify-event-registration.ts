@@ -1,12 +1,13 @@
 import {
-    REGISTER_STUDENT_ON_EVENT_ENDPOINT,
     CHECK_CURRENT_LOCATION,
     GET_EVENT_BY_ID,
+    GET_EVENT_STATE_STATUS,
+    REGISTER_STUDENT_ON_EVENT_ENDPOINT,
 } from '@/constants/api'
 import { authFetch } from './auth-fetch'
 
 /**
- * Verifies a student's check-in for an event by sending their location, event details, and optional face image to the server.
+ * Verifies a student's check-in for an event by sending their location and event details to the server.
  *
  * @param eventId
  * @param locationId
@@ -19,7 +20,6 @@ export async function verifyCheckIn(
     locationId: string,
     latitude: number,
     longitude: number,
-    faceImageBase64: string,
 ) {
     try {
         const response = await authFetch(REGISTER_STUDENT_ON_EVENT_ENDPOINT, {
@@ -29,7 +29,6 @@ export async function verifyCheckIn(
                 locationId,
                 latitude,
                 longitude,
-                faceImageBase64,
             }),
         })
 
@@ -122,5 +121,39 @@ export async function fetchEventById(eventId: string) {
     } catch (error) {
         console.error('Error fetching event by ID:', error)
         return null
+    }
+}
+
+/**
+ * Used to retrieve event state it must be fetch every 30 seconds
+ *
+ */
+export async function getEventStartStatus(eventId: string) {
+    try {
+        const response = await authFetch(GET_EVENT_STATE_STATUS(eventId), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+
+        if (!response.ok) {
+            console.error(
+                'Failed to fetch event state:',
+                response.status,
+                response.statusText,
+            )
+            return null
+        }
+
+        const data = await response.json()
+        console.log('Fetched event state:', data)
+        return data
+    } catch (error: any) {
+        console.error('Getting event state error:', error)
+        return {
+            success: false,
+            message: error.message || 'Network error occurred',
+        }
     }
 }
