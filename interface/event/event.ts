@@ -1,13 +1,5 @@
-import { EventLocation } from './EventLocation'
-
-export enum EventStatus {
-    UPCOMING = 'UPCOMING',
-    REGISTRATION = 'REGISTRATION',
-    ONGOING = 'ONGOING',
-    CONCLUDED = 'CONCLUDED',
-    CANCELLED = 'CANCELLED',
-    FINALIZED = 'FINALIZED',
-}
+import { EventLocation } from '../locations/event-location'
+import { EventStatus } from './status'
 
 export interface Event {
     eventId: string

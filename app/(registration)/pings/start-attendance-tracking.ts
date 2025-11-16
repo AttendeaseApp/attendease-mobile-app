@@ -1,6 +1,6 @@
 import * as Location from 'expo-location'
 import { AttendanceTrackingParams } from '../../../interface/event-registration/event-registration-interface'
-import { pingAttendance } from '../../../services/ping-attendance-logs'
+import { attendanceTrackingServiceAPI } from '../../../services/attendance/attendance-tracking-service'
 
 /**
  * this function starts periodic pinging to log attendance.
@@ -14,7 +14,7 @@ export function startAttendanceTracking({
     setIsTracking,
     setLatitude,
     setLongitude,
-    setLastPingTime,
+    setLastTrackingTime,
 }: AttendanceTrackingParams) {
     const PING_INTERVAL_MS = 60000
     setIsTracking(true)
@@ -29,10 +29,15 @@ export function startAttendanceTracking({
             setLatitude(latitude)
             setLongitude(longitude)
 
-            await pingAttendance(eventId, locationId, latitude, longitude)
-            setLastPingTime?.(new Date().toLocaleTimeString())
+            await attendanceTrackingServiceAPI(
+                eventId,
+                locationId,
+                latitude,
+                longitude,
+            )
+            setLastTrackingTime?.(new Date().toLocaleTimeString())
         } catch (err) {
-            console.warn('Ping failed:', err)
+            console.warn('Attendance tracking failed:', err)
         }
     }, PING_INTERVAL_MS)
     return interval

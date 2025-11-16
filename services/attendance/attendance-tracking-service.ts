@@ -9,7 +9,7 @@ import { authFetch } from '@/services/auth-fetch'
  * @param latitude Current latitude
  * @param longitude Current longitude
  */
-export async function pingAttendance(
+export async function attendanceTrackingServiceAPI(
     eventId: string,
     locationId: string,
     latitude: number,

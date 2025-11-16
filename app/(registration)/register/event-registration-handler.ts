@@ -1,6 +1,6 @@
 import { Alert } from 'react-native'
-import { CheckInParams } from '../../../interface/event-registration/event-registration-interface'
-import { verifyCheckIn } from '../../../services/verify-event-registration'
+import { RegistrationParams } from '../../../interface/event-registration/event-registration-interface'
+import { registerOnEvent } from '../../../services/event/register-on-event'
 
 /**
  * this function handles the user check-in process by verifying their location and event details.
@@ -15,7 +15,7 @@ export async function eventRegistrationEventHandler({
     longitude,
     setLoading,
     onSuccess,
-}: CheckInParams) {
+}: RegistrationParams) {
     if (!eventId || !locationId || latitude === null || longitude === null) {
         Alert.alert('Missing Data', 'Cannot proceed with check-in.')
         return
@@ -23,7 +23,7 @@ export async function eventRegistrationEventHandler({
 
     setLoading(true)
     try {
-        const result = await verifyCheckIn(
+        const result = await registerOnEvent(
             eventId,
             locationId,
             latitude,

@@ -24,33 +24,38 @@ export function useEventRegistration(
     const [longitude, setLongitude] = useState<number | null>(null)
     const [loading, setLoading] = useState(false)
     const [locationLoading, setLocationLoading] = useState(true)
-    const [isPinging, setIsTracking] = useState(false)
-    const [lastPingTime, setLastPingTime] = useState<string | null>(null)
-    const pingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+    const [isTracking, setIsTracking] = useState(false)
+    const [lastTrackingTime, setLastTrackingTime] = useState<string | null>(
+        null,
+    )
+    const trackingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
+        null,
+    )
 
     useEffect(() => {
         getCurrentLocation(setLocationLoading, setLatitude, setLongitude)
 
         return () => {
-            if (pingIntervalRef.current) clearInterval(pingIntervalRef.current)
+            if (trackingIntervalRef.current)
+                clearInterval(trackingIntervalRef.current)
         }
     }, [])
 
-    const startPinging = () => {
-        pingIntervalRef.current = startAttendanceTracking({
+    const stratTracking = () => {
+        trackingIntervalRef.current = startAttendanceTracking({
             eventId,
             locationId,
             setIsTracking,
             setLatitude,
             setLongitude,
-            setLastPingTime,
+            setLastTrackingTime,
         })
     }
 
-    const stopPinging = () => {
-        if (pingIntervalRef.current) {
-            clearInterval(pingIntervalRef.current)
-            pingIntervalRef.current = null
+    const stopTracking = () => {
+        if (trackingIntervalRef.current) {
+            clearInterval(trackingIntervalRef.current)
+            trackingIntervalRef.current = null
         }
         stopAttendanceTracking({ setIsTracking })
     }
@@ -62,7 +67,7 @@ export function useEventRegistration(
             latitude,
             longitude,
             setLoading,
-            onSuccess: startPinging,
+            onSuccess: stratTracking,
         })
     }
 
@@ -71,9 +76,9 @@ export function useEventRegistration(
         longitude,
         loading,
         locationLoading,
-        isPinging,
-        lastPingTime,
+        isTracking,
+        lastTrackingTime,
         register,
-        stopPinging,
+        stopTracking,
     }
 }

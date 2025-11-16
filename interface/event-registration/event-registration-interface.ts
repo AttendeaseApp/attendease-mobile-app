@@ -3,7 +3,7 @@ export interface EventLocationCoords {
     longitude: number | null
 }
 
-export interface CheckInParams {
+export interface RegistrationParams {
     eventId: string
     locationId: string
     latitude: number | null
@@ -18,7 +18,7 @@ export interface AttendanceTrackingParams {
     setIsTracking: React.Dispatch<React.SetStateAction<boolean>>
     setLatitude: React.Dispatch<React.SetStateAction<number | null>>
     setLongitude: React.Dispatch<React.SetStateAction<number | null>>
-    setLastPingTime?: React.Dispatch<React.SetStateAction<string | null>>
+    setLastTrackingTime?: React.Dispatch<React.SetStateAction<string | null>>
 }
 
 export interface StopAttendanceTrackingParams {
@@ -35,8 +35,8 @@ export interface UseEventRegistrationReturn {
     longitude: number | null
     loading: boolean
     locationLoading: boolean
-    isPinging: boolean
-    lastPingTime: string | null
+    isTracking: boolean
+    lastTrackingTime: string | null
     register: () => void
-    stopPinging: () => void
+    stopTracking: () => void
 }

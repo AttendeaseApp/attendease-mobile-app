@@ -1,5 +1,5 @@
-import { EventStatus } from './Event'
-import { EventLocation } from './EventLocation'
+import { EventStatus } from './status'
+import { EventLocation } from '../locations/event-location'
 
 export interface EventCardProps {
     eventName: string

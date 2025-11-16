@@ -11,11 +11,11 @@ import { ScreenContainer } from '../../components/layouts/CustomScreenContainer'
 import NavBar from '../../components/NavBar'
 import { ThemedText } from '../../components/ThemedText'
 import { useEventRegistration } from './hooks/use-event-registration'
-import type { Event } from '../../interface/event-sessions/Event'
+import type { Event } from '../../interface/event/event'
 import {
     checkLocation,
     fetchEventById,
-} from '../../services/verify-event-registration'
+} from '../../services/event/register-on-event'
 import styles from '../../styles/EventRegistrationPage.styles'
 import { formatDateTime } from '../../utils/formatDateTime'
 import { LocationStatus } from '../../interface/event-registration/event-registration-interface'
