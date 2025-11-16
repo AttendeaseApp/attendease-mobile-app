@@ -1,15 +1,8 @@
+import { Dispatch, SetStateAction } from 'react'
+
 export interface EventLocationCoords {
     latitude: number | null
     longitude: number | null
-}
-
-export interface RegistrationParams {
-    eventId: string
-    locationId: string
-    latitude: number | null
-    longitude: number | null
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>
-    onSuccess?: () => void
 }
 
 export interface AttendanceTrackingParams {
@@ -22,7 +15,7 @@ export interface AttendanceTrackingParams {
 }
 
 export interface StopAttendanceTrackingParams {
-    setIsTracking: React.Dispatch<React.SetStateAction<boolean>>
+    setIsTracking: Dispatch<SetStateAction<boolean>>
 }
 
 export interface LocationStatus {
@@ -37,6 +30,7 @@ export interface UseEventRegistrationReturn {
     locationLoading: boolean
     isTracking: boolean
     lastTrackingTime: string | null
+    eventStatus: string | null
     register: () => void
     stopTracking: () => void
 }

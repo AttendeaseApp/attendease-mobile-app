@@ -10,6 +10,7 @@ import { Slot, useRouter } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
+import { AttendanceTrackingProvider } from '../contexts/AttendanceTrackingContext'
 
 export const unstable_settings = {
     initialRouteName: '(auth)/LoginScreen',
@@ -73,11 +74,13 @@ export default function ProtectedLayout() {
     }
 
     return (
-        <ThemeProvider
-            value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-        >
-            <Slot />
-            <StatusBar style="auto" />
-        </ThemeProvider>
+        <AttendanceTrackingProvider>
+            <ThemeProvider
+                value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+            >
+                <Slot />
+                <StatusBar style="auto" />
+            </ThemeProvider>
+        </AttendanceTrackingProvider>
     )
 }

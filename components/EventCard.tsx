@@ -1,5 +1,5 @@
-import { EventStatus } from '@/interface/event-sessions/Event'
-import { EventCardProps } from '@/interface/event-sessions/EventCardProps'
+import { EventStatus } from '../interface/event/status'
+import { EventCardProps } from '../interface/event/card-props'
 import { useRouter } from 'expo-router'
 import React from 'react'
 import { StyleSheet, View } from 'react-native'

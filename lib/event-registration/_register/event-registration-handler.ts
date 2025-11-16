@@ -1,5 +1,5 @@
 import { Alert } from 'react-native'
-import { RegistrationParams } from '../../../interface/event-registration/event-registration-interface'
+import { RegistrationParams } from '../../../interface/event/registration-params'
 import { registerOnEvent } from '../../../services/event/register-on-event'
 
 /**
