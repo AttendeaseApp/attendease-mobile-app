@@ -1,17 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { ActivityIndicator, FlatList, RefreshControl, View } from 'react-native'
-
-// interfaces
-import { Event } from '../../../interface/event-sessions/Event'
-// styles
-import { styles } from '../../../styles/Homepage.styles'
-// services
-import { fetchHomePageData } from '../../../services/fetch-home-page-data'
-// ui
 import EventCard from '../../../components/EventCard'
-import { ThemedText } from '../../../components/ThemedText'
 import { ScreenContainer } from '../../../components/layouts/CustomScreenContainer'
 import NavBar from '../../../components/NavBar'
+import { ThemedText } from '../../../components/ThemedText'
+import { Event } from '../../../interface/event/event'
+import { fetchHomePageData } from '../../../services/homepage/fetch-home-page-data'
+import { styles } from '../../../styles/Homepage.styles'
 
 /**
  * This is the Home Screen where users can view a list of available events

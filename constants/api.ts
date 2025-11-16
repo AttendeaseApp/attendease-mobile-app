@@ -1,8 +1,8 @@
 // backend local host
-export const API_BASE_URL = 'http://192.168.1.4:8082'
+// export const API_BASE_URL = 'http://192.168.1.5:8082'
 
 // production backend URL
-// export const API_BASE_URL = 'https://attendease-backend-latest.onrender.com'
+export const API_BASE_URL = 'https://attendease-backend-latest.onrender.com'
 
 // backend login controller endpoint
 export const LOGIN_ENDPOINT = `${API_BASE_URL}/api/auth/student/login`
@@ -23,3 +23,7 @@ export const CHECK_CURRENT_LOCATION = `${API_BASE_URL}/api/registration/check-lo
 
 export const GET_EVENT_BY_ID = (id: string) =>
     `${API_BASE_URL}/api/registration/events/${id}`
+
+// Retrieves the current state of an event.
+export const GET_EVENT_STATE_STATUS = (id: string) =>
+    `${API_BASE_URL}/api/registration/${id}/start-status`

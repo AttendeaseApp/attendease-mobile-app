@@ -1,17 +1,12 @@
-import { registerFaceEncoding } from '@/services/biometrics/register-biometrics'
+import { registerFaceEncoding } from '../../../services/biometrics/register-biometrics'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { CameraView, useCameraPermissions } from 'expo-camera'
 import { useRouter } from 'expo-router'
 import React, { useEffect, useRef, useState } from 'react'
-import styles from '@/styles/biometrics/registration.styles'
-import { ThemedText } from '@/components/ThemedText'
-import {
-    ActivityIndicator,
-    Alert,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native'
+import styles from '../../../styles/biometrics/registration.styles'
+import { ThemedText } from '../../../components/ThemedText'
+import { Alert, View } from 'react-native'
+import { Button } from '../../../components/Button'
 
 const REQUIRED_IMAGES = 5
 
@@ -32,12 +27,13 @@ export default function FacialRegistration() {
     }, [])
 
     const getInstructionText = () => {
-        if (currentStep === 0) return 'Face forward - Look directly at camera'
-        if (currentStep === 1) return 'Turn slightly left'
-        if (currentStep === 2) return 'Again, turn slightly left'
-        if (currentStep === 3) return 'Turn slightly right'
-        if (currentStep === 4) return 'Again, turn slightly right'
-        return 'Capture complete'
+        if (currentStep === 0)
+            return 'Step 1: Face forward - Look directly at the camera'
+        if (currentStep === 1) return 'Step 2: Turn slightly left'
+        if (currentStep === 2) return 'Step 3: Turn fully left'
+        if (currentStep === 3) return 'Step 4: Turn slightly right'
+        if (currentStep === 4) return 'Step 5: Turn fully right'
+        return 'REGISTRATION COMPLETE'
     }
 
     const captureImage = async () => {
@@ -55,7 +51,7 @@ export default function FacialRegistration() {
 
         try {
             const photo = await cameraRef.current.takePictureAsync({
-                quality: 0.8,
+                quality: 1,
             })
 
             if (!photo) {
@@ -70,18 +66,14 @@ export default function FacialRegistration() {
 
             if (newImages.length >= REQUIRED_IMAGES) {
                 await sendImagesToServer(newImages)
-            } else {
-                Alert.alert(
-                    'Image Captured',
-                    `${newImages.length}/${REQUIRED_IMAGES} images captured. ${getInstructionText()}`,
-                    [{ text: 'OK' }],
-                )
             }
         } catch (error: any) {
             console.error('Face capture error:', error)
             Alert.alert('Error', error.message || 'Failed to capture image')
         } finally {
-            setIsProcessing(false)
+            if (capturedImages.length < REQUIRED_IMAGES - 1) {
+                setIsProcessing(false)
+            }
         }
     }
 
@@ -93,13 +85,13 @@ export default function FacialRegistration() {
             if (result.success) {
                 Alert.alert(
                     'Success',
-                    result.message ?? 'Face registered successfully!',
+                    result.message ??
+                        'Face registered successfully! You can now use facial verification.',
                     [
                         {
                             text: 'OK',
                             onPress: () => {
                                 router.replace('/(tabs)/Homepage')
-
                                 setCapturedImages([])
                                 setCurrentStep(0)
                             },
@@ -127,7 +119,7 @@ export default function FacialRegistration() {
             Alert.alert(
                 'Error',
                 error.message ||
-                    'Something went wrong during face registration.',
+                    'Something went wrong during face registration. Please check your network connection.',
                 [
                     {
                         text: 'Retry',
@@ -151,7 +143,9 @@ export default function FacialRegistration() {
     if (!permission) {
         return (
             <View style={styles.center}>
-                <Text>Requesting camera permission...</Text>
+                <ThemedText type="default" style={styles.permissionText}>
+                    Requesting camera permission...
+                </ThemedText>
             </View>
         )
     }
@@ -159,37 +153,51 @@ export default function FacialRegistration() {
     if (!permission.granted) {
         return (
             <View style={styles.center}>
-                <ThemedText type="default">
-                    Camera access is required to register your face
+                <ThemedText type="default" style={styles.permissionText}>
+                    Camera access is required to perform facial registration.
+                    Please grant permission.
                 </ThemedText>
-                <TouchableOpacity
-                    style={styles.button}
+                <Button
+                    title="Grant Camera Permission"
                     onPress={requestPermission}
-                >
-                    <Text style={styles.buttonText}>Grant Permission</Text>
-                </TouchableOpacity>
+                    style={{ marginTop: 20 }}
+                />
             </View>
         )
     }
+
+    const isCaptureComplete = capturedImages.length >= REQUIRED_IMAGES
+    const buttonText = isCaptureComplete
+        ? 'Processing...'
+        : capturedImages.length === 0
+          ? 'Start Registration'
+          : `Capture Image ${capturedImages.length + 1}`
+
+    const helperText = isCaptureComplete
+        ? 'Finalizing your biometric profile on the server...'
+        : capturedImages.length === 0
+          ? `You will capture ${REQUIRED_IMAGES} images from different angles to build your profile.`
+          : 'Align your face to match the instructions above before tapping capture.'
 
     return (
         <View style={styles.container}>
             <CameraView style={styles.camera} facing="front" ref={cameraRef}>
                 <View style={styles.overlay}>
                     <View style={styles.instructionBox}>
-                        <ThemedText type="default">
+                        <ThemedText type="default" colorVariant="white">
                             {getInstructionText()}
                         </ThemedText>
-                        <ThemedText type="defaultSemiBold">
+                        <ThemedText
+                            type="default"
+                            style={styles.progressCounter}
+                        >
                             {capturedImages.length}/{REQUIRED_IMAGES} images
                             captured
                         </ThemedText>
                     </View>
 
-                    {/* Face frame guide */}
                     <View style={styles.faceFrame} />
 
-                    {/* Progress indicators */}
                     <View style={styles.progressIndicators}>
                         {[...Array(REQUIRED_IMAGES)].map((_, index) => (
                             <View
@@ -206,46 +214,33 @@ export default function FacialRegistration() {
             </CameraView>
 
             <View style={styles.controls}>
-                {capturedImages.length > 0 &&
-                    capturedImages.length < REQUIRED_IMAGES && (
-                        <TouchableOpacity
-                            style={[styles.button, styles.buttonSecondary]}
-                            onPress={resetCapture}
-                            disabled={isProcessing}
-                        >
-                            <Text style={styles.buttonText}>Reset</Text>
-                        </TouchableOpacity>
-                    )}
+                <View style={styles.buttonGroup}>
+                    {capturedImages.length > 0 &&
+                        capturedImages.length < REQUIRED_IMAGES && (
+                            <Button
+                                title="Reset"
+                                onPress={resetCapture}
+                                disabled={isProcessing}
+                                style={{ flex: 1 }}
+                            />
+                        )}
+                    <Button
+                        title={buttonText}
+                        onPress={captureImage}
+                        loading={isProcessing}
+                        disabled={isProcessing || isCaptureComplete}
+                        style={{
+                            flex:
+                                capturedImages.length > 0 &&
+                                capturedImages.length < REQUIRED_IMAGES
+                                    ? 2
+                                    : 1,
+                        }}
+                    />
+                </View>
 
-                <TouchableOpacity
-                    style={[
-                        styles.button,
-                        (isProcessing ||
-                            capturedImages.length >= REQUIRED_IMAGES) &&
-                            styles.buttonDisabled,
-                    ]}
-                    onPress={captureImage}
-                    disabled={
-                        isProcessing || capturedImages.length >= REQUIRED_IMAGES
-                    }
-                >
-                    {isProcessing ? (
-                        <ActivityIndicator color="#fff" />
-                    ) : (
-                        <Text style={styles.buttonText}>
-                            {capturedImages.length === 0
-                                ? 'Start Registration'
-                                : `Capture Image ${capturedImages.length + 1}`}
-                        </Text>
-                    )}
-                </TouchableOpacity>
-
-                <ThemedText type="default">
-                    {capturedImages.length === 0
-                        ? "You'll need to capture 5 images from different angles"
-                        : capturedImages.length < REQUIRED_IMAGES
-                          ? 'Follow the instructions for each capture'
-                          : 'Processing your images...'}
+                <ThemedText style={styles.helpText} type="default">
+                    {helperText}
                 </ThemedText>
             </View>
         </View>

@@ -1,9 +1,9 @@
 import { authFetch } from '@/services/auth-fetch'
-import { Event } from '@/interface/event-sessions/Event'
+import { Event } from '@/interface/event/event'
 import {
     RETRIEVE_ONGOING_EVENTS,
     RETRIEVE_USER_PROFILE,
-} from '../constants/api'
+} from '../../constants/api'
 
 /**
  *  Fetches home page data including ongoing events and user profile.
