@@ -42,7 +42,7 @@ export default function ProtectedLayout() {
                 } else {
                     setIsAuthenticated(false)
                 }
-            } catch (err) {
+            } catch {
                 setIsAuthenticated(false)
             } finally {
                 setIsLoading(false)

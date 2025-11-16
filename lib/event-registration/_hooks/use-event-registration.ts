@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { eventRegistrationEventHandler } from '../_register/event-registration-handler'
 import { getCurrentLocation } from '../_geolocation/get-current-location'
 
@@ -19,16 +19,20 @@ export function useEventRegistration(eventId: string, locationId: string) {
         getCurrentLocation(setLocationLoading, setLatitude, setLongitude)
     }, [])
 
-    const register = (onSuccess?: () => void) => {
-        eventRegistrationEventHandler({
-            eventId,
-            locationId,
-            latitude,
-            longitude,
-            setLoading,
-            onSuccess: onSuccess || (() => {}),
-        })
-    }
+    const register = useCallback(
+        (faceImageBase64: string, onSuccess?: () => void) => {
+            eventRegistrationEventHandler({
+                eventId,
+                locationId,
+                latitude,
+                longitude,
+                faceImageBase64,
+                setLoading,
+                onSuccess: onSuccess || (() => {}),
+            })
+        },
+        [eventId, locationId, latitude, longitude],
+    )
 
     return {
         latitude,

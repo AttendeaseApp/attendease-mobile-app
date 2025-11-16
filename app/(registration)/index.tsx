@@ -1,24 +1,23 @@
-import { useLocalSearchParams } from 'expo-router'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import React, { useCallback, useEffect, useState } from 'react'
 import {
     ActivityIndicator,
     RefreshControl,
     ScrollView,
     View,
-    Alert,
 } from 'react-native'
 import { Button } from '../../components/Button'
 import { ScreenContainer } from '../../components/layouts/CustomScreenContainer'
 import NavBar from '../../components/NavBar'
 import { ThemedText } from '../../components/ThemedText'
 import { useAttendanceTracking } from '../../contexts/AttendanceTrackingContext'
-import { useEventRegistration } from '../../lib/event-registration/_hooks/use-event-registration'
+import { LocationStatus } from '../../interface/event-registration/event-registration-interface'
 import type { Event } from '../../interface/event/event'
+import { useEventRegistration } from '../../lib/event-registration/_hooks/use-event-registration'
 import { getEventById } from '../../services/event/get-event-by-id'
 import { validateCurrentLocation } from '../../services/event/validate-current-location'
 import styles from '../../styles/EventRegistrationPage.styles'
 import { formatDateTime } from '../../utils/formatDateTime'
-import { LocationStatus } from '../../interface/event-registration/event-registration-interface'
 
 /**
  * Event Details and Registration page
@@ -30,9 +29,12 @@ import { LocationStatus } from '../../interface/event-registration/event-registr
  * - Automatically stops tracking when event concludes
  */
 export default function EventDetailsRegistrationPage() {
-    const { eventId, locationId } = useLocalSearchParams<{
+    const router = useRouter()
+
+    const { eventId, locationId, face } = useLocalSearchParams<{
         eventId: string
         locationId: string
+        face?: string
     }>()
 
     const { trackingState, startTracking } = useAttendanceTracking()
@@ -49,6 +51,9 @@ export default function EventDetailsRegistrationPage() {
 
     const [eventData, setEventData] = useState<Event | null>(null)
     const [loadingEvent, setLoadingEvent] = useState(true)
+
+    const [hasRegistrationAttempted, setHasRegistrationAttempted] =
+        useState(false)
 
     const fetchEvent = useCallback(async () => {
         if (!eventId) return
@@ -69,7 +74,7 @@ export default function EventDetailsRegistrationPage() {
     const [checkingLocation, setCheckingLocation] = useState(false)
 
     const fetchLocationStatus = useCallback(async () => {
-        if (latitude && longitude && locationId) {
+        if (latitude !== null && longitude !== null && locationId) {
             setCheckingLocation(true)
             const res = await validateCurrentLocation(
                 locationId,
@@ -82,27 +87,66 @@ export default function EventDetailsRegistrationPage() {
                     : { isInside: false, message: res.message },
             )
             setCheckingLocation(false)
+        } else if (latitude === null && longitude === null) {
+            setLocationStatus(null)
         }
     }, [latitude, longitude, locationId])
 
     const [refreshing, setRefreshing] = useState(false)
     const onRefresh = useCallback(async () => {
         setRefreshing(true)
-        await fetchLocationStatus()
         await fetchEvent()
+        await fetchLocationStatus()
         setRefreshing(false)
     }, [fetchLocationStatus, fetchEvent])
 
     useEffect(() => {
         fetchEvent()
+    }, [fetchEvent])
+
+    useEffect(() => {
         fetchLocationStatus()
-    }, [fetchEvent, fetchLocationStatus])
+    }, [fetchLocationStatus, latitude, longitude])
 
     const handleRegister = () => {
-        performRegistration(() => {
-            startTracking(eventId!, locationId!)
+        if (locationLoading || latitude === null || longitude === null) {
+            console.warn(
+                'Cannot start verification: Location data is still loading or unavailable.',
+            )
+            return
+        }
+        setHasRegistrationAttempted(false)
+        router.push({
+            pathname: '/(biometrics)/verification',
+            params: { eventId, locationId },
         })
     }
+
+    useEffect(() => {
+        if (
+            face &&
+            latitude !== null &&
+            longitude !== null &&
+            !loading &&
+            !hasRegistrationAttempted
+        ) {
+            setHasRegistrationAttempted(true)
+
+            performRegistration(face, () =>
+                startTracking(eventId!, locationId!),
+            )
+        }
+    }, [
+        face,
+        performRegistration,
+        startTracking,
+        eventId,
+        locationId,
+        latitude,
+        longitude,
+        loading,
+        hasRegistrationAttempted,
+    ])
 
     if (loadingEvent) {
         return (
@@ -258,7 +302,10 @@ export default function EventDetailsRegistrationPage() {
                     title={loading ? 'REGISTERING...' : 'REGISTER'}
                     onPress={handleRegister}
                     disabled={
-                        loading || locationLoading || !latitude || !longitude
+                        loading ||
+                        locationLoading ||
+                        latitude === null ||
+                        longitude === null
                     }
                 />
             </View>

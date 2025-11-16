@@ -1,98 +1,98 @@
 import { StyleSheet } from 'react-native'
 
+const PRIMARY_COLOR = '#E1CE7A'
+const WHITE = '#FFFFFF'
+const BLACK = '#000000'
+const OVERLAY_BG = 'rgba(0, 0, 0, 0.6)'
+
 export default StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#000' },
+    container: { flex: 1, backgroundColor: BLACK },
     camera: { flex: 1 },
     overlay: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
+        paddingTop: 40,
     },
     instructionBox: {
-        position: 'absolute',
-        top: 60,
-        backgroundColor: 'rgba(0,0,0,0.7)',
-        padding: 16,
+        backgroundColor: OVERLAY_BG,
+        padding: 18,
         borderRadius: 12,
-        minWidth: 280,
+        marginHorizontal: 20,
+        marginBottom: 30,
+        alignItems: 'center',
     },
     instructionText: {
-        color: '#fff',
+        color: WHITE,
         fontSize: 18,
         textAlign: 'center',
-        fontWeight: '600',
+        fontWeight: '700',
     },
-    progressText: {
-        color: '#3b82f6',
+    progressCounter: {
+        color: PRIMARY_COLOR,
         fontSize: 14,
         textAlign: 'center',
-        marginTop: 8,
-        fontWeight: '500',
+        marginTop: 6,
+        fontWeight: '600',
     },
     faceFrame: {
-        width: 250,
-        height: 300,
+        width: 300,
+        height: 350,
         borderWidth: 3,
-        borderColor: '#3b82f6',
-        borderRadius: 150,
+        borderColor: PRIMARY_COLOR,
+        borderRadius: 175,
         backgroundColor: 'transparent',
+        borderStyle: 'dashed',
+        marginTop: 50,
     },
     progressIndicators: {
         position: 'absolute',
-        bottom: 40,
+        top: 450,
         flexDirection: 'row',
-        gap: 12,
+        gap: 8,
     },
     progressDot: {
-        width: 12,
-        height: 12,
-        borderRadius: 6,
-        backgroundColor: 'rgba(255,255,255,0.3)',
+        width: 10,
+        height: 10,
+        borderRadius: 5,
+        backgroundColor: 'rgba(255,255,255,0.4)',
     },
     progressDotActive: {
-        backgroundColor: '#3b82f6',
+        backgroundColor: PRIMARY_COLOR,
     },
+
     controls: {
-        backgroundColor: '#000',
+        backgroundColor: BLACK,
         paddingBottom: 40,
-        paddingHorizontal: 20,
+        paddingHorizontal: 24,
+        paddingTop: 16,
         gap: 12,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
     },
-    button: {
-        backgroundColor: '#3b82f6',
-        paddingVertical: 15,
-        borderRadius: 10,
-        alignItems: 'center',
-        marginTop: 20,
-    },
-    buttonSecondary: {
-        backgroundColor: '#6b7280',
-        marginTop: 10,
-    },
-    buttonDisabled: {
-        backgroundColor: '#94a3b8',
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    helpText: {
-        color: '#9ca3af',
-        fontSize: 14,
-        textAlign: 'center',
-        marginTop: 8,
+    buttonGroup: {
+        flexDirection: 'row',
+        gap: 12,
+        justifyContent: 'center',
     },
     center: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
+        backgroundColor: WHITE,
     },
     permissionText: {
-        fontSize: 16,
+        fontSize: 18,
         marginBottom: 20,
         textAlign: 'center',
-        color: '#374151',
+        color: BLACK,
+        fontWeight: '600',
+    },
+    helpText: {
+        color: '#A0AEC0',
+        fontSize: 14,
+        textAlign: 'center',
+        marginTop: 8,
     },
 })

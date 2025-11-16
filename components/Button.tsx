@@ -1,18 +1,19 @@
 import React from 'react'
+import { ThemedText } from './ThemedText'
 import {
     ActivityIndicator,
     StyleSheet,
     TouchableOpacity,
     ViewStyle,
+    StyleProp,
 } from 'react-native'
-import { ThemedText } from './ThemedText'
 
 type ButtonProps = {
     title: string
     onPress: () => void
     loading?: boolean
     disabled?: boolean
-    style?: ViewStyle
+    style?: StyleProp<ViewStyle>
 }
 
 export const Button = ({
@@ -24,13 +25,19 @@ export const Button = ({
 }: ButtonProps) => {
     return (
         <TouchableOpacity
-            style={[styles.button, style, disabled && styles.disabled]}
+            style={[
+                styles.button,
+                style,
+                (disabled || loading) && styles.disabled,
+            ]}
             onPress={onPress}
             activeOpacity={0.8}
             disabled={disabled || loading}
         >
             {loading ? (
-                <ActivityIndicator color="#000000ff" />
+                <ActivityIndicator
+                    color={styles.buttonTextContent.color as string}
+                />
             ) : (
                 <ThemedText type="default" colorVariant="black">
                     {title}
@@ -50,9 +57,15 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         alignItems: 'center',
         width: '100%',
+        minWidth: 120,
+        maxWidth: 400,
     },
     disabled: {
         backgroundColor: '#999',
         borderColor: 'transparent',
+    },
+    buttonTextContent: {
+        fontWeight: '600',
+        color: '#000',
     },
 })

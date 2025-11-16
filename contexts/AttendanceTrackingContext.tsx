@@ -57,7 +57,7 @@ export function AttendanceTrackingProvider({
     > | null>(null)
     const hasShownEndAlertRef = useRef(false)
 
-    // Monitor event status when tracking is active
+    // monitor event status when tracking is active
     useEffect(() => {
         if (!trackingState.isTracking || !trackingState.eventId) return
 
@@ -73,11 +73,8 @@ export function AttendanceTrackingProvider({
                         eventStatus: statusMessage,
                     }))
 
-                    // Stop tracking if event has ended
                     if (eventHasEnded) {
                         stopTracking()
-
-                        // Show alert only once
                         if (!hasShownEndAlertRef.current) {
                             hasShownEndAlertRef.current = true
                             Alert.alert(
@@ -93,10 +90,9 @@ export function AttendanceTrackingProvider({
             }
         }
 
-        // Check status immediately
+        // check status immediately
         checkEventStatus()
-
-        // Then check every 2 minutes
+        // then check every 2 minutes
         statusCheckIntervalRef.current = setInterval(checkEventStatus, 120000)
 
         return () => {
@@ -109,7 +105,6 @@ export function AttendanceTrackingProvider({
     const startTracking = (eventId: string, locationId: string) => {
         hasShownEndAlertRef.current = false
 
-        // Set initial tracking state
         setTrackingState((prev) => ({
             ...prev,
             isTracking: true,
@@ -117,7 +112,6 @@ export function AttendanceTrackingProvider({
             locationId,
         }))
 
-        // Start the tracking interval
         trackingIntervalRef.current = startAttendanceTracking({
             eventId,
             locationId,
@@ -161,7 +155,6 @@ export function AttendanceTrackingProvider({
             },
         })
 
-        // Reset state
         setTrackingState({
             isTracking: false,
             eventId: null,
@@ -173,7 +166,6 @@ export function AttendanceTrackingProvider({
         })
     }
 
-    // Cleanup on unmount (app close)
     useEffect(() => {
         return () => {
             if (trackingIntervalRef.current) {

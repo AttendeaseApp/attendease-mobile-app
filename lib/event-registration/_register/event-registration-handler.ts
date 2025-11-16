@@ -13,10 +13,17 @@ export async function eventRegistrationEventHandler({
     locationId,
     latitude,
     longitude,
+    faceImageBase64,
     setLoading,
     onSuccess,
 }: RegistrationParams) {
-    if (!eventId || !locationId || latitude === null || longitude === null) {
+    if (
+        !eventId ||
+        !locationId ||
+        !faceImageBase64 ||
+        latitude === null ||
+        longitude === null
+    ) {
         Alert.alert('Missing Data', 'Cannot proceed with check-in.')
         return
     }
@@ -28,6 +35,7 @@ export async function eventRegistrationEventHandler({
             locationId,
             latitude,
             longitude,
+            faceImageBase64,
         )
         if (result.success) {
             Alert.alert('Check-In Successful', 'Tracking started.', [
