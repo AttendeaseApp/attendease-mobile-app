@@ -22,9 +22,6 @@ export default StyleSheet.create({
         left: 0,
         right: 0,
         padding: 16,
-        backgroundColor: '#fff',
-        borderTopWidth: 1,
-        borderTopColor: '#ddd',
     },
     value: { fontSize: 16 },
     locationLoadingContainer: {

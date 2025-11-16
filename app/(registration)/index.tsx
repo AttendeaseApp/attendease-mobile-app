@@ -1,35 +1,38 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import { useLocalSearchParams } from 'expo-router'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
     ActivityIndicator,
-    View,
-    ScrollView,
     RefreshControl,
+    ScrollView,
+    View,
 } from 'react-native'
-import { useLocalSearchParams } from 'expo-router'
+import { Button } from '../../components/Button'
 import { ScreenContainer } from '../../components/layouts/CustomScreenContainer'
 import NavBar from '../../components/NavBar'
-import styles from '../../styles/EventRegistrationPage.styles'
-import { useEventCheckIn } from '../../hooks/event-registration/use-event-registration'
+import { ThemedText } from '../../components/ThemedText'
+import { useEventRegistration } from './hooks/use-event-registration'
+import type { Event } from '../../interface/event-sessions/Event'
 import {
     checkLocation,
     fetchEventById,
 } from '../../services/verify-event-registration'
-import { Button } from '../../components/Button'
-import { ThemedText } from '../../components/ThemedText'
-import type { Event } from '../../interface/event-sessions/Event'
+import styles from '../../styles/EventRegistrationPage.styles'
 import { formatDateTime } from '../../utils/formatDateTime'
+import { LocationStatus } from '../../interface/event-registration/event-registration-interface'
 
+/**
+ * Event Details and Registration page
+ *
+ *
+ *
+ *
+ *
+ */
 export default function EventDetailsRegistrationPage() {
     const { eventId, locationId } = useLocalSearchParams<{
         eventId: string
         locationId: string
     }>()
-    const parsedEventId = Array.isArray(eventId) ? eventId[0] : eventId
-    const parsedLocationId = Array.isArray(locationId)
-        ? locationId[0]
-        : locationId
-    const [eventData, setEventData] = useState<Event | null>(null)
-    const [loadingEvent, setLoadingEvent] = useState(true)
 
     const {
         latitude,
@@ -38,37 +41,32 @@ export default function EventDetailsRegistrationPage() {
         locationLoading,
         isPinging,
         lastPingTime,
-        checkIn,
-    } = useEventCheckIn(parsedEventId!, parsedLocationId!)
+        register,
+    } = useEventRegistration(eventId!, locationId!)
 
-    const [locationStatus, setLocationStatus] = useState<{
-        isInside: boolean
-        message: string
-    } | null>(null)
-    const [checkingLocation, setCheckingLocation] = useState(false)
-    const [refreshing, setRefreshing] = useState(false)
-
+    const [eventData, setEventData] = useState<Event | null>(null)
+    const [loadingEvent, setLoadingEvent] = useState(true)
     const fetchEvent = useCallback(async () => {
-        if (!parsedEventId) return
+        if (!eventId) return
         try {
             setLoadingEvent(true)
-            const data = await fetchEventById(parsedEventId)
+            const data = await fetchEventById(eventId)
             setEventData(data as Event)
         } catch (error) {
             console.error('Failed to fetch event:', error)
         } finally {
             setLoadingEvent(false)
         }
-    }, [parsedEventId])
+    }, [eventId])
 
+    const [locationStatus, setLocationStatus] = useState<LocationStatus | null>(
+        null,
+    )
+    const [checkingLocation, setCheckingLocation] = useState(false)
     const fetchLocationStatus = useCallback(async () => {
-        if (latitude && longitude && parsedLocationId) {
+        if (latitude && longitude && locationId) {
             setCheckingLocation(true)
-            const res = await checkLocation(
-                parsedLocationId,
-                latitude,
-                longitude,
-            )
+            const res = await checkLocation(locationId, latitude, longitude)
             setLocationStatus(
                 res.success
                     ? res.data
@@ -76,8 +74,9 @@ export default function EventDetailsRegistrationPage() {
             )
             setCheckingLocation(false)
         }
-    }, [latitude, longitude, parsedLocationId])
+    }, [latitude, longitude, locationId])
 
+    const [refreshing, setRefreshing] = useState(false)
     const onRefresh = useCallback(async () => {
         setRefreshing(true)
         await fetchLocationStatus()
@@ -222,7 +221,7 @@ export default function EventDetailsRegistrationPage() {
             <View style={styles.fixedButtonContainer}>
                 <Button
                     title={loading ? 'REGISTERING...' : 'REGISTER'}
-                    onPress={checkIn}
+                    onPress={register}
                     disabled={
                         loading || locationLoading || !latitude || !longitude
                     }
