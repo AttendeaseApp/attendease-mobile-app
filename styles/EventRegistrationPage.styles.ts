@@ -8,11 +8,8 @@ export default StyleSheet.create({
         marginBottom: 16,
     },
     eventRegistrationInfoSection: {
-        marginBlock: 20,
-    },
-    label: {
-        marginBottom: 4,
-        textTransform: 'uppercase',
+        marginTop: 100,
+        gap: 8,
     },
     fixedButtonContainer: {
         position: 'absolute',
@@ -22,27 +19,31 @@ export default StyleSheet.create({
         padding: 16,
     },
     locationLoadingContainer: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         padding: 16,
+        gap: 8,
+        margin: 8,
     },
-    locationLoadingText: { marginLeft: 8, color: '#666' },
     buttonWrapper: { marginTop: 24 },
     pingStatusContainer: {
         flexDirection: 'column',
         padding: 12,
         borderRadius: 8,
         marginBottom: 16,
+        backgroundColor: '#D2CCA1',
     },
     pingStatusText: {
         flex: 1,
         fontWeight: '600',
+        color: '#D2CCA1',
     },
     lastPingText: {
         marginTop: 4,
         position: 'absolute',
         bottom: -16,
         right: 12,
+        color: '#D2CCA1',
     },
 })

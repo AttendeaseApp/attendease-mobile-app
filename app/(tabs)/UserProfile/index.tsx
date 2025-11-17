@@ -59,15 +59,21 @@ export default function UserProfile() {
             <NavBar title="PROFILE" />
             <View style={styles.centerWrapper}>
                 <View style={{ marginBottom: 20 }}>
-                    <ThemedText
-                        type="titleSecondary"
-                        fontFamilyOverride="Newsreader"
-                    >
+                    <ThemedText type="loginTitle">
                         {user.firstName} {user.lastName}
                     </ThemedText>
                     <ThemedText type="default">{user.userType}</ThemedText>
                     <ThemedText type="default">
                         Student No: {student?.studentNumber || 'N/A'}
+                    </ThemedText>
+                    <ThemedText type="default">
+                        Email: {student?.email || 'N/A'}
+                    </ThemedText>
+                    <ThemedText type="default">
+                        Section: {student?.course || 'N/A'}
+                    </ThemedText>
+                    <ThemedText type="default">
+                        Cluster: {student?.cluster || 'N/A'}
                     </ThemedText>
                 </View>
 

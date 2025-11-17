@@ -89,8 +89,10 @@ const EventCard: React.FC<EventCardProps> = ({
 
 const styles = StyleSheet.create({
     card: {
-        borderRadius: 8,
         marginBottom: 16,
+        borderBottomWidth: 1,
+        borderColor: '#eee',
+        paddingBlock: 20,
         width: '100%',
         gap: 10,
         marginBlock: 20,

@@ -151,14 +151,14 @@ export default function EventDetailsRegistrationPage() {
     if (loadingEvent) {
         return (
             <ScreenContainer>
-                <ActivityIndicator size="large" color="#0000ff" />
+                <ActivityIndicator size="large" color="#2A2C24" />
             </ScreenContainer>
         )
     }
 
     return (
         <ScreenContainer>
-            <NavBar title="EVENT DETAILS" />
+            <NavBar title="DETAILS &amp; REGISTRATION" />
             <ScrollView
                 contentContainerStyle={{ paddingBottom: 100 }}
                 refreshControl={
@@ -215,31 +215,6 @@ export default function EventDetailsRegistrationPage() {
                 </View>
 
                 <View style={styles.eventRegistrationInfoSection}>
-                    {locationLoading ? (
-                        <View style={styles.locationLoadingContainer}>
-                            <ActivityIndicator size="small" color="#0000ff" />
-                            <ThemedText
-                                type="default"
-                                style={styles.locationLoadingText}
-                            >
-                                Fetching your location...
-                            </ThemedText>
-                        </View>
-                    ) : (
-                        <View style={styles.infoSection}>
-                            {checkingLocation ? (
-                                <ActivityIndicator
-                                    size="small"
-                                    color="#4CAF50"
-                                />
-                            ) : locationStatus ? (
-                                <ThemedText type="defaultSemiBold">
-                                    {locationStatus.message}
-                                </ThemedText>
-                            ) : null}
-                        </View>
-                    )}
-
                     {isTrackingThisEvent ? (
                         <View style={styles.pingStatusContainer}>
                             <ThemedText
@@ -292,6 +267,28 @@ export default function EventDetailsRegistrationPage() {
                             <ThemedText type="defaultSemiBold">
                                 Inactive, click register below to begin.
                             </ThemedText>
+                        </View>
+                    )}
+
+                    {locationLoading ? (
+                        <View style={styles.locationLoadingContainer}>
+                            <ActivityIndicator size="small" color="#2A2C24" />
+                            <ThemedText type="default">
+                                Validating your current location...
+                            </ThemedText>
+                        </View>
+                    ) : (
+                        <View style={styles.infoSection}>
+                            {checkingLocation ? (
+                                <ActivityIndicator
+                                    size="small"
+                                    color="#4CAF50"
+                                />
+                            ) : locationStatus ? (
+                                <ThemedText type="defaultSemiBold">
+                                    {locationStatus.message}
+                                </ThemedText>
+                            ) : null}
                         </View>
                     )}
                 </View>

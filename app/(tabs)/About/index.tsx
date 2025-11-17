@@ -16,14 +16,10 @@ export default function About() {
                 <NavBar title="ABOUT" />
 
                 <View>
-                    <ThemedText
-                        type="default"
-                        fontFamilyOverride="StackSansHeadline"
-                    >
-                        RCians Attendease
-                    </ThemedText>
+                    <ThemedText type="loginTitle">RCIANS ATTENDEASE</ThemedText>
 
-                    <ThemedText type="default">Version 1.0.0</ThemedText>
+                    {/*todo: make the versioning dynamic*/}
+                    <ThemedText type="default">1.0.0-beta-release</ThemedText>
 
                     <ThemedText
                         type="default"
