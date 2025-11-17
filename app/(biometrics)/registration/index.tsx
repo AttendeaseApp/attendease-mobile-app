@@ -51,7 +51,7 @@ export default function FacialRegistration() {
 
         try {
             const photo = await cameraRef.current.takePictureAsync({
-                quality: 1,
+                quality: 0.8,
             })
 
             if (!photo) {

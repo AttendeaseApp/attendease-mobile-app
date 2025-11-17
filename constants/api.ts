@@ -1,5 +1,5 @@
 // backend local host
-// export const API_BASE_URL = 'http://192.168.1.5:8082'
+// export const API_BASE_URL = 'http://192.168.1.3:8082'
 
 // production backend URL
 export const API_BASE_URL = 'https://attendease-backend-latest.onrender.com'
@@ -12,6 +12,8 @@ export const RETRIEVE_ONGOING_EVENTS = `${API_BASE_URL}/api/registration/events`
 
 // backend endpoint to retrieve user profile endpoint
 export const RETRIEVE_USER_PROFILE = `${API_BASE_URL}/api/profile/user-student/me`
+
+export const GET_ATTENDANCE_HISTORY_ENDPOINT = `${API_BASE_URL}/api/attendance/history`
 
 export const REGISTER_FACE = `${API_BASE_URL}/api/auth/biometrics/register-face-image`
 

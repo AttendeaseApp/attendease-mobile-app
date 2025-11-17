@@ -20,7 +20,8 @@
                 "backgroundColor": "#ffffff"
             },
             "edgeToEdgeEnabled": true,
-            "permissions": ["android.permission.CAMERA"]
+            "permissions": ["android.permission.CAMERA"],
+            "softwareKeyboardLayoutMode": "pan"
         },
         "web": {
             "bundler": "metro",

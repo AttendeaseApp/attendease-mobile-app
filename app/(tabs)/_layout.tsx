@@ -33,7 +33,7 @@ export default function TabLayout() {
                     title: 'Home',
                     tabBarIcon: ({ color }) => (
                         <Ionicons
-                            name="telescope-outline"
+                            name="ticket-outline"
                             size={20}
                             color={color}
                         />
@@ -54,11 +54,24 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
+                name="AttendanceHistory"
+                options={{
+                    title: 'My Records',
+                    tabBarIcon: ({ color }) => (
+                        <Ionicons name="time-outline" size={20} color={color} />
+                    ),
+                }}
+            />
+            <Tabs.Screen
                 name="About"
                 options={{
                     title: 'About',
                     tabBarIcon: ({ color }) => (
-                        <Ionicons name="at-outline" size={20} color={color} />
+                        <Ionicons
+                            name="information-outline"
+                            size={20}
+                            color={color}
+                        />
                     ),
                 }}
             />

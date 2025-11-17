@@ -9,6 +9,7 @@ export type ThemedTextProps = TextProps & {
         | 'link'
         | 'titleSecondary'
         | 'subTitleSecondary'
+        | 'loginTitle'
     colorVariant?: 'black' | 'white'
     fontFamilyOverride?: string
     fontWeightOverride?:
@@ -54,6 +55,7 @@ export function ThemedText({
                     ? styles.subTitleSecondary
                     : undefined,
                 type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
+                type === 'loginTitle' ? styles.loginTitle : undefined,
                 type === 'subtitle' ? styles.subtitle : undefined,
                 type === 'link' ? styles.link : undefined,
                 style,
@@ -90,6 +92,9 @@ const styles = StyleSheet.create({
     subtitle: {
         fontSize: 20,
         fontWeight: 'bold',
+    },
+    loginTitle: {
+        fontSize: 35,
     },
     link: {
         lineHeight: 30,

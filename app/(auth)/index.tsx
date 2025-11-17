@@ -56,15 +56,16 @@ const LoginScreen = () => {
     return (
         <KeyboardAvoidingView
             style={styles.background}
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
         >
             <View style={styles.container}>
                 <View style={styles.header}>
                     <ThemedText
-                        type="titleSecondary"
-                        fontFamilyOverride="StackSansHeadline"
+                        type="loginTitle"
+                        fontFamilyOverride="AfacadFlux"
                     >
-                        RCians Attendease
+                        RCIANS ATTENDEASE
                     </ThemedText>
                     <ThemedText type="default">
                         Discover events, check in seamlessly, and stay connected
