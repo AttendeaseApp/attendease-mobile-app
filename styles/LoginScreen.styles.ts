@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-/* 
+/*
 Styles for the Login Screen
 */
 export const styles = StyleSheet.create({
@@ -18,6 +18,7 @@ export const styles = StyleSheet.create({
     container: {
         width: '100%',
         justifyContent: 'center',
+        backgroundColor: '#FFFFFF',
         paddingInline: 20,
         paddingBlock: 42,
         maxWidth: 400,
