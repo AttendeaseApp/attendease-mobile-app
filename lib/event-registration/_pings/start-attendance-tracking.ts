@@ -96,7 +96,7 @@ export function startAttendanceTracking({
                 error.message || error,
             )
         }
-    }, 60000) // Every 1 minute
+    }, 300000) //every 5 mnutes
 
     return trackingInterval
 }

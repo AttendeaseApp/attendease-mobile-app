@@ -245,7 +245,7 @@ export default function EventDetailsRegistrationPage() {
                             </ThemedText>
                             <ThemedText type="default">
                                 {trackingState.eventStatus?.includes('ongoing')
-                                    ? 'Pinging every 1 minute while event is ongoing.'
+                                    ? 'Pinging every 5 minutes while event is ongoing.'
                                     : trackingState.eventStatus?.includes(
                                             'not started',
                                         ) ||
@@ -254,9 +254,6 @@ export default function EventDetailsRegistrationPage() {
                                         )
                                       ? 'Waiting for event to start before sending pings.'
                                       : 'Monitoring event status...'}
-                            </ThemedText>
-                            <ThemedText type="default">
-                                Tracking continues even if you navigate away!
                             </ThemedText>
                         </View>
                     ) : (
