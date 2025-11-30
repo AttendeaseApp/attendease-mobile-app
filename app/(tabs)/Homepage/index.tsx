@@ -16,6 +16,7 @@ import { subscribeToEvents } from '../../../services/homepage/subscribeToEvents'
 export default function HomeScreen() {
     const [events, setEvents] = useState<Event[]>([])
     const [loading, setLoading] = useState(true)
+    const [loadingEvents, setLoadingEvents] = useState(true)
     const [user, setUser] = useState<{
         firstName: string
         lastName: string
@@ -26,17 +27,25 @@ export default function HomeScreen() {
 
         let subscription: any
         async function initWebSocket() {
-            subscription = await subscribeToEvents(setEvents)
+            subscription = await subscribeToEvents((newEvents) => {
+                setEvents(newEvents)
+                setLoadingEvents(false)
+            })
         }
 
         initWebSocket()
 
         return () => {
-            if (subscription) subscription.unsubscribe()
+            if (
+                subscription &&
+                typeof subscription.unsubscribe === 'function'
+            ) {
+                subscription.unsubscribe()
+            }
         }
     }, [])
 
-    if (loading) {
+    if (loading || loadingEvents) {
         return (
             <View
                 style={{
@@ -54,6 +63,7 @@ export default function HomeScreen() {
         <ScreenContainer>
             <NavBar title="HOME" />
 
+            {/*user header greeting wrapper*/}
             <View>
                 <ThemedText
                     type="subTitleSecondary"
@@ -71,10 +81,6 @@ export default function HomeScreen() {
                     </ThemedText>
                 )}
             </View>
-
-            <ThemedText type="default">
-                Browse available events below for you to check in to.
-            </ThemedText>
 
             <View style={styles.cardContainer}>
                 {events.length === 0 ? (

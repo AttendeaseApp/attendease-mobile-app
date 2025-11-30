@@ -1,38 +1,38 @@
-import { authFetch } from '../auth-fetch'
-import { GET_EVENT_BY_ID } from '@/constants/api'
+import { IMessage } from '@stomp/stompjs'
+import { stompConnect } from '../webSocketAuthentication'
+import { Event } from '@/interface/event/event'
 
 /**
- * Fetches event details from the backend using the event ID.
- * Uses the native fetch API instead of axios.
+ * Subscribe to a specific event's details via WebSocket
  *
- * @param eventId - ID of the event to retrieve
- * @returns event data if successful, or null if failed
+ * @param eventId - The ID of the event to fetch
+ * @param callback - Callback fired when event data is received
+ * @returns STOMP subscription (call unsubscribe() to cancel)
  */
-export async function getEventById(eventId: string) {
-    if (!eventId) return null
+export async function subscribeEventById(
+    eventId: string,
+    callback: (event: Event) => void,
+) {
+    const wsClient = await stompConnect()
 
-    try {
-        const response = await authFetch(GET_EVENT_BY_ID(eventId), {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
+    const subscription = wsClient.subscribe(
+        `/user/queue/events/${eventId}`,
+        (message: IMessage) => {
+            try {
+                const body = JSON.parse(message.body) as Event
+                if (body.eventId === eventId) {
+                    callback(body)
+                }
+            } catch (err) {
+                console.error('Failed to parse STOMP message', err)
+            }
+        },
+    )
 
-        if (!response.ok) {
-            console.error(
-                'Failed to fetch event:',
-                response.status,
-                response.statusText,
-            )
-            return null
-        }
+    wsClient.publish({
+        destination: `/app/events/${eventId}`,
+        body: '{}',
+    })
 
-        const data = await response.json()
-        console.log('Fetched event data:', data)
-        return data
-    } catch (error) {
-        console.error('Error fetching event by ID:', error)
-        return null
-    }
+    return subscription
 }

@@ -2,14 +2,17 @@ import { IMessage } from '@stomp/stompjs'
 import { stompConnect } from '../webSocketAuthentication'
 import { Event } from '../../interface/event/event'
 
+let subscription: any = null
+
 /**
- * Subscribe to ongoing, active, registration events.
- * Calls callback whenever server pushes updated list.
+ * Subscribe to ongoing homepage events.
  */
 export async function subscribeToEvents(callback: (events: Event[]) => void) {
     const wsClient = await stompConnect()
 
-    const subscription = wsClient.subscribe(
+    if (subscription) subscription.unsubscribe()
+
+    subscription = wsClient.subscribe(
         '/topic/homepage-events',
         (message: IMessage) => {
             try {
@@ -21,6 +24,7 @@ export async function subscribeToEvents(callback: (events: Event[]) => void) {
         },
     )
 
+    console.log('Subscribed to homepage events')
     wsClient.publish({
         destination: '/app/homepage-events',
         body: '{}',

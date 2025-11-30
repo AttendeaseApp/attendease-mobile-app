@@ -14,14 +14,13 @@ import { useAttendanceTracking } from '../../contexts/AttendanceTrackingContext'
 import { LocationStatus } from '../../interface/event-registration/event-registration-interface'
 import type { Event } from '../../interface/event/event'
 import { useEventRegistration } from '../../lib/event-registration/_hooks/use-event-registration'
-import { getEventById } from '../../services/event/get-event-by-id'
+import { subscribeEventById } from '../../services/event/get-event-by-id'
 import {
     sendLocationUpdate,
     subscribeToLocationUpdates,
 } from '../../services/event/validate-current-location'
 import styles from '../../styles/EventRegistrationPage.styles'
 import { formatDateTime } from '../../utils/formatDateTime'
-
 /**
  * Event Details and Registration page
  *
@@ -33,17 +32,14 @@ import { formatDateTime } from '../../utils/formatDateTime'
  */
 export default function EventDetailsRegistrationPage() {
     const router = useRouter()
-
     const { eventId, locationId, face } = useLocalSearchParams<{
         eventId: string
         locationId: string
         face?: string
     }>()
-
     const { trackingState, startTracking } = useAttendanceTracking()
     const isTrackingThisEvent =
         trackingState.isTracking && trackingState.eventId === eventId
-
     const {
         latitude,
         longitude,
@@ -51,30 +47,31 @@ export default function EventDetailsRegistrationPage() {
         locationLoading,
         register: performRegistration,
     } = useEventRegistration(eventId!, locationId!)
-
     const [eventData, setEventData] = useState<Event | null>(null)
     const [loadingEvent, setLoadingEvent] = useState(true)
-
     const [hasRegistrationAttempted, setHasRegistrationAttempted] =
         useState(false)
-
-    const fetchEvent = useCallback(async () => {
-        if (!eventId) return
-        try {
-            setLoadingEvent(true)
-            const data = await getEventById(eventId)
-            setEventData(data as Event)
-        } catch (error) {
-            console.error('Failed to fetch event:', error)
-        } finally {
-            setLoadingEvent(false)
-        }
-    }, [eventId])
-
     const [locationStatus, setLocationStatus] = useState<LocationStatus | null>(
         null,
     )
-
+    const [refreshing, setRefreshing] = useState(false)
+    const fetchEvent = useCallback(async () => {
+        if (!eventId) return
+        setLoadingEvent(true)
+        const subscription = await subscribeEventById(eventId, (data) => {
+            console.log('[WS] Event received:', data)
+            setEventData(data)
+            setLoadingEvent(false)
+        })
+        return () => subscription.unsubscribe?.()
+    }, [eventId])
+    useEffect(() => {
+        let cleanup: (() => void) | undefined
+        fetchEvent().then((unsub) => {
+            cleanup = unsub
+        })
+        return () => cleanup?.()
+    }, [fetchEvent])
     useEffect(() => {
         let unsubscribe: any
         async function setup() {
@@ -86,28 +83,19 @@ export default function EventDetailsRegistrationPage() {
             })
         }
         setup()
-        return () => {
-            if (unsubscribe) unsubscribe.unsubscribe()
-        }
+        return () => unsubscribe?.unsubscribe?.()
     }, [])
-
-    const [refreshing, setRefreshing] = useState(false)
     const onRefresh = useCallback(async () => {
         setRefreshing(true)
-        await fetchEvent()
-        setRefreshing(false)
-    }, [fetchEvent])
-
-    useEffect(() => {
-        fetchEvent()
-    }, [fetchEvent])
-
+        setTimeout(() => {
+            setRefreshing(false)
+        }, 500)
+    }, [])
     useEffect(() => {
         if (latitude !== null && longitude !== null && locationId) {
             sendLocationUpdate(locationId, latitude, longitude)
         }
     }, [latitude, longitude, locationId])
-
     const handleRegister = () => {
         if (locationLoading || latitude === null || longitude === null) {
             console.warn(
@@ -115,11 +103,9 @@ export default function EventDetailsRegistrationPage() {
             )
             return
         }
-
         setHasRegistrationAttempted(true)
         performRegistration(null, () => startTracking(eventId!, locationId!))
     }
-
     useEffect(() => {
         if (
             face &&
@@ -129,7 +115,6 @@ export default function EventDetailsRegistrationPage() {
             !hasRegistrationAttempted
         ) {
             setHasRegistrationAttempted(true)
-
             performRegistration(face, () =>
                 startTracking(eventId!, locationId!),
             )
@@ -145,7 +130,6 @@ export default function EventDetailsRegistrationPage() {
         loading,
         hasRegistrationAttempted,
     ])
-
     if (loadingEvent) {
         return (
             <ScreenContainer>
@@ -153,7 +137,6 @@ export default function EventDetailsRegistrationPage() {
             </ScreenContainer>
         )
     }
-
     return (
         <ScreenContainer>
             <NavBar title="DETAILS &amp; REGISTRATION" />
@@ -171,20 +154,17 @@ export default function EventDetailsRegistrationPage() {
                         {eventData?.eventStatus || 'N/A'}
                     </ThemedText>
                 </View>
-
                 <View style={styles.infoSection}>
                     <ThemedText type="title">
                         {eventData?.eventName || 'N/A'}
                     </ThemedText>
                 </View>
-
                 <View style={styles.infoSection}>
                     <ThemedText type="default">Description</ThemedText>
                     <ThemedText type="defaultSemiBold">
                         {eventData?.description || 'N/A'}
                     </ThemedText>
                 </View>
-
                 <View style={styles.infoSection}>
                     <ThemedText type="defaultSemiBold">
                         Registration starts at exactly{' '}
@@ -199,7 +179,6 @@ export default function EventDetailsRegistrationPage() {
                         on {formatDateTime(eventData?.endDateTime)}.
                     </ThemedText>
                 </View>
-
                 <View style={styles.infoSection}>
                     <ThemedText type="default">Event Venue</ThemedText>
                     {eventData?.eventLocation ? (
@@ -211,7 +190,6 @@ export default function EventDetailsRegistrationPage() {
                         <ThemedText type="defaultSemiBold">N/A</ThemedText>
                     )}
                 </View>
-
                 <View style={styles.eventRegistrationInfoSection}>
                     {isTrackingThisEvent ? (
                         <View style={styles.pingStatusContainer}>
@@ -220,6 +198,38 @@ export default function EventDetailsRegistrationPage() {
                                 style={styles.pingStatusText}
                             >
                                 Attendance Tracking ACTIVE
+                            </ThemedText>
+                            {trackingState.eventStatus && (
+                                <ThemedText
+                                    type="default"
+                                    style={{
+                                        marginTop: 4,
+                                        fontSize: 13,
+                                        opacity: 0.8,
+                                    }}
+                                >
+                                    {trackingState.eventStatus}
+                                </ThemedText>
+                            )}
+                            <ThemedText
+                                type="defaultSemiBold"
+                                style={styles.lastPingText}
+                            >
+                                Last successful ping:{' '}
+                                {trackingState.lastTrackingTime ||
+                                    'waiting for first ping...'}
+                            </ThemedText>
+                            <ThemedText type="default">
+                                {trackingState.eventStatus?.includes('ongoing')
+                                    ? 'Pinging every 5 minutes while event is ongoing.'
+                                    : trackingState.eventStatus?.includes(
+                                            'not started',
+                                        ) ||
+                                        trackingState.eventStatus?.includes(
+                                            'registration',
+                                        )
+                                      ? 'Waiting for event to start before sending pings.'
+                                      : 'Monitoring event status...'}
                             </ThemedText>
                         </View>
                     ) : (
@@ -232,7 +242,6 @@ export default function EventDetailsRegistrationPage() {
                             </ThemedText>
                         </View>
                     )}
-
                     <View style={styles.infoSection}>
                         {locationStatus && (
                             <ThemedText type="defaultSemiBold">
@@ -242,7 +251,6 @@ export default function EventDetailsRegistrationPage() {
                     </View>
                 </View>
             </ScrollView>
-
             <View style={styles.fixedButtonContainer}>
                 <Button
                     title={loading ? 'REGISTERING...' : 'REGISTER'}
