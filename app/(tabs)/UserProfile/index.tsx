@@ -8,11 +8,7 @@ import { ThemedText } from '../../../components/ThemedText'
 import { logout } from '../../../services/auth'
 import { fetchProfilePageData } from '../../../services/profile/fetch-profile-page-data'
 import { styles } from '../../../styles/UserProfile.styles'
-/**
- * This is the User Profile Page where users can view their profile information and log out of the application.
- *
- * @returns JSX.Element representing the User Profile Page.
- */
+
 export default function UserProfile() {
     const [profile, setProfile] = useState<any>(null)
     const [loading, setLoading] = useState(true)
@@ -37,6 +33,7 @@ export default function UserProfile() {
             </ScreenContainer>
         )
     }
+
     if (!profile) {
         return (
             <ScreenContainer>
@@ -64,22 +61,16 @@ export default function UserProfile() {
                     <ThemedText type="default">
                         Student No: {student?.studentNumber || 'N/A'}
                     </ThemedText>
-                    <ThemedText type="default">
-                        Email: {student?.email || 'N/A'}
-                    </ThemedText>
-                    <ThemedText type="default">
-                        Section: {student?.course || 'N/A'}
-                    </ThemedText>
-                    <ThemedText type="default">
-                        Cluster: {student?.cluster || 'N/A'}
-                    </ThemedText>
                 </View>
 
                 <View style={{ marginBottom: 20 }}>
-                    <ThemedText type="default">Change Password</ThemedText>
-                    <ThemedText type="default">(ToDo feature)</ThemedText>
+                    <Button
+                        title="Change Password"
+                        onPress={() => router.push('../(update-password)')}
+                    />
                 </View>
-                <Button title="LOG OUT" onPress={handleLogout} />
+
+                <Button title="Logout" onPress={handleLogout} />
             </View>
         </ScreenContainer>
     )

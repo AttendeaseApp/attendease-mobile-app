@@ -1,5 +1,5 @@
 import { authFetch } from '@/services/auth-fetch'
-import { RETRIEVE_USER_PROFILE } from '../../constants/api'
+import { RETRIEVE_USER_PROFILE, UPDATE_PASSWORD } from '../../constants/api'
 
 /**
  * Fetches profile page data.
@@ -22,4 +22,36 @@ export async function fetchProfilePageData(
     } finally {
         setLoading(false)
     }
+}
+
+interface PasswordUpdateRequest {
+    oldPassword: string
+    newPassword: string
+}
+
+/**
+ * Updates the user's password.
+ *
+ * @param oldPassword - Current password
+ * @param newPassword - New password
+ * @returns Promise resolving to the success message or throws an error
+ */
+export async function updatePassword(
+    oldPassword: string,
+    newPassword: string,
+): Promise<string> {
+    const requestBody: PasswordUpdateRequest = { oldPassword, newPassword }
+    const response = await authFetch(UPDATE_PASSWORD, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+    })
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => null)
+        throw new Error(errorData?.message || 'Failed to update password')
+    }
+    return response.text()
 }
