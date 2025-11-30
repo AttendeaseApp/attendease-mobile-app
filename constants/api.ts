@@ -1,11 +1,11 @@
 // backend local host
-export const API_BASE_URL = 'http://192.168.1.5:8082'
+export const API_BASE_URL = 'http://192.168.1.3:8082'
 
 // production backend URL
 // export const API_BASE_URL = 'https://attendease-backend-latest.onrender.com'
 
 // WEBSOCKETS
-export const WEBSOCKET_BASE_URL = `http://${API_BASE_URL}/attendease-websocket`
+export const WEBSOCKET_BASE_URL = `${API_BASE_URL}/attendease-websocket`
 
 // backend login controller endpoint
 export const LOGIN_ENDPOINT = `${API_BASE_URL}/api/auth/student/login`

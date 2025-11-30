@@ -1,12 +1,13 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { ActivityIndicator, FlatList, RefreshControl, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { ActivityIndicator, FlatList, View } from 'react-native'
 import EventCard from '../../../components/EventCard'
 import { ScreenContainer } from '../../../components/layouts/CustomScreenContainer'
 import NavBar from '../../../components/NavBar'
 import { ThemedText } from '../../../components/ThemedText'
 import { Event } from '../../../interface/event/event'
-import { fetchHomePageData } from '../../../services/homepage/fetch-home-page-data'
+import { retrieveUserProfileForHomepage } from '../../../services/homepage/retrieveUserProfile'
 import { styles } from '../../../styles/Homepage.styles'
+import { subscribeToEvents } from '../../../services/homepage/subscribeToEvents'
 
 /**
  * This is the Home Screen where users can view a list of available events
@@ -15,22 +16,24 @@ import { styles } from '../../../styles/Homepage.styles'
 export default function HomeScreen() {
     const [events, setEvents] = useState<Event[]>([])
     const [loading, setLoading] = useState(true)
-    const [refreshing, setRefreshing] = useState(false)
     const [user, setUser] = useState<{
         firstName: string
         lastName: string
     } | null>(null)
 
-    // Load initial data
     useEffect(() => {
-        fetchHomePageData(setEvents, setUser, setLoading)
-    }, [])
+        retrieveUserProfileForHomepage(setUser, setLoading)
 
-    // Pull-to-refresh logic
-    const onRefresh = useCallback(async () => {
-        setRefreshing(true)
-        await fetchHomePageData(setEvents, setUser, setLoading)
-        setRefreshing(false)
+        let subscription: any
+        async function initWebSocket() {
+            subscription = await subscribeToEvents(setEvents)
+        }
+
+        initWebSocket()
+
+        return () => {
+            if (subscription) subscription.unsubscribe()
+        }
     }, [])
 
     if (loading) {
@@ -99,14 +102,6 @@ export default function HomeScreen() {
                             />
                         )}
                         showsVerticalScrollIndicator={false}
-                        refreshControl={
-                            <RefreshControl
-                                refreshing={refreshing}
-                                onRefresh={onRefresh}
-                                colors={['#27548A']}
-                                tintColor="#27548A"
-                            />
-                        }
                     />
                 )}
             </View>
