@@ -28,17 +28,18 @@ const LoginScreen = () => {
             const result = await login(studentNumber, password)
 
             if (result.success) {
-                if (result.requiresFacialRegistration) {
-                    router.replace({
-                        pathname: './(biometrics)/registration',
-                        params: {
-                            studentNumber: result.studentNumber,
-                            token: result.token,
-                        },
-                    })
-                } else {
-                    router.replace('/(tabs)/Homepage')
-                }
+                // if (result.requiresFacialRegistration) {
+                //     router.replace({
+                //         pathname: './(biometrics)/registration',
+                //         params: {
+                //             studentNumber: result.studentNumber,
+                //             token: result.token,
+                //         },
+                //     })
+                // } else {
+                //     router.replace('/(tabs)/Homepage')
+                // }
+                router.replace('/(tabs)/Homepage')
             } else {
                 Alert.alert(
                     'Login failed',

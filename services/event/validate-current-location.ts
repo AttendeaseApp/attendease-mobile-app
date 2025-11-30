@@ -1,35 +1,50 @@
-import { authFetch } from '../auth-fetch'
-import { CHECK_CURRENT_LOCATION } from '@/constants/api'
+import { IMessage } from '@stomp/stompjs'
+import { stompConnect } from '../webSocketAuthentication'
 
-export async function validateCurrentLocation(
+export interface LocationTrackingResponse {
+    inside: boolean
+    message: string
+}
+
+/**
+ * Subscribe to /user/queue/location-tracking for personal responses
+ */
+export async function subscribeToLocationUpdates(
+    callback: (data: LocationTrackingResponse) => void,
+) {
+    const client = await stompConnect()
+
+    return client.subscribe(
+        '/user/queue/location-tracking',
+        (message: IMessage) => {
+            try {
+                const body = JSON.parse(
+                    message.body,
+                ) as LocationTrackingResponse
+                callback(body)
+            } catch (e) {
+                console.error('Failed to parse location WS message:', e)
+            }
+        },
+    )
+}
+
+/**
+ * Sends the current location to backend WebSocket controller
+ */
+export async function sendLocationUpdate(
     locationId: string,
     latitude: number,
     longitude: number,
 ) {
-    try {
-        const response = await authFetch(CHECK_CURRENT_LOCATION, {
-            method: 'POST',
-            body: JSON.stringify({ locationId, latitude, longitude }),
-        })
+    const client = await stompConnect()
 
-        if (!response.ok) {
-            const errorData = await response.json()
-            return {
-                success: false,
-                message: errorData.message || 'Location check failed',
-            }
-        }
-
-        const data = await response.json()
-        return {
-            success: true,
-            data, // { isInside: boolean, message: string }
-        }
-    } catch (error: any) {
-        console.error('checkLocation error:', error)
-        return {
-            success: false,
-            message: error.message || 'Network error occurred',
-        }
-    }
+    client.publish({
+        destination: '/app/observe-current-location',
+        body: JSON.stringify({
+            locationId,
+            latitude,
+            longitude,
+        }),
+    })
 }

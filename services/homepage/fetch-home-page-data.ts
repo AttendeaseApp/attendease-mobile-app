@@ -1,7 +1,7 @@
 import { authFetch } from '@/services/auth-fetch'
 import { Event } from '@/interface/event/event'
 import {
-    RETRIEVE_ONGOING_EVENTS,
+    RETRIEVE_ONGOING_REGISTRATION_AND_ACTIVE_EVENTS,
     RETRIEVE_USER_PROFILE,
 } from '../../constants/api'
 
@@ -24,7 +24,7 @@ export async function fetchHomePageData(
     setLoading(true)
     try {
         const [eventsResponse, profileResponse] = await Promise.all([
-            authFetch(RETRIEVE_ONGOING_EVENTS),
+            authFetch(RETRIEVE_ONGOING_REGISTRATION_AND_ACTIVE_EVENTS),
             authFetch(RETRIEVE_USER_PROFILE),
         ])
 

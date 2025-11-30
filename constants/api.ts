@@ -1,14 +1,17 @@
 // backend local host
-// export const API_BASE_URL = 'http://192.168.1.3:8082'
+export const API_BASE_URL = 'http://192.168.1.5:8082'
 
 // production backend URL
-export const API_BASE_URL = 'https://attendease-backend-latest.onrender.com'
+// export const API_BASE_URL = 'https://attendease-backend-latest.onrender.com'
+
+// WEBSOCKETS
+export const WEBSOCKET_BASE_URL = `http://${API_BASE_URL}/attendease-websocket`
 
 // backend login controller endpoint
 export const LOGIN_ENDPOINT = `${API_BASE_URL}/api/auth/student/login`
 
 // backend endpoint to retrieve ongoing events endpoint
-export const RETRIEVE_ONGOING_EVENTS = `${API_BASE_URL}/api/registration/events`
+export const RETRIEVE_ONGOING_REGISTRATION_AND_ACTIVE_EVENTS = `${API_BASE_URL}/api/registration/events`
 
 // backend endpoint to retrieve user profile endpoint
 export const RETRIEVE_USER_PROFILE = `${API_BASE_URL}/api/profile/user-student/me`

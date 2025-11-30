@@ -1,36 +1,43 @@
-import { authFetch } from '../auth-fetch'
-import { GET_EVENT_STATE_STATUS } from '@/constants/api'
+import { IMessage } from '@stomp/stompjs'
+import { stompConnect } from '../webSocketAuthentication'
+
+export interface EventStartStatusResponse {
+    eventId: string
+    eventHasStarted: boolean
+    eventIsOngoing: boolean
+    eventHasEnded: boolean
+    statusMessage: string
+}
 
 /**
- * Used to retrieve event state it must be fetch every 30 seconds
- *
+ * Subscribe to a specific event's state updates
  */
-export async function identifyEventState(eventId: string) {
-    try {
-        const response = await authFetch(GET_EVENT_STATE_STATUS(eventId), {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
+export async function subscribeEventState(
+    eventId: string,
+    callback: (state: EventStartStatusResponse) => void,
+) {
+    const wsClient = await stompConnect()
 
-        if (!response.ok) {
-            console.error(
-                'Failed to fetch event state:',
-                response.status,
-                response.statusText,
-            )
-            return null
-        }
+    const subscription = wsClient.subscribe(
+        '/topic/read-event-state',
+        (message: IMessage) => {
+            try {
+                const body = JSON.parse(
+                    message.body,
+                ) as EventStartStatusResponse
+                if (body.eventId === eventId) {
+                    callback(body)
+                }
+            } catch (err) {
+                console.error('Failed to parse STOMP message', err)
+            }
+        },
+    )
 
-        const data = await response.json()
-        console.log('Fetched event state:', data)
-        return data
-    } catch (error: any) {
-        console.error('Getting event state error:', error)
-        return {
-            success: false,
-            message: error.message || 'Network error occurred',
-        }
-    }
+    wsClient.publish({
+        destination: `/app/observe-event-state/${eventId}`,
+        body: '{}',
+    })
+
+    return subscription
 }

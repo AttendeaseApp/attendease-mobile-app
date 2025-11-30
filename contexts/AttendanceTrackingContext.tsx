@@ -8,7 +8,10 @@ import React, {
 import { Alert } from 'react-native'
 import { startAttendanceTracking } from '../lib/event-registration/_pings/start-attendance-tracking'
 import { stopAttendanceTracking } from '../lib/event-registration/_pings/stop-attendance-tracking'
-import { getEventStatus } from '../lib/event-registration/_event-status/get-event-status'
+import {
+    EventStartStatusResponse,
+    subscribeEventState,
+} from '@/services/event/identify-event-state'
 
 interface TrackingState {
     isTracking: boolean
@@ -52,53 +55,42 @@ export function AttendanceTrackingProvider({
     const trackingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
         null,
     )
+    const subscriptionRef = useRef<any>(null)
     const statusCheckIntervalRef = useRef<ReturnType<
         typeof setInterval
     > | null>(null)
     const hasShownEndAlertRef = useRef(false)
 
-    // monitor event status when tracking is active
     useEffect(() => {
         if (!trackingState.isTracking || !trackingState.eventId) return
 
-        const checkEventStatus = async () => {
-            try {
-                const result = await getEventStatus(trackingState.eventId!)
+        hasShownEndAlertRef.current = false
 
-                if (result.success && result.data) {
-                    const { eventHasEnded, statusMessage } = result.data
+        subscriptionRef.current = subscribeEventState(
+            trackingState.eventId,
+            (eventState: EventStartStatusResponse) => {
+                setTrackingState((prev) => ({
+                    ...prev,
+                    eventStatus: eventState.statusMessage,
+                }))
 
-                    setTrackingState((prev) => ({
-                        ...prev,
-                        eventStatus: statusMessage,
-                    }))
-
-                    if (eventHasEnded) {
-                        stopTracking()
-                        if (!hasShownEndAlertRef.current) {
-                            hasShownEndAlertRef.current = true
-                            Alert.alert(
-                                'Event Concluded',
-                                'The event has ended. Attendance tracking has been stopped automatically.',
-                                [{ text: 'OK' }],
-                            )
-                        }
+                if (eventState.eventHasEnded) {
+                    stopTracking()
+                    if (!hasShownEndAlertRef.current) {
+                        hasShownEndAlertRef.current = true
+                        Alert.alert(
+                            'Event Concluded',
+                            'The event has ended. Attendance tracking has been stopped automatically.',
+                            [{ text: 'OK' }],
+                        )
                     }
                 }
-            } catch (error) {
-                console.error('Error checking event status:', error)
-            }
-        }
-
-        // check status immediately
-        checkEventStatus()
-        // then check every 2 minutes
-        statusCheckIntervalRef.current = setInterval(checkEventStatus, 120000)
+            },
+        )
 
         return () => {
-            if (statusCheckIntervalRef.current) {
-                clearInterval(statusCheckIntervalRef.current)
-            }
+            subscriptionRef.current?.unsubscribe()
+            subscriptionRef.current = null
         }
     }, [trackingState.isTracking, trackingState.eventId])
 

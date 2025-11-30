@@ -15,7 +15,10 @@ import { LocationStatus } from '../../interface/event-registration/event-registr
 import type { Event } from '../../interface/event/event'
 import { useEventRegistration } from '../../lib/event-registration/_hooks/use-event-registration'
 import { getEventById } from '../../services/event/get-event-by-id'
-import { validateCurrentLocation } from '../../services/event/validate-current-location'
+import {
+    sendLocationUpdate,
+    subscribeToLocationUpdates,
+} from '../../services/event/validate-current-location'
 import styles from '../../styles/EventRegistrationPage.styles'
 import { formatDateTime } from '../../utils/formatDateTime'
 
@@ -71,55 +74,50 @@ export default function EventDetailsRegistrationPage() {
     const [locationStatus, setLocationStatus] = useState<LocationStatus | null>(
         null,
     )
-    const [checkingLocation, setCheckingLocation] = useState(false)
 
-    const fetchLocationStatus = useCallback(async () => {
-        if (latitude !== null && longitude !== null && locationId) {
-            setCheckingLocation(true)
-            const res = await validateCurrentLocation(
-                locationId,
-                latitude,
-                longitude,
-            )
-            setLocationStatus(
-                res.success
-                    ? res.data
-                    : { isInside: false, message: res.message },
-            )
-            setCheckingLocation(false)
-        } else if (latitude === null && longitude === null) {
-            setLocationStatus(null)
+    useEffect(() => {
+        let unsubscribe: any
+        async function setup() {
+            unsubscribe = await subscribeToLocationUpdates((res) => {
+                setLocationStatus({
+                    isInside: res.inside,
+                    message: res.message,
+                })
+            })
         }
-    }, [latitude, longitude, locationId])
+        setup()
+        return () => {
+            if (unsubscribe) unsubscribe.unsubscribe()
+        }
+    }, [])
 
     const [refreshing, setRefreshing] = useState(false)
     const onRefresh = useCallback(async () => {
         setRefreshing(true)
         await fetchEvent()
-        await fetchLocationStatus()
         setRefreshing(false)
-    }, [fetchLocationStatus, fetchEvent])
+    }, [fetchEvent])
 
     useEffect(() => {
         fetchEvent()
     }, [fetchEvent])
 
     useEffect(() => {
-        fetchLocationStatus()
-    }, [fetchLocationStatus, latitude, longitude])
+        if (latitude !== null && longitude !== null && locationId) {
+            sendLocationUpdate(locationId, latitude, longitude)
+        }
+    }, [latitude, longitude, locationId])
 
     const handleRegister = () => {
         if (locationLoading || latitude === null || longitude === null) {
             console.warn(
-                'Cannot start verification: Location data is still loading or unavailable.',
+                'Cannot register: Location data is still loading or unavailable.',
             )
             return
         }
-        setHasRegistrationAttempted(false)
-        router.push({
-            pathname: '/(biometrics)/verification',
-            params: { eventId, locationId },
-        })
+
+        setHasRegistrationAttempted(true)
+        performRegistration(null, () => startTracking(eventId!, locationId!))
     }
 
     useEffect(() => {
@@ -223,38 +221,6 @@ export default function EventDetailsRegistrationPage() {
                             >
                                 Attendance Tracking ACTIVE
                             </ThemedText>
-                            {trackingState.eventStatus && (
-                                <ThemedText
-                                    type="default"
-                                    style={{
-                                        marginTop: 4,
-                                        fontSize: 13,
-                                        opacity: 0.8,
-                                    }}
-                                >
-                                    {trackingState.eventStatus}
-                                </ThemedText>
-                            )}
-                            <ThemedText
-                                type="defaultSemiBold"
-                                style={styles.lastPingText}
-                            >
-                                Last successful ping:{' '}
-                                {trackingState.lastTrackingTime ||
-                                    'waiting for first ping...'}
-                            </ThemedText>
-                            <ThemedText type="default">
-                                {trackingState.eventStatus?.includes('ongoing')
-                                    ? 'Pinging every 5 minutes while event is ongoing.'
-                                    : trackingState.eventStatus?.includes(
-                                            'not started',
-                                        ) ||
-                                        trackingState.eventStatus?.includes(
-                                            'registration',
-                                        )
-                                      ? 'Waiting for event to start before sending pings.'
-                                      : 'Monitoring event status...'}
-                            </ThemedText>
                         </View>
                     ) : (
                         <View style={styles.infoSection}>
@@ -267,27 +233,13 @@ export default function EventDetailsRegistrationPage() {
                         </View>
                     )}
 
-                    {locationLoading ? (
-                        <View style={styles.locationLoadingContainer}>
-                            <ActivityIndicator size="small" color="#2A2C24" />
-                            <ThemedText type="default">
-                                Validating your current location...
+                    <View style={styles.infoSection}>
+                        {locationStatus && (
+                            <ThemedText type="defaultSemiBold">
+                                {locationStatus.message}
                             </ThemedText>
-                        </View>
-                    ) : (
-                        <View style={styles.infoSection}>
-                            {checkingLocation ? (
-                                <ActivityIndicator
-                                    size="small"
-                                    color="#4CAF50"
-                                />
-                            ) : locationStatus ? (
-                                <ThemedText type="defaultSemiBold">
-                                    {locationStatus.message}
-                                </ThemedText>
-                            ) : null}
-                        </View>
-                    )}
+                        )}
+                    </View>
                 </View>
             </ScrollView>
 
