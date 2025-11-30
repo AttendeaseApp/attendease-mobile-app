@@ -105,6 +105,8 @@ export default function EventDetailsRegistrationPage() {
             sendLocationUpdate(locationId, latitude, longitude)
         }
     }, [latitude, longitude, locationId])
+
+    // facial registration disabled
     const handleRegister = () => {
         if (locationLoading || latitude === null || longitude === null) {
             console.warn(
@@ -115,6 +117,19 @@ export default function EventDetailsRegistrationPage() {
         setHasRegistrationAttempted(true)
         performRegistration(null, () => startTracking(eventId!, locationId!))
     }
+    // const handleRegister = () => {
+    //         if (locationLoading || latitude === null || longitude === null) {
+    //             console.warn(
+    //                 'Cannot start verification: Location data is still loading or unavailable.',
+    //             )
+    //             return
+    //         }
+    //         setHasRegistrationAttempted(false)
+    //         router.push({
+    //             pathname: '/(biometrics)/verification',
+    //             params: { eventId, locationId },
+    //         })
+    //     }
     useEffect(() => {
         if (
             face &&
