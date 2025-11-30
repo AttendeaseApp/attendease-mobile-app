@@ -23,23 +23,23 @@ export const Button = ({
     disabled = false,
     style,
 }: ButtonProps) => {
+    const isDisabledState = disabled || loading
+    const textColor = isDisabledState ? '#999999' : '#000000'
+
     return (
         <TouchableOpacity
-            style={[
-                styles.button,
-                style,
-                (disabled || loading) && styles.disabled,
-            ]}
+            style={[styles.button, style, isDisabledState && styles.disabled]}
             onPress={onPress}
             activeOpacity={0.8}
-            disabled={disabled || loading}
+            disabled={isDisabledState}
         >
             {loading ? (
-                <ActivityIndicator
-                    color={styles.buttonTextContent.color as string}
-                />
+                <ActivityIndicator color={textColor} />
             ) : (
-                <ThemedText type="default" colorVariant="black">
+                <ThemedText
+                    type="defaultSemiBold"
+                    colorVariant={isDisabledState ? 'gray' : 'black'}
+                >
                     {title}
                 </ThemedText>
             )}
@@ -49,8 +49,8 @@ export const Button = ({
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: '#ffffffff',
-        borderColor: '#000',
+        backgroundColor: '#FFFFFF',
+        borderColor: '#000000',
         borderWidth: 1,
         paddingVertical: 8,
         paddingHorizontal: 32,
@@ -61,11 +61,7 @@ const styles = StyleSheet.create({
         maxWidth: 400,
     },
     disabled: {
-        backgroundColor: '#999',
-        borderColor: 'transparent',
-    },
-    buttonTextContent: {
-        fontWeight: '600',
-        color: '#000',
+        backgroundColor: '#F5F5F5',
+        borderColor: '#CCCCCC',
     },
 })

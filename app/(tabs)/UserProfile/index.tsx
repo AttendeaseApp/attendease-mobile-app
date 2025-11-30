@@ -8,7 +8,6 @@ import { ThemedText } from '../../../components/ThemedText'
 import { logout } from '../../../services/auth'
 import { fetchProfilePageData } from '../../../services/profile/fetch-profile-page-data'
 import { styles } from '../../../styles/UserProfile.styles'
-
 /**
  * This is the User Profile Page where users can view their profile information and log out of the application.
  *
@@ -38,7 +37,6 @@ export default function UserProfile() {
             </ScreenContainer>
         )
     }
-
     if (!profile) {
         return (
             <ScreenContainer>

@@ -11,6 +11,17 @@ export interface Event {
     endDateTime?: string
     eventLocation?: EventLocation
     locationId?: string
+    eligibleStudents?: EligibilityCriteria
     createdAt?: string
     updatedAt?: string
+}
+
+export interface EligibilityCriteria {
+    allStudents: boolean
+    cluster?: string[]
+    clusterNames?: string[]
+    course?: string[]
+    courseNames?: string[]
+    sections?: string[]
+    sectionNames?: string[]
 }

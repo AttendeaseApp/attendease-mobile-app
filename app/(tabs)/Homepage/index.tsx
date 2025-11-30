@@ -8,7 +8,6 @@ import { Event } from '../../../interface/event/event'
 import { retrieveUserProfileForHomepage } from '../../../services/homepage/retrieveUserProfile'
 import { styles } from '../../../styles/Homepage.styles'
 import { subscribeToEvents } from '../../../services/homepage/subscribeToEvents'
-
 /**
  * This is the Home Screen where users can view a list of available events
  * and access the overview of their profile.
@@ -21,10 +20,8 @@ export default function HomeScreen() {
         firstName: string
         lastName: string
     } | null>(null)
-
     useEffect(() => {
         retrieveUserProfileForHomepage(setUser, setLoading)
-
         let subscription: any
         async function initWebSocket() {
             subscription = await subscribeToEvents((newEvents) => {
@@ -32,9 +29,7 @@ export default function HomeScreen() {
                 setLoadingEvents(false)
             })
         }
-
         initWebSocket()
-
         return () => {
             if (
                 subscription &&
@@ -44,7 +39,6 @@ export default function HomeScreen() {
             }
         }
     }, [])
-
     if (loading || loadingEvents) {
         return (
             <View
@@ -58,11 +52,9 @@ export default function HomeScreen() {
             </View>
         )
     }
-
     return (
         <ScreenContainer>
             <NavBar title="HOME" />
-
             {/*user header greeting wrapper*/}
             <View>
                 <ThemedText
@@ -81,7 +73,6 @@ export default function HomeScreen() {
                     </ThemedText>
                 )}
             </View>
-
             <View style={styles.cardContainer}>
                 {events.length === 0 ? (
                     <ThemedText type="default" style={{ marginTop: 20 }}>

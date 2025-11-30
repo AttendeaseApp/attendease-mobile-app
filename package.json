@@ -17,6 +17,7 @@
         "@react-navigation/bottom-tabs": "^7.3.10",
         "@react-navigation/elements": "^2.3.8",
         "@react-navigation/native": "^7.1.6",
+        "@react-navigation/native-stack": "^7.8.2",
         "@stomp/stompjs": "^7.2.1",
         "axios": "^1.12.2",
         "eslint-plugin-react-hooks": "^7.1.0-canary-52684925-20251110",

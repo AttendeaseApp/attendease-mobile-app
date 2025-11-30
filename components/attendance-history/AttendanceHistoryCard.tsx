@@ -16,9 +16,11 @@ const AttendanceHistoryCard: React.FC<AttendanceHistory> = ({
                 <ThemedText type="title" fontFamilyOverride="AfacadFlux">
                     {eventName}
                 </ThemedText>
-                <ThemedText type="default">Time In: {timeIn} || N/A</ThemedText>
                 <ThemedText type="default">
-                    Time Out: {timeOut} || N/A
+                    Time In: {timeIn || 'N/A'}
+                </ThemedText>
+                <ThemedText type="default">
+                    Time Out: {timeOut || 'N/A'}
                 </ThemedText>
                 <ThemedText type="default">{attendanceStatus}</ThemedText>
                 <ThemedText type="default">Reason: {reason}</ThemedText>
