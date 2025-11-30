@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native'
-
 /*
 Styles for the Event Registration Page
 */
@@ -37,13 +36,12 @@ export default StyleSheet.create({
     pingStatusText: {
         flex: 1,
         fontWeight: '600',
-        color: '#D2CCA1',
+        color: '#000',
     },
     lastPingText: {
-        marginTop: 4,
-        position: 'absolute',
-        bottom: -16,
+        // position: 'absolute',
+        bottom: 12,
         right: 12,
-        color: '#D2CCA1',
+        color: '#000',
     },
 })

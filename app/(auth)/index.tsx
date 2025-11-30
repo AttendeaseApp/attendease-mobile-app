@@ -39,6 +39,7 @@ const LoginScreen = () => {
                 } else {
                     router.replace('/(tabs)/Homepage')
                 }
+                // router.replace('/(tabs)/Homepage')
             } else {
                 Alert.alert(
                     'Login failed',

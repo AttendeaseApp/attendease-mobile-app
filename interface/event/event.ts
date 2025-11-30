@@ -5,12 +5,23 @@ export interface Event {
     eventId: string
     eventName: string
     eventStatus: EventStatus
-    description: string
-    timeInRegistrationStartDateTime: string
-    startDateTime: string
-    endDateTime: string
-    eventLocation: EventLocation
+    description?: string
+    timeInRegistrationStartDateTime?: string
+    startDateTime?: string
+    endDateTime?: string
+    eventLocation?: EventLocation
     locationId?: string
+    eligibleStudents?: EligibilityCriteria
     createdAt?: string
     updatedAt?: string
+}
+
+export interface EligibilityCriteria {
+    allStudents: boolean
+    cluster?: string[]
+    clusterNames?: string[]
+    course?: string[]
+    courseNames?: string[]
+    sections?: string[]
+    sectionNames?: string[]
 }

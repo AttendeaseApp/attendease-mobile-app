@@ -25,6 +25,18 @@ export default function TabLayout() {
                     },
                     default: {},
                 }),
+                animation: 'shift',
+                transitionSpec: {
+                    animation: 'spring',
+                    config: {
+                        stiffness: 350,
+                        damping: 23,
+                        mass: 1,
+                        overshootClamping: false,
+                        restDisplacementThreshold: 0.01,
+                        restSpeedThreshold: 0.01,
+                    },
+                },
             }}
         >
             <Tabs.Screen

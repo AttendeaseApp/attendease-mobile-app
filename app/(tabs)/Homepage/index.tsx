@@ -1,13 +1,13 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { ActivityIndicator, FlatList, RefreshControl, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { ActivityIndicator, FlatList, View } from 'react-native'
 import EventCard from '../../../components/EventCard'
 import { ScreenContainer } from '../../../components/layouts/CustomScreenContainer'
 import NavBar from '../../../components/NavBar'
 import { ThemedText } from '../../../components/ThemedText'
 import { Event } from '../../../interface/event/event'
-import { fetchHomePageData } from '../../../services/homepage/fetch-home-page-data'
+import { retrieveUserProfileForHomepage } from '../../../services/homepage/retrieveUserProfile'
 import { styles } from '../../../styles/Homepage.styles'
-
+import { subscribeToEvents } from '../../../services/homepage/subscribeToEvents'
 /**
  * This is the Home Screen where users can view a list of available events
  * and access the overview of their profile.
@@ -15,25 +15,31 @@ import { styles } from '../../../styles/Homepage.styles'
 export default function HomeScreen() {
     const [events, setEvents] = useState<Event[]>([])
     const [loading, setLoading] = useState(true)
-    const [refreshing, setRefreshing] = useState(false)
+    const [loadingEvents, setLoadingEvents] = useState(true)
     const [user, setUser] = useState<{
         firstName: string
         lastName: string
     } | null>(null)
-
-    // Load initial data
     useEffect(() => {
-        fetchHomePageData(setEvents, setUser, setLoading)
+        retrieveUserProfileForHomepage(setUser, setLoading)
+        let subscription: any
+        async function initWebSocket() {
+            subscription = await subscribeToEvents((newEvents) => {
+                setEvents(newEvents)
+                setLoadingEvents(false)
+            })
+        }
+        initWebSocket()
+        return () => {
+            if (
+                subscription &&
+                typeof subscription.unsubscribe === 'function'
+            ) {
+                subscription.unsubscribe()
+            }
+        }
     }, [])
-
-    // Pull-to-refresh logic
-    const onRefresh = useCallback(async () => {
-        setRefreshing(true)
-        await fetchHomePageData(setEvents, setUser, setLoading)
-        setRefreshing(false)
-    }, [])
-
-    if (loading) {
+    if (loading || loadingEvents) {
         return (
             <View
                 style={{
@@ -46,11 +52,10 @@ export default function HomeScreen() {
             </View>
         )
     }
-
     return (
         <ScreenContainer>
             <NavBar title="HOME" />
-
+            {/*user header greeting wrapper*/}
             <View>
                 <ThemedText
                     type="subTitleSecondary"
@@ -68,11 +73,6 @@ export default function HomeScreen() {
                     </ThemedText>
                 )}
             </View>
-
-            <ThemedText type="default">
-                Browse available events below for you to check in to.
-            </ThemedText>
-
             <View style={styles.cardContainer}>
                 {events.length === 0 ? (
                     <ThemedText type="default" style={{ marginTop: 20 }}>
@@ -99,14 +99,6 @@ export default function HomeScreen() {
                             />
                         )}
                         showsVerticalScrollIndicator={false}
-                        refreshControl={
-                            <RefreshControl
-                                refreshing={refreshing}
-                                onRefresh={onRefresh}
-                                colors={['#27548A']}
-                                tintColor="#27548A"
-                            />
-                        }
                     />
                 )}
             </View>

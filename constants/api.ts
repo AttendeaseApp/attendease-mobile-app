@@ -4,14 +4,18 @@
 // production backend URL
 export const API_BASE_URL = 'https://attendease-backend-latest.onrender.com'
 
+// WEBSOCKETS
+export const WEBSOCKET_BASE_URL = `${API_BASE_URL}/attendease-websocket`
+
 // backend login controller endpoint
 export const LOGIN_ENDPOINT = `${API_BASE_URL}/api/auth/student/login`
 
 // backend endpoint to retrieve ongoing events endpoint
-export const RETRIEVE_ONGOING_EVENTS = `${API_BASE_URL}/api/registration/events`
+export const RETRIEVE_ONGOING_REGISTRATION_AND_ACTIVE_EVENTS = `${API_BASE_URL}/api/registration/events`
 
 // backend endpoint to retrieve user profile endpoint
 export const RETRIEVE_USER_PROFILE = `${API_BASE_URL}/api/profile/user-student/me`
+export const UPDATE_PASSWORD = `${API_BASE_URL}/api/profile/update-password`
 
 export const GET_ATTENDANCE_HISTORY_ENDPOINT = `${API_BASE_URL}/api/attendance/history`
 

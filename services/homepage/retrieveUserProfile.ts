@@ -1,9 +1,5 @@
 import { authFetch } from '@/services/auth-fetch'
-import { Event } from '@/interface/event/event'
-import {
-    RETRIEVE_ONGOING_EVENTS,
-    RETRIEVE_USER_PROFILE,
-} from '../../constants/api'
+import { RETRIEVE_USER_PROFILE } from '../../constants/api'
 
 /**
  *  Fetches home page data including ongoing events and user profile.
@@ -14,8 +10,7 @@ import {
  *  @param setLoading - State setter for the loading state.
  */
 
-export async function fetchHomePageData(
-    setEvents: React.Dispatch<React.SetStateAction<Event[]>>,
+export async function retrieveUserProfileForHomepage(
     setUser: React.Dispatch<
         React.SetStateAction<{ firstName: string; lastName: string } | null>
     >,
@@ -23,22 +18,15 @@ export async function fetchHomePageData(
 ) {
     setLoading(true)
     try {
-        const [eventsResponse, profileResponse] = await Promise.all([
-            authFetch(RETRIEVE_ONGOING_EVENTS),
+        const [profileResponse] = await Promise.all([
             authFetch(RETRIEVE_USER_PROFILE),
         ])
 
-        if (!eventsResponse.ok) throw new Error('Failed to fetch events')
         if (!profileResponse.ok) throw new Error('Failed to fetch profile')
-
-        const eventsData = await eventsResponse.json()
         const profileData = await profileResponse.json()
-
-        setEvents(eventsData || [])
         setUser(profileData.user || null)
     } catch (error) {
         console.error('Error fetching home page data:', error)
-        setEvents([])
         setUser(null)
     } finally {
         setLoading(false)

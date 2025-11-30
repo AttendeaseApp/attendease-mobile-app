@@ -10,7 +10,7 @@ export type ThemedTextProps = TextProps & {
         | 'titleSecondary'
         | 'subTitleSecondary'
         | 'loginTitle'
-    colorVariant?: 'black' | 'white'
+    colorVariant?: 'black' | 'white' | 'gray'
     fontFamilyOverride?: string
     fontWeightOverride?:
         | 'normal'
@@ -34,12 +34,16 @@ export function ThemedText({
     fontWeightOverride,
     ...rest
 }: ThemedTextProps) {
-    const textColor = colorVariant === 'white' ? '#fff' : '#000'
+    const textColor =
+        colorVariant === 'white'
+            ? '#fff'
+            : colorVariant === 'gray'
+              ? '#999999'
+              : '#000'
     const defaultFontFamily =
         type === 'titleSecondary' || type === 'subTitleSecondary'
             ? 'Newsreader'
             : 'AfacadFlux'
-
     return (
         <Text
             style={[
