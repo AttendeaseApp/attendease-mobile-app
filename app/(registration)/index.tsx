@@ -15,7 +15,7 @@ import { useAttendanceTracking } from '../../contexts/AttendanceTrackingContext'
 import { LocationStatus } from '../../interface/event-registration/event-registration-interface'
 import type { Event } from '../../interface/event/event'
 import { useEventRegistration } from '../../lib/event-registration/_hooks/use-event-registration'
-import { subscribeEventById } from '../../services/event/get-event-by-id'
+import { subscribeEventById } from '../../services/event/subscribeToGetEventById'
 import {
     sendLocationUpdate,
     subscribeToLocationUpdates,
@@ -107,29 +107,29 @@ export default function EventDetailsRegistrationPage() {
     }, [latitude, longitude, locationId])
 
     // facial registration disabled
+    // const handleRegister = () => {
+    //     if (locationLoading || latitude === null || longitude === null) {
+    //         console.warn(
+    //             'Cannot register: Location data is still loading or unavailable.',
+    //         )
+    //         return
+    //     }
+    //     setHasRegistrationAttempted(true)
+    //     performRegistration(null, () => startTracking(eventId!, locationId!))
+    // }
     const handleRegister = () => {
         if (locationLoading || latitude === null || longitude === null) {
             console.warn(
-                'Cannot register: Location data is still loading or unavailable.',
+                'Cannot start verification: Location data is still loading or unavailable.',
             )
             return
         }
-        setHasRegistrationAttempted(true)
-        performRegistration(null, () => startTracking(eventId!, locationId!))
+        setHasRegistrationAttempted(false)
+        router.push({
+            pathname: '/(biometrics)/verification',
+            params: { eventId, locationId },
+        })
     }
-    // const handleRegister = () => {
-    //         if (locationLoading || latitude === null || longitude === null) {
-    //             console.warn(
-    //                 'Cannot start verification: Location data is still loading or unavailable.',
-    //             )
-    //             return
-    //         }
-    //         setHasRegistrationAttempted(false)
-    //         router.push({
-    //             pathname: '/(biometrics)/verification',
-    //             params: { eventId, locationId },
-    //         })
-    //     }
     useEffect(() => {
         if (
             face &&
