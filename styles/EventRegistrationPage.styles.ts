@@ -16,6 +16,8 @@ export default StyleSheet.create({
         left: 0,
         right: 0,
         padding: 16,
+        paddingBottom: 30,
+        backgroundColor: 'white',
     },
     locationLoadingContainer: {
         flexDirection: 'column',

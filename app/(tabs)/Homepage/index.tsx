@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import { useFocusEffect } from 'expo-router'
+import React, { useCallback, useState } from 'react'
 import { ActivityIndicator, FlatList, View } from 'react-native'
 import EventCard from '../../../components/EventCard'
 import { ScreenContainer } from '../../../components/layouts/CustomScreenContainer'
@@ -20,25 +21,28 @@ export default function HomeScreen() {
         firstName: string
         lastName: string
     } | null>(null)
-    useEffect(() => {
-        retrieveUserProfileForHomepage(setUser, setLoading)
-        let subscription: any
-        async function initWebSocket() {
-            subscription = await subscribeToEvents((newEvents) => {
-                setEvents(newEvents)
-                setLoadingEvents(false)
-            })
-        }
-        initWebSocket()
-        return () => {
-            if (
-                subscription &&
-                typeof subscription.unsubscribe === 'function'
-            ) {
-                subscription.unsubscribe()
+
+    useFocusEffect(
+        useCallback(() => {
+            let unsubscribe: (() => void) | null = null
+
+            retrieveUserProfileForHomepage(setUser, setLoading)
+
+            async function initWebSocket() {
+                unsubscribe = await subscribeToEvents((newEvents) => {
+                    setEvents(newEvents)
+                    setLoadingEvents(false)
+                })
             }
-        }
-    }, [])
+
+            initWebSocket()
+
+            return () => {
+                if (unsubscribe) unsubscribe()
+            }
+        }, []),
+    )
+
     if (loading || loadingEvents) {
         return (
             <View

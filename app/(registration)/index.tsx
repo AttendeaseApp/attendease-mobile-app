@@ -166,7 +166,7 @@ export default function EventDetailsRegistrationPage() {
             <NavBar title="DETAILS &amp; REGISTRATION" />
             <Animated.View style={{ opacity: fadeAnim }}>
                 <ScrollView
-                    contentContainerStyle={{ paddingBottom: 100 }}
+                    contentContainerStyle={{ paddingBottom: 180 }}
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}
@@ -290,26 +290,11 @@ export default function EventDetailsRegistrationPage() {
                     <View style={styles.eventRegistrationInfoSection}>
                         {isTrackingThisEvent ? (
                             <View style={styles.pingStatusContainer}>
-                                <ThemedText type="defaultSemiBold">
-                                    Attendance Tracking ACTIVE
-                                </ThemedText>
                                 {trackingState.eventStatus && (
-                                    <ThemedText
-                                        type="default"
-                                        style={{
-                                            marginTop: 4,
-                                            fontSize: 13,
-                                            opacity: 0.8,
-                                        }}
-                                    >
+                                    <ThemedText type="default">
                                         {trackingState.eventStatus}
                                     </ThemedText>
                                 )}
-                                <ThemedText type="defaultSemiBold">
-                                    Last successful ping:{' '}
-                                    {trackingState.lastTrackingTime ||
-                                        'waiting for first ping...'}
-                                </ThemedText>
                                 <ThemedText type="default">
                                     {trackingState.eventStatus?.includes(
                                         'ongoing',
@@ -323,6 +308,19 @@ export default function EventDetailsRegistrationPage() {
                                             )
                                           ? 'Waiting for event to start before sending pings.'
                                           : 'Monitoring event status...'}
+                                </ThemedText>
+
+                                <ThemedText
+                                    type="default"
+                                    style={{
+                                        marginTop: 4,
+                                        fontSize: 15,
+                                        opacity: 0.8,
+                                    }}
+                                >
+                                    Last successful ping:{' '}
+                                    {trackingState.lastTrackingTime ||
+                                        'waiting for first ping...'}
                                 </ThemedText>
                             </View>
                         ) : (
@@ -344,19 +342,19 @@ export default function EventDetailsRegistrationPage() {
                         </View>
                     </View>
                 </ScrollView>
-                <View style={styles.fixedButtonContainer}>
-                    <Button
-                        title={loading ? 'REGISTERING...' : 'REGISTER'}
-                        onPress={handleRegister}
-                        disabled={
-                            loading ||
-                            locationLoading ||
-                            latitude === null ||
-                            longitude === null
-                        }
-                    />
-                </View>
             </Animated.View>
+            <View style={styles.fixedButtonContainer}>
+                <Button
+                    title={loading ? 'REGISTERING...' : 'REGISTER'}
+                    onPress={handleRegister}
+                    disabled={
+                        loading ||
+                        locationLoading ||
+                        latitude === null ||
+                        longitude === null
+                    }
+                />
+            </View>
         </ScreenContainer>
     )
 }
