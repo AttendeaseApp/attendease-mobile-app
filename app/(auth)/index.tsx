@@ -6,6 +6,7 @@ import { useRouter } from 'expo-router'
 import React, { useState } from 'react'
 import { Alert, KeyboardAvoidingView, Platform, View } from 'react-native'
 import { styles } from '../../styles/LoginScreen.styles'
+import { ScreenContainer } from '../../components/layouts/CustomScreenContainer'
 
 /**
  * Login Screen Component
@@ -55,65 +56,67 @@ const LoginScreen = () => {
     }
 
     return (
-        <KeyboardAvoidingView
-            style={styles.background}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
-        >
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <ThemedText
-                        type="loginTitle"
-                        fontFamilyOverride="AfacadFlux"
-                    >
-                        RCIANS ATTENDEASE
-                    </ThemedText>
-                    <ThemedText type="default">
-                        Discover events, check in seamlessly, and stay connected
-                        with your community.
-                    </ThemedText>
-                </View>
-
-                <View>
-                    <ThemedText type="default">
-                        Log into your Attendease account.
-                    </ThemedText>
-                </View>
-
-                <ThemedTextInput
-                    placeholder="Student Number"
-                    value={studentNumber}
-                    onChangeText={setStudentNumber}
-                    autoCapitalize="characters"
-                    variant="outlined"
-                    fontFamilyOverride="AfacadFlux"
-                    backgroundColorOverride="transparent"
-                />
-
-                <ThemedTextInput
-                    placeholder="Password"
-                    value={password}
-                    onChangeText={setPassword}
-                    isPassword={true}
-                    variant="outlined"
-                    fontFamilyOverride="AfacadFlux"
-                    backgroundColorOverride="transparent"
-                />
-
-                <Button
-                    title="LOG IN"
-                    onPress={handleLogin}
-                    loading={loading}
-                />
-            </View>
-
-            <ThemedText
-                type="default"
-                style={{ fontSize: 13, textAlign: 'center' }}
+        <ScreenContainer>
+            <KeyboardAvoidingView
+                style={styles.background}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
             >
-                2025 Rogationist College - College Department
-            </ThemedText>
-        </KeyboardAvoidingView>
+                <View style={styles.container}>
+                    <View style={styles.header}>
+                        <ThemedText
+                            type="loginTitle"
+                            fontFamilyOverride="AfacadFlux"
+                        >
+                            RCIANS ATTENDEASE
+                        </ThemedText>
+                        <ThemedText type="default">
+                            Discover events, check in seamlessly, and stay
+                            connected with your community.
+                        </ThemedText>
+                    </View>
+
+                    <View>
+                        <ThemedText type="default">
+                            Log into your Attendease account.
+                        </ThemedText>
+                    </View>
+
+                    <ThemedTextInput
+                        placeholder="Student Number"
+                        value={studentNumber}
+                        onChangeText={setStudentNumber}
+                        autoCapitalize="characters"
+                        variant="outlined"
+                        fontFamilyOverride="AfacadFlux"
+                        backgroundColorOverride="transparent"
+                    />
+
+                    <ThemedTextInput
+                        placeholder="Password"
+                        value={password}
+                        onChangeText={setPassword}
+                        isPassword={true}
+                        variant="outlined"
+                        fontFamilyOverride="AfacadFlux"
+                        backgroundColorOverride="transparent"
+                    />
+
+                    <Button
+                        title="LOG IN"
+                        onPress={handleLogin}
+                        loading={loading}
+                    />
+                </View>
+
+                <ThemedText
+                    type="default"
+                    style={{ fontSize: 13, textAlign: 'center' }}
+                >
+                    2025 Rogationist College - College Department
+                </ThemedText>
+            </KeyboardAvoidingView>
+        </ScreenContainer>
     )
 }
 

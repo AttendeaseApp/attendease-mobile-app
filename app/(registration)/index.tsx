@@ -290,10 +290,7 @@ export default function EventDetailsRegistrationPage() {
                     <View style={styles.eventRegistrationInfoSection}>
                         {isTrackingThisEvent ? (
                             <View style={styles.pingStatusContainer}>
-                                <ThemedText
-                                    type="defaultSemiBold"
-                                    style={styles.pingStatusText}
-                                >
+                                <ThemedText type="defaultSemiBold">
                                     Attendance Tracking ACTIVE
                                 </ThemedText>
                                 {trackingState.eventStatus && (
@@ -308,10 +305,7 @@ export default function EventDetailsRegistrationPage() {
                                         {trackingState.eventStatus}
                                     </ThemedText>
                                 )}
-                                <ThemedText
-                                    type="defaultSemiBold"
-                                    style={styles.lastPingText}
-                                >
+                                <ThemedText type="defaultSemiBold">
                                     Last successful ping:{' '}
                                     {trackingState.lastTrackingTime ||
                                         'waiting for first ping...'}

@@ -33,15 +33,4 @@ export default StyleSheet.create({
         marginBottom: 16,
         backgroundColor: '#D2CCA1',
     },
-    pingStatusText: {
-        flex: 1,
-        fontWeight: '600',
-        color: '#000',
-    },
-    lastPingText: {
-        // position: 'absolute',
-        bottom: 12,
-        right: 12,
-        color: '#000',
-    },
 })

@@ -18,9 +18,6 @@ export const styles = StyleSheet.create({
     container: {
         width: '100%',
         justifyContent: 'center',
-        backgroundColor: '#FFFFFF',
-        paddingInline: 20,
-        paddingBlock: 42,
         maxWidth: 400,
         borderRadius: 11,
         marginVertical: 48,
