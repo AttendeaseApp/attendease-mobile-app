@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router'
 import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, View } from 'react-native'
+import { ActivityIndicator, View, Alert } from 'react-native'
 import { Button } from '../../../components/Button'
 import { ScreenContainer } from '../../../components/layouts/CustomScreenContainer'
 import NavBar from '../../../components/NavBar'
@@ -18,9 +18,18 @@ export default function UserProfile() {
         fetchProfilePageData(setProfile, setLoading)
     }, [])
 
-    const handleLogout = async () => {
-        await logout()
-        router.replace('/(auth)')
+    const handleLogout = () => {
+        Alert.alert('Confirm Logout', 'Are you sure you want to log out?', [
+            { text: 'Cancel', style: 'cancel' },
+            {
+                text: 'Logout',
+                style: 'destructive',
+                onPress: async () => {
+                    await logout()
+                    router.replace('/(auth)')
+                },
+            },
+        ])
     }
 
     if (loading) {

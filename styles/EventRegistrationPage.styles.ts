@@ -16,6 +16,8 @@ export default StyleSheet.create({
         left: 0,
         right: 0,
         padding: 16,
+        paddingBottom: 30,
+        backgroundColor: 'white',
     },
     locationLoadingContainer: {
         flexDirection: 'column',
@@ -32,16 +34,5 @@ export default StyleSheet.create({
         borderRadius: 8,
         marginBottom: 16,
         backgroundColor: '#D2CCA1',
-    },
-    pingStatusText: {
-        flex: 1,
-        fontWeight: '600',
-        color: '#000',
-    },
-    lastPingText: {
-        // position: 'absolute',
-        bottom: 12,
-        right: 12,
-        color: '#000',
     },
 })
