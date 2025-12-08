@@ -1,3 +1,8 @@
+import {
+    EventStartStatusResponse,
+    subscribeEventState,
+} from '@/services/event/identify-event-state'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import React, {
     createContext,
     useContext,
@@ -5,13 +10,9 @@ import React, {
     useRef,
     useState,
 } from 'react'
-import { Alert } from 'react-native'
+import { Alert, AppState } from 'react-native'
 import { startAttendanceTracking } from '../lib/event-registration/_pings/start-attendance-tracking'
 import { stopAttendanceTracking } from '../lib/event-registration/_pings/stop-attendance-tracking'
-import {
-    EventStartStatusResponse,
-    subscribeEventState,
-} from '@/services/event/identify-event-state'
 
 interface TrackingState {
     isTracking: boolean
@@ -32,6 +33,8 @@ interface AttendanceTrackingContextType {
 const AttendanceTrackingContext = createContext<
     AttendanceTrackingContextType | undefined
 >(undefined)
+
+const STORAGE_KEY = '@attendance_tracking_state'
 
 /**
  * Provides global attendance tracking state that persists across navigation.
@@ -60,7 +63,84 @@ export function AttendanceTrackingProvider({
         typeof setInterval
     > | null>(null)
     const hasShownEndAlertRef = useRef(false)
+    const appState = useRef(AppState.currentState)
 
+    useEffect(() => {
+        const loadState = async () => {
+            try {
+                const saved = await AsyncStorage.getItem(STORAGE_KEY)
+                if (saved) {
+                    const parsed: TrackingState = JSON.parse(saved)
+                    setTrackingState(parsed)
+                    if (
+                        parsed.isTracking &&
+                        parsed.eventId &&
+                        parsed.locationId
+                    ) {
+                        setTimeout(() => {
+                            startTracking(parsed.eventId!, parsed.locationId!)
+                        }, 100)
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load tracking state:', error)
+            }
+        }
+        loadState()
+    }, [])
+
+    useEffect(() => {
+        const saveState = async () => {
+            try {
+                await AsyncStorage.setItem(
+                    STORAGE_KEY,
+                    JSON.stringify(trackingState),
+                )
+            } catch (error) {
+                console.error('Failed to save tracking state:', error)
+            }
+        }
+        if (trackingState.isTracking) {
+            saveState()
+        }
+    }, [trackingState])
+
+    useEffect(() => {
+        const subscription = AppState.addEventListener(
+            'change',
+            (nextAppState) => {
+                if (
+                    appState.current.match(/inactive|background/) &&
+                    nextAppState === 'active'
+                ) {
+                    console.log('App has come to the foreground!')
+                    if (
+                        trackingState.isTracking &&
+                        trackingState.eventId &&
+                        trackingState.locationId
+                    ) {
+                        startTracking(
+                            trackingState.eventId,
+                            trackingState.locationId,
+                        )
+                    }
+                }
+                if (
+                    trackingState.isTracking &&
+                    nextAppState.match(/background|inactive/)
+                ) {
+                    console.log('App backgrounded, saving state...')
+                }
+                appState.current = nextAppState
+            },
+        )
+        return () => subscription?.remove()
+    }, [
+        trackingState.isTracking,
+        trackingState.eventId,
+        trackingState.locationId,
+    ])
+    
     useEffect(() => {
         if (!trackingState.isTracking || !trackingState.eventId) return
 

@@ -5,6 +5,7 @@ import { registerOnEvent } from '../../../services/event/register-on-event'
 /**
  * this function handles the user check-in process by verifying their location and event details.
  * It provides feedback via alerts and manages loading state.
+ * Supports optional facial verification.
  *
  * @param param0 CheckInParams object containing eventId, locationId, latitude, longitude, setLoading, and onSuccess callback.
  */
@@ -17,17 +18,13 @@ export async function eventRegistrationEventHandler({
     setLoading,
     onSuccess,
 }: RegistrationParams) {
-    if (
-        !eventId ||
-        !locationId ||
-        !faceImageBase64 ||
-        latitude === null ||
-        longitude === null
-    ) {
+    if (!eventId || !locationId || latitude === null || longitude === null) {
         Alert.alert('Missing Data', 'Cannot proceed with check-in.')
         return
     }
-
+    if (faceImageBase64 === null || faceImageBase64 === undefined) {
+        console.log('Registering without facial verification.')
+    }
     setLoading(true)
     try {
         const result = await registerOnEvent(
@@ -35,7 +32,7 @@ export async function eventRegistrationEventHandler({
             locationId,
             latitude,
             longitude,
-            faceImageBase64,
+            faceImageBase64 || '', // Send empty string if null/undefined; backend ignores if disabled
         )
         if (result.success) {
             Alert.alert('Check-In Successful', 'Tracking started.', [

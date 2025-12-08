@@ -1,6 +1,3 @@
-// backend local host
-// export const API_BASE_URL = 'http://192.168.1.3:8082'
-
 // production backend URL
 export const API_BASE_URL = 'https://attendease-backend-latest.onrender.com'
 
