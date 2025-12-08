@@ -5,6 +5,7 @@ import { getCurrentLocation } from '../_geolocation/get-current-location'
 /**
  * Manages event registration and location.
  * Tracking is now handled by AttendanceTrackingContext.
+ * Supports optional facial verification based on event config.
  *
  * @param eventId - The event being registered
  * @param locationId - The event's assigned geofenced location
@@ -20,20 +21,22 @@ export function useEventRegistration(eventId: string, locationId: string) {
     }, [])
 
     const register = useCallback(
-        (faceImageBase64: string, onSuccess?: () => void) => {
+        (
+            faceImageBase64: string | null | undefined,
+            onSuccess?: () => void,
+        ) => {
             eventRegistrationEventHandler({
                 eventId,
                 locationId,
                 latitude,
                 longitude,
-                faceImageBase64,
+                faceImageBase64: faceImageBase64 || '',
                 setLoading,
                 onSuccess: onSuccess || (() => {}),
             })
         },
         [eventId, locationId, latitude, longitude],
     )
-
     return {
         latitude,
         longitude,

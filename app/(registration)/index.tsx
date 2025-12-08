@@ -1,11 +1,11 @@
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import React, { useCallback, useEffect, useState, useRef } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
     ActivityIndicator,
+    Animated,
     RefreshControl,
     ScrollView,
     View,
-    Animated,
 } from 'react-native'
 import { Button } from '../../components/Button'
 import { ScreenContainer } from '../../components/layouts/CustomScreenContainer'
@@ -22,6 +22,7 @@ import {
 } from '../../services/event/validate-current-location'
 import styles from '../../styles/EventRegistrationPage.styles'
 import { formatDateTime } from '../../utils/formatDateTime'
+
 /**
  * Event Details and Registration page
  *
@@ -33,14 +34,18 @@ import { formatDateTime } from '../../utils/formatDateTime'
  */
 export default function EventDetailsRegistrationPage() {
     const router = useRouter()
+
     const { eventId, locationId, face } = useLocalSearchParams<{
         eventId: string
         locationId: string
         face?: string
     }>()
+
     const { trackingState, startTracking } = useAttendanceTracking()
+
     const isTrackingThisEvent =
         trackingState.isTracking && trackingState.eventId === eventId
+
     const {
         latitude,
         longitude,
@@ -55,8 +60,10 @@ export default function EventDetailsRegistrationPage() {
     const [locationStatus, setLocationStatus] = useState<LocationStatus | null>(
         null,
     )
+
     const [refreshing, setRefreshing] = useState(false)
     const fadeAnim = useRef(new Animated.Value(0)).current
+
     useEffect(() => {
         Animated.timing(fadeAnim, {
             toValue: 1,
@@ -64,6 +71,7 @@ export default function EventDetailsRegistrationPage() {
             useNativeDriver: true,
         }).start()
     }, [fadeAnim])
+
     const fetchEvent = useCallback(async () => {
         if (!eventId) return
         setLoadingEvent(true)
@@ -74,6 +82,7 @@ export default function EventDetailsRegistrationPage() {
         })
         return () => subscription.unsubscribe?.()
     }, [eventId])
+
     useEffect(() => {
         let cleanup: (() => void) | undefined
         fetchEvent().then((unsub) => {
@@ -81,6 +90,7 @@ export default function EventDetailsRegistrationPage() {
         })
         return () => cleanup?.()
     }, [fetchEvent])
+
     useEffect(() => {
         let unsubscribe: any
         async function setup() {
@@ -94,29 +104,20 @@ export default function EventDetailsRegistrationPage() {
         setup()
         return () => unsubscribe?.unsubscribe?.()
     }, [])
+
     const onRefresh = useCallback(async () => {
         setRefreshing(true)
         setTimeout(() => {
             setRefreshing(false)
         }, 500)
     }, [])
+
     useEffect(() => {
         if (latitude !== null && longitude !== null && locationId) {
             sendLocationUpdate(locationId, latitude, longitude)
         }
     }, [latitude, longitude, locationId])
 
-    // facial registration disabled
-    // const handleRegister = () => {
-    //     if (locationLoading || latitude === null || longitude === null) {
-    //         console.warn(
-    //             'Cannot register: Location data is still loading or unavailable.',
-    //         )
-    //         return
-    //     }
-    //     setHasRegistrationAttempted(true)
-    //     performRegistration(null, () => startTracking(eventId!, locationId!))
-    // }
     const handleRegister = () => {
         if (locationLoading || latitude === null || longitude === null) {
             console.warn(
@@ -124,14 +125,25 @@ export default function EventDetailsRegistrationPage() {
             )
             return
         }
-        setHasRegistrationAttempted(false)
-        router.push({
-            pathname: '/(biometrics)/verification',
-            params: { eventId, locationId },
-        })
+        const enabled = eventData?.facialVerificationEnabled ?? true
+        if (enabled) {
+            setHasRegistrationAttempted(false)
+            router.push({
+                pathname: '/(biometrics)/verification',
+                params: { eventId, locationId },
+            })
+        } else {
+            setHasRegistrationAttempted(true)
+            performRegistration(null, () =>
+                startTracking(eventId!, locationId!),
+            )
+        }
     }
+
     useEffect(() => {
+        const enabled = eventData?.facialVerificationEnabled ?? true
         if (
+            enabled &&
             face &&
             latitude !== null &&
             longitude !== null &&
@@ -140,6 +152,17 @@ export default function EventDetailsRegistrationPage() {
         ) {
             setHasRegistrationAttempted(true)
             performRegistration(face, () =>
+                startTracking(eventId!, locationId!),
+            )
+        } else if (
+            !enabled &&
+            latitude !== null &&
+            longitude !== null &&
+            !loading &&
+            !hasRegistrationAttempted
+        ) {
+            setHasRegistrationAttempted(true)
+            performRegistration(null, () =>
                 startTracking(eventId!, locationId!),
             )
         }
@@ -153,7 +176,9 @@ export default function EventDetailsRegistrationPage() {
         longitude,
         loading,
         hasRegistrationAttempted,
+        eventData?.facialVerificationEnabled,
     ])
+
     if (loadingEvent) {
         return (
             <ScreenContainer>
@@ -161,6 +186,9 @@ export default function EventDetailsRegistrationPage() {
             </ScreenContainer>
         )
     }
+
+    const facialEnabled = eventData?.facialVerificationEnabled ?? true
+
     return (
         <ScreenContainer>
             <NavBar title="DETAILS &amp; REGISTRATION" />
@@ -262,6 +290,14 @@ export default function EventDetailsRegistrationPage() {
                         )}
                     </View>
                     <View style={styles.infoSection}>
+                        <ThemedText type="default">
+                            Facial Verification
+                        </ThemedText>
+                        <ThemedText type="defaultSemiBold">
+                            {facialEnabled ? 'Required' : 'Not Required'}
+                        </ThemedText>
+                    </View>
+                    <View style={styles.infoSection}>
                         <ThemedText type="defaultSemiBold">
                             Registration starts at exactly{' '}
                             {formatDateTime(
@@ -345,13 +381,23 @@ export default function EventDetailsRegistrationPage() {
             </Animated.View>
             <View style={styles.fixedButtonContainer}>
                 <Button
-                    title={loading ? 'REGISTERING...' : 'REGISTER'}
+                    title={
+                        loading
+                            ? 'REGISTERING...'
+                            : facialEnabled
+                              ? 'VERIFY & REGISTER'
+                              : 'REGISTER'
+                    }
                     onPress={handleRegister}
                     disabled={
                         loading ||
                         locationLoading ||
                         latitude === null ||
-                        longitude === null
+                        longitude === null ||
+                        isTrackingThisEvent ||
+                        eventData?.eventStatus === 'UPCOMING' ||
+                        eventData?.eventStatus === 'CONCLUDED' ||
+                        eventData?.eventStatus === 'FINALIZED'
                     }
                 />
             </View>

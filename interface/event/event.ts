@@ -12,6 +12,7 @@ export interface Event {
     eventLocation?: EventLocation
     locationId?: string
     eligibleStudents?: EligibilityCriteria
+    facialVerificationEnabled?: boolean
     createdAt?: string
     updatedAt?: string
 }
